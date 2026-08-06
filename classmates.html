@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fdfbf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<title>同学进度 / Classmates / เพื่อนร่วมเรียน</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
+<script src="assets/course.js" defer></script>
+<script src="assets/vocab.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<p class="kicker">Classmates</p>
+<h1><span class="t-zh">同学进度</span><span class="t-en" lang="en">Classmates</span><span class="t-th" lang="th">เพื่อนร่วมเรียน</span></h1>
+<p class="lede">
+  <span class="t-zh">你和学伴各自的进度并排看。互相交换一次「进度码」，之后谁往前跑了一眼就知道。</span>
+  <span class="t-en" lang="en">Your progress and your study partner's, side by side. Swap a progress code once and you can both see who is pulling ahead.</span>
+  <span class="t-th" lang="th">ความคืบหน้าของคุณกับคู่ซ้อม วางเทียบกัน แลกรหัสความคืบหน้ากันครั้งเดียว แล้วจะรู้เลยว่าใครนำอยู่</span>
+</p>
+
+<div class="meta">
+  <a href="index.html"><span class="t-zh">← 回首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+</div>
+
+<div class="card">
+  <p class="t-zh"><strong>数据不上服务器。</strong>你的记录只存在你自己的浏览器里。看到学伴的进度，是因为他把「进度码」发给了你，不是因为网站在同步。所以每次想更新，就重新发一次码。</p>
+  <p class="t-en" lang="en"><strong>Nothing is uploaded to a server.</strong> Your records live only in your own browser. You can see your partner's progress because they sent you a progress code, not because the site syncs. To refresh it, they send a new code.</p>
+  <p class="t-th" lang="th"><strong>ไม่มีการอัปโหลดขึ้นเซิร์ฟเวอร์</strong> ข้อมูลของคุณอยู่ในเบราว์เซอร์ของคุณเท่านั้น ที่คุณเห็นความคืบหน้าของคู่ซ้อมได้ เพราะเขาส่งรหัสความคืบหน้ามาให้ ไม่ใช่เพราะเว็บซิงก์ให้ ถ้าอยากอัปเดต ก็ส่งรหัสใหม่มาอีกครั้ง</p>
+</div>
+
+<h2><span class="t-zh">进度对比</span><span class="t-en" lang="en">Side by side</span><span class="t-th" lang="th">เทียบกัน</span></h2>
+<div class="tablewrap" id="board"></div>
+
+<h2><span class="t-zh">1 · 把我的进度码发出去</span><span class="t-en" lang="en">1 · Send out my progress code</span><span class="t-th" lang="th">1 · ส่งรหัสความคืบหน้าของฉัน</span></h2>
+<button type="button" class="act ghost" id="exportBtn">Export</button>
+<label for="out"><span class="t-zh">我的进度码</span><span class="t-en" lang="en">My progress code</span><span class="t-th" lang="th">รหัสความคืบหน้าของฉัน</span></label>
+<textarea id="out" readonly spellcheck="false"></textarea>
+
+<h2><span class="t-zh">2 · 贴进学伴发来的码</span><span class="t-en" lang="en">2 · Paste your partner's code</span><span class="t-th" lang="th">2 · วางรหัสที่คู่ซ้อมส่งมา</span></h2>
+<label for="in"><span class="t-zh">学伴发来的进度码</span><span class="t-en" lang="en">Your partner's progress code</span><span class="t-th" lang="th">รหัสความคืบหน้าที่คู่ซ้อมส่งมา</span></label>
+<textarea id="in" spellcheck="false"></textarea>
+<button type="button" class="act" id="importBtn">Import</button>
+<p class="why" id="msg" role="status" aria-live="polite" hidden></p>
+
+<div class="ask">
+  <span class="t-zh">想要真正实时同步（不用互发码），要接一个后端，会牵扯到把学习记录传到第三方服务器。跟我说一声我评估，但先用这个跑两周，多半就够了。</span>
+  <span class="t-en" lang="en">Real live syncing, with no codes to swap, needs a backend, which means your records leave your device and sit on someone else's server. Tell me if you want that and I will look into it, but run this for two weeks first. It is usually enough.</span>
+  <span class="t-th" lang="th">ถ้าอยากซิงก์แบบเรียลไทม์จริง ๆ โดยไม่ต้องแลกรหัส ต้องมีระบบหลังบ้าน ซึ่งแปลว่าข้อมูลของคุณจะออกจากเครื่องไปอยู่บนเซิร์ฟเวอร์คนอื่น บอกมาได้ถ้าต้องการ เดี๋ยวผมประเมินให้ แต่ลองใช้แบบนี้สักสองสัปดาห์ก่อน ส่วนใหญ่ก็พอแล้ว</span>
+</div>
+
+<p class="nav">
+  <a href="index.html"><span class="t-zh">← 首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+  <a href="exam.html"><span class="t-zh">考试</span><span class="t-en" lang="en">Test</span><span class="t-th" lang="th">แบบทดสอบ</span></a>
+  <a href="plan.html"><span class="t-zh">3 个月计划</span><span class="t-en" lang="en">3-month plan</span><span class="t-th" lang="th">แผน 3 เดือน</span></a>
+</p>
+
+<script>
+(function () {
+  function T(zh, en, th) { return Store.T(zh, en, th); }
+
+  function bestExam(exams) {
+    if (!exams || !exams.length) return null;
+    return exams.reduce(function (a, b) { return (b.pct > a.pct) ? b : a; });
+  }
+
+  function rowsFor(snap) {
+    var lessons = Object.keys(snap.done || {}).length;
+    var weeks = Object.keys(snap.plan || {}).length;
+    var best = bestExam(snap.exams);
+    var last = (snap.exams && snap.exams[0]) || null;
+    return {
+      level: Store.levelName(snap.level || 2),
+      lessons: lessons + " / " + (window.COURSE || []).length,
+      weeks: weeks + " / 12",
+      exams: (snap.exams || []).length,
+      best: best ? best.pct + "%" : "—",
+      last: last ? last.pct + "% (" + Store.fmtDate(last.date) + ")" : "—",
+      logs: (snap.logCount !== undefined ? snap.logCount : (snap.log || []).length),
+      updated: snap.updated ? Store.fmtDate(snap.updated) : "—"
+    };
+  }
+
+  function renderBoard() {
+    var wrap = document.getElementById("board");
+    wrap.textContent = "";
+
+    var me = Store.snapshot();
+    me.who = me.who === "?" ? T("我（还没填名字）", "Me (no name yet)", "ฉัน (ยังไม่ใส่ชื่อ)") : me.who;
+    var people = [me].concat(Store.friends());
+
+    var LABELS = [
+      ["level", { zh: "难度", en: "Level", th: "ระดับ" }],
+      ["lessons", { zh: "课程完成", en: "Lessons done", th: "บทเรียนที่จบ" }],
+      ["weeks", { zh: "12 周计划", en: "12-week plan", th: "แผน 12 สัปดาห์" }],
+      ["exams", { zh: "考试次数", en: "Tests taken", th: "จำนวนครั้งที่สอบ" }],
+      ["best", { zh: "最好成绩", en: "Best score", th: "คะแนนดีที่สุด" }],
+      ["last", { zh: "最近一次", en: "Most recent", th: "ครั้งล่าสุด" }],
+      ["logs", { zh: "开口记录", en: "Speaking log", th: "บันทึกการพูด" }],
+      ["updated", { zh: "数据日期", en: "Data from", th: "ข้อมูลวันที่" }]
+    ];
+
+    var data = people.map(rowsFor);
+    var table = document.createElement("table");
+    table.className = "numeric";
+
+    var thead = document.createElement("thead");
+    var htr = document.createElement("tr");
+    htr.appendChild(document.createElement("th"));
+    people.forEach(function (p) {
+      var th = document.createElement("th");
+      th.setAttribute("scope", "col");
+      th.textContent = p.who;
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    LABELS.forEach(function (pair) {
+      var tr = document.createElement("tr");
+      var td0 = document.createElement("th");
+      td0.setAttribute("scope", "row");
+      var l = Store.lang();
+      td0.textContent = pair[1][l] || pair[1].en;
+      tr.appendChild(td0);
+      data.forEach(function (d) {
+        var td = document.createElement("td");
+        td.textContent = String(d[pair[0]]);
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+
+    var friends = Store.friends();
+    if (friends.length) {
+      friends.forEach(function (f) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "act ghost";
+        b.style.marginRight = ".5rem";
+        b.textContent = T("移除 " + f.who, "Remove " + f.who, "ลบ " + f.who);
+        b.addEventListener("click", function () { Store.removeFriend(f.who); renderBoard(); });
+        wrap.appendChild(b);
+      });
+    }
+  }
+
+  function paint() {
+    document.getElementById("exportBtn").textContent = T("生成我的进度码", "Generate my progress code", "สร้างรหัสความคืบหน้าของฉัน");
+    document.getElementById("importBtn").textContent = T("加入学伴的进度", "Add my partner's progress", "เพิ่มความคืบหน้าของคู่ซ้อม");
+    document.getElementById("out").placeholder = T("点上面的按钮，这里会出现一段文字，整段复制发给学伴。",
+      "Press the button above. A block of text appears here. Copy all of it and send it to your partner.",
+      "กดปุ่มด้านบน แล้วข้อความจะขึ้นตรงนี้ ก๊อปทั้งหมดส่งให้คู่ซ้อม");
+    document.getElementById("in").placeholder = T("把学伴发来的整段贴在这里。",
+      "Paste the whole block your partner sent you here.",
+      "วางข้อความทั้งก้อนที่คู่ซ้อมส่งมาตรงนี้");
+    renderBoard();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    paint();
+
+    document.getElementById("exportBtn").addEventListener("click", function () {
+      document.getElementById("out").value = JSON.stringify(Store.snapshot());
+    });
+
+    document.getElementById("importBtn").addEventListener("click", function () {
+      var msg = document.getElementById("msg");
+      var raw = document.getElementById("in").value.trim();
+      if (!raw) {
+        Store.say(msg, T("先把码贴进来。", "Paste the code first.", "วางรหัสก่อน")); return;
+      }
+      var snap;
+      try { snap = JSON.parse(raw); }
+      catch (e) {
+        Store.say(msg, T("❌ 这段不是有效的进度码，让学伴重新生成一次。",
+          "❌ That is not a valid progress code. Ask them to generate a new one.",
+          "❌ รหัสไม่ถูกต้อง ให้เขาสร้างใหม่อีกครั้ง")); return;
+      }
+      if (!snap || typeof snap !== "object" || typeof snap.who !== "string" || !snap.who) {
+        Store.say(msg, T("❌ 这段不是有效的进度码。", "❌ That is not a valid progress code.", "❌ รหัสไม่ถูกต้อง")); return;
+      }
+      var clean = {
+        who: snap.who.slice(0, 40),
+        level: [1, 2, 3].indexOf(snap.level) >= 0 ? snap.level : 2,
+        done: (snap.done && typeof snap.done === "object") ? snap.done : {},
+        plan: (snap.plan && typeof snap.plan === "object") ? snap.plan : {},
+        exams: Array.isArray(snap.exams) ? snap.exams.filter(function (e) {
+          return e && typeof e.pct === "number";
+        }).slice(0, 200) : [],
+        logCount: typeof snap.logCount === "number" ? snap.logCount : 0,
+        updated: String(snap.updated || "").slice(0, 10)
+      };
+      Store.saveFriend(clean);
+      document.getElementById("in").value = "";
+      Store.say(msg, T("✅ 加进来了：" + clean.who, "✅ Added: " + clean.who, "✅ เพิ่มแล้ว: " + clean.who));
+      renderBoard();
+    });
+  });
+
+  document.addEventListener("langchange", paint);
+})();
+</script>
+
+</body>
+</html>

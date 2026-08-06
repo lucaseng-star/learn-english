@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fdfbf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<title>英文口语训练 / Speaking practice / ฝึกพูดอังกฤษ</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
+<script src="assets/course.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<p class="kicker">English Speaking Workspace</p>
+<h1>
+  <span class="t-zh">英文口语训练</span>
+  <span class="t-en" lang="en">English speaking practice</span>
+  <span class="t-th" lang="th">ฝึกพูดภาษาอังกฤษ</span>
+</h1>
+<p class="lede">
+  <span class="t-zh">谈生意 · 英文授课 · 朋友社交 · 情侣聊天。一课 5–10 分钟，做完就能当天用出去。</span>
+  <span class="t-en" lang="en">Business · teaching · friends · couples. Each lesson takes 5–10 minutes and gives you something you can use the same day.</span>
+  <span class="t-th" lang="th">ธุรกิจ · การสอน · เพื่อน · คู่รัก แต่ละบทใช้เวลา 5–10 นาที และได้อะไรที่เอาไปใช้ได้ในวันเดียวกัน</span>
+</p>
+
+<h2><span class="t-zh">谁在学</span><span class="t-en" lang="en">Who is learning</span><span class="t-th" lang="th">ใครกำลังเรียน</span></h2>
+<p class="lede">
+  <span class="t-zh">填个名字，进度就存在这台电脑上。朋友复制整个文件夹，各自填自己的名字，互不干扰。</span>
+  <span class="t-en" lang="en">Type your name and your progress is saved on this computer. Copy the whole folder to a friend, they use their own name, and nothing gets mixed up.</span>
+  <span class="t-th" lang="th">ใส่ชื่อของคุณ ความคืบหน้าจะถูกเก็บไว้ในเครื่องนี้ ถ้าเพื่อนก๊อปโฟลเดอร์ทั้งอันไป เขาก็ใส่ชื่อตัวเอง ข้อมูลจะไม่ปนกัน</span>
+</p>
+<label for="who"><span class="t-zh">名字</span><span class="t-en" lang="en">Name</span><span class="t-th" lang="th">ชื่อ</span></label>
+<input type="text" id="who" name="learner-name" autocomplete="name" spellcheck="false" placeholder="Lucas">
+<button type="button" class="act" id="saveWho"><span class="t-zh">保存名字</span><span class="t-en" lang="en">Save Name</span><span class="t-th" lang="th">บันทึกชื่อ</span></button>
+<p class="why" id="whoMsg" role="status" aria-live="polite" hidden></p>
+
+<h2><span class="t-zh">我的英文难度</span><span class="t-en" lang="en">My English level</span><span class="t-th" lang="th">ระดับภาษาอังกฤษของฉัน</span></h2>
+<p class="lede">
+  <span class="t-zh">选一个，场景词库会按这个难度给你说法。选高了看不懂就往回调，不丢人。</span>
+  <span class="t-en" lang="en">Pick one. The phrase bank gives you lines at this level. If it feels too hard, move it down. That is not failure.</span>
+  <span class="t-th" lang="th">เลือกหนึ่งระดับ คลังวลีจะให้ประโยคตามระดับนี้ ถ้ารู้สึกยากเกินไปให้ลดลงได้ ไม่ใช่เรื่องน่าอาย</span>
+</p>
+<div data-levelpicker></div>
+
+<h2 id="entries"><span class="t-zh">四个入口</span><span class="t-en" lang="en">Four Places To Go</span><span class="t-th" lang="th">สี่ทางเข้า</span></h2>
+<ul class="entrylist" aria-labelledby="entries">
+  <li><a href="plan.html">
+    <span class="name"><span class="t-zh">3 个月计划</span><span class="t-en" lang="en">3-Month Plan</span><span class="t-th" lang="th">แผน 3 เดือน</span></span>
+    <span class="desc"><span class="t-zh">每天 20 分钟做什么，12 周一周一格，做完打勾。<strong>先从这里开始。</strong></span><span class="t-en" lang="en">What to do in your 20 minutes a day, one row per week for 12 weeks. <strong>Start here.</strong></span><span class="t-th" lang="th">วันละ 20 นาทีทำอะไรบ้าง 12 สัปดาห์ สัปดาห์ละแถว <strong>เริ่มที่นี่</strong></span></span>
+  </a></li>
+  <li><a href="vocab.html">
+    <span class="name"><span class="t-zh">场景词库</span><span class="t-en" lang="en">Phrase Bank</span><span class="t-th" lang="th">คลังวลี</span></span>
+    <span class="desc"><span class="t-zh">朋友聚会 / 商务 / 情侣 / 专业词汇 / 上课 / 知识产权法，按你的难度给现成说法。</span><span class="t-en" lang="en">Friends, business, couples, technical terms, teaching, IP law. Ready-made lines at your level.</span><span class="t-th" lang="th">เพื่อน ธุรกิจ คู่รัก ศัพท์เฉพาะทาง การสอน กฎหมายทรัพย์สินทางปัญญา วลีพร้อมใช้ตามระดับของคุณ</span></span>
+  </a></li>
+  <li><a href="exam.html">
+    <span class="name"><span class="t-zh">考试</span><span class="t-en" lang="en">Test</span><span class="t-th" lang="th">แบบทดสอบ</span></span>
+    <span class="desc"><span class="t-zh">每次都换题。分数会告诉你该升级还是该降级。</span><span class="t-en" lang="en">Different questions every time. Your score tells you whether to move up or down a level.</span><span class="t-th" lang="th">ข้อสอบไม่ซ้ำทุกครั้ง คะแนนจะบอกว่าควรขยับขึ้นหรือลง</span></span>
+  </a></li>
+  <li><a href="classmates.html">
+    <span class="name"><span class="t-zh">同学进度</span><span class="t-en" lang="en">Classmates</span><span class="t-th" lang="th">เพื่อนร่วมเรียน</span></span>
+    <span class="desc"><span class="t-zh">你和学伴的进度并排看：课程、周计划、考试分、开口条数。</span><span class="t-en" lang="en">Your progress and your partner's side by side: lessons, weekly plan, test scores, speaking log.</span><span class="t-th" lang="th">ความคืบหน้าของคุณกับคู่ซ้อมวางเทียบกัน: บทเรียน แผนรายสัปดาห์ คะแนนสอบ บันทึกการพูด</span></span>
+  </a></li>
+</ul>
+
+<h2><span class="t-zh">课程</span><span class="t-en" lang="en">Lessons</span><span class="t-th" lang="th">บทเรียน</span></h2>
+<div id="lessons"></div>
+
+<h2><span class="t-zh">我的开口记录</span><span class="t-en" lang="en">My speaking log</span><span class="t-th" lang="th">บันทึกการพูดของฉัน</span></h2>
+<p class="lede">
+  <span class="t-zh">每次真的把学的句子说出去了，就在课里记一笔。这里汇总。</span>
+  <span class="t-en" lang="en">Every time you actually say one of these lines to a real person, log it inside the lesson. Everything shows up here.</span>
+  <span class="t-th" lang="th">ทุกครั้งที่คุณพูดประโยคเหล่านี้กับคนจริง ๆ ให้บันทึกไว้ในบทเรียน แล้วทั้งหมดจะมาโผล่ที่นี่</span>
+</p>
+<div id="log"></div>
+
+
+<div class="meta" style="margin-top:2.5rem">
+  <span class="t-zh">每一课的说法都有出处，全部列在 <a href="RESOURCES.md">RESOURCES.md</a>（中文）</span>
+  <span class="t-en" lang="en">Every line in these lessons has a source. They are all listed in <a href="RESOURCES.md">RESOURCES.md</a> (written in Chinese)</span>
+  <span class="t-th" lang="th">ทุกประโยคในบทเรียนมีแหล่งอ้างอิง ดูรายการทั้งหมดได้ที่ <a href="RESOURCES.md">RESOURCES.md</a> (เขียนเป็นภาษาจีน)</span>
+</div>
+
+<div class="ask">
+  <span class="t-zh">卡住了、想不通、想练某个具体场合，直接问我（Claude）。我是你的老师，随时能加课、改课、出题。</span>
+  <span class="t-en" lang="en">Stuck, confused, or want practice for a specific situation? Just ask me (Claude). I am your teacher and I can add lessons, rewrite them, or write more questions any time.</span>
+  <span class="t-th" lang="th">ติดตรงไหน งงตรงไหน หรืออยากฝึกสถานการณ์ไหนเป็นพิเศษ ถามผมได้เลย (Claude) ผมเป็นครูของคุณ เพิ่มบทเรียน แก้บทเรียน หรือออกข้อสอบเพิ่มได้ตลอด</span>
+</div>
+
+<script>
+(function () {
+  var whoInput = document.getElementById("who");
+  var whoMsg = document.getElementById("whoMsg");
+  function T(zh, en, th) { return Store.T(zh, en, th); }
+  function L(field) { var l = Store.lang(); return (field && field[l]) || (field && field.en) || (field && field.zh) || ""; }
+
+  function refresh() {
+    whoInput.value = Store.who();
+    renderLessons();
+    renderLog();
+  }
+
+  document.getElementById("saveWho").addEventListener("click", function () {
+    var n = whoInput.value.trim();
+    if (!n) {
+      Store.say(whoMsg, T("先填个名字，进度才存得下来。", "Type a name first so progress can be saved.", "ใส่ชื่อก่อน ระบบถึงจะบันทึกความคืบหน้าได้"));
+      whoInput.focus(); return;
+    }
+    Store.setWho(n);
+    Store.say(whoMsg, T("✅ 现在记录的是 " + n + " 的进度。",
+      "✅ Now saving progress for " + n + ".",
+      "✅ ตอนนี้กำลังบันทึกความคืบหน้าของ " + n));
+    refresh();
+  });
+
+  function renderLessons() {
+    var wrap = document.getElementById("lessons");
+    wrap.textContent = "";
+    var data = Store.load();
+    (window.COURSE || []).forEach(function (l) {
+      var row = document.createElement("div");
+      row.className = "row";
+
+      var mark = document.createElement("span");
+      var done = data.done[l.id];
+      mark.textContent = done ? "✓" : "○";
+      if (done) mark.className = "done";
+
+      var grow = document.createElement("div");
+      grow.className = "grow";
+      var a = document.createElement("a");
+      a.href = l.file;
+      a.textContent = l.id + " · " + L(l.title);
+      grow.appendChild(a);
+      var sub = document.createElement("div");
+      sub.className = "tag";
+      sub.textContent = l.minutes + T(" 分钟 · ", " min · ", " นาที · ") + L(l.tags).join(" / ")
+        + (done ? T(" · 完成于 ", " · done ", " · เสร็จเมื่อ ") + Store.fmtDate(done) : "");
+      grow.appendChild(sub);
+      var goal = document.createElement("div");
+      goal.style.fontSize = ".92rem";
+      goal.textContent = L(l.goal);
+      grow.appendChild(goal);
+
+      var ref = document.createElement("a");
+      ref.href = l.ref;
+      ref.textContent = T("速查卡", "Phrasebook", "สรุปวลี");
+      ref.style.fontSize = ".85rem";
+
+      row.appendChild(mark); row.appendChild(grow); row.appendChild(ref);
+      wrap.appendChild(row);
+    });
+  }
+
+  function renderLog() {
+    var wrap = document.getElementById("log");
+    wrap.textContent = "";
+    var log = Store.load().log;
+    if (!log.length) {
+      var p = document.createElement("p");
+      p.className = "lede";
+      p.textContent = T(
+        "还没有记录。做完第一课，把那句话用出去，再回来记一笔。",
+        "Nothing logged yet. Finish lesson 1, use a line on a real person, then come back and log it.",
+        "ยังไม่มีบันทึก เรียนบทที่ 1 ให้จบ เอาไปพูดกับคนจริง ๆ แล้วค่อยกลับมาบันทึก"
+      );
+      wrap.appendChild(p);
+      return;
+    }
+    log.forEach(function (e) {
+      var row = document.createElement("div");
+      row.className = "row";
+      var d = document.createElement("span");
+      d.className = "tag";
+      d.textContent = Store.fmtDate(e.date);
+      var t = document.createElement("div");
+      t.className = "grow";
+      t.textContent = e.text;
+      row.appendChild(d); row.appendChild(t);
+      wrap.appendChild(row);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", refresh);
+  document.addEventListener("langchange", refresh);
+})();
+</script>
+
+</body>
+</html>

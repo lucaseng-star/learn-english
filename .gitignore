@@ -1,0 +1,8 @@
+.DS_Store
+.impeccable/
+
+# 不公开：这些是教学工作文件，含 Lucas 的个人情况和学习水平记录
+MISSION.md
+NOTES.md
+DESIGN-BRIEF.md
+learning-records/

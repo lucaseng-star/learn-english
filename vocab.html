@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fdfbf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<title>场景词库 / Phrase bank / คลังวลี</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
+<script src="assets/vocab.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<p class="kicker">Phrase bank</p>
+<h1>
+  <span class="t-zh">场景词库</span>
+  <span class="t-en" lang="en">Phrase bank</span>
+  <span class="t-th" lang="th">คลังวลีตามสถานการณ์</span>
+</h1>
+<p class="lede">
+  <span class="t-zh">按你的难度，给你在这个场合真的会用到的说法。出门前扫一眼，挑 3 句今天用掉。</span>
+  <span class="t-en" lang="en">Lines you will actually use in this situation, at your level. Scan before you go out and pick three to use today.</span>
+  <span class="t-th" lang="th">วลีที่ได้ใช้จริงในสถานการณ์นั้น ตามระดับของคุณ ดูก่อนออกจากบ้าน แล้วเลือกสัก 3 ประโยคไปใช้วันนี้</span>
+</p>
+
+<div class="meta">
+  <a href="index.html"><span class="t-zh">← 回首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+</div>
+
+<h2><span class="t-zh">我的难度</span><span class="t-en" lang="en">My level</span><span class="t-th" lang="th">ระดับของฉัน</span></h2>
+<div data-levelpicker></div>
+
+<h2><span class="t-zh">场合</span><span class="t-en" lang="en">Situation</span><span class="t-th" lang="th">สถานการณ์</span></h2>
+<div class="scenetabs" id="tabs" role="tablist" aria-label="Situation"></div>
+
+<label class="inline" for="showAll">
+  <input type="checkbox" id="showAll">
+  <span class="t-zh">显示全部难度（不只我这一级）</span>
+  <span class="t-en" lang="en">Show every level, not just mine</span>
+  <span class="t-th" lang="th">แสดงทุกระดับ ไม่ใช่แค่ระดับของฉัน</span>
+</label>
+
+<div id="list" role="tabpanel" tabindex="0" aria-labelledby="activetab"></div>
+
+<div class="ask">
+  <span class="t-zh">想要别的场合（面试、看医生、点餐、砍价）或者更难的说法，直接跟我说，我加进来。</span>
+  <span class="t-en" lang="en">Want another situation (interviews, the doctor, ordering food, haggling) or harder lines? Just tell me and I will add them.</span>
+  <span class="t-th" lang="th">อยากได้สถานการณ์อื่น (สัมภาษณ์งาน หาหมอ สั่งอาหาร ต่อราคา) หรือวลีที่ยากขึ้น บอกได้เลย เดี๋ยวเพิ่มให้</span>
+</div>
+
+<p class="nav">
+  <a href="index.html"><span class="t-zh">← 首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+  <a href="lessons/0001-softening.html"><span class="t-zh">Lesson 0001 →</span><span class="t-en" lang="en">Lesson 0001 →</span><span class="t-th" lang="th">บทเรียน 0001 →</span></a>
+</p>
+
+<script>
+(function () {
+  var scene = "social";
+
+  function L(o) { var l = Store.lang(); return o[l] || o.en || o.zh; }
+
+  function renderTabs() {
+    var tabs = document.getElementById("tabs");
+    tabs.textContent = "";
+    VOCAB.scenes.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = L(s);
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", s.id === scene ? "true" : "false");
+      b.setAttribute("tabindex", s.id === scene ? "0" : "-1");
+      if (s.id === scene) b.id = "activetab";
+      b.addEventListener("keydown", function (ev) {
+        var dir = ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0;
+        if (!dir) return;
+        ev.preventDefault();
+        var all = VOCAB.scenes, i = all.map(function (x) { return x.id; }).indexOf(scene);
+        scene = all[(i + dir + all.length) % all.length].id;
+        renderTabs(); renderList();
+        document.getElementById("activetab").focus();
+      });
+      b.addEventListener("click", function () { scene = s.id; renderTabs(); renderList(); });
+      tabs.appendChild(b);
+    });
+  }
+
+  function renderList() {
+    var wrap = document.getElementById("list");
+    wrap.textContent = "";
+    var all = document.getElementById("showAll").checked;
+    var lv = Store.level();
+    var items = VOCAB.items.filter(function (it) {
+      return it.s === scene && (all || it.l === lv);
+    });
+
+    if (!items.length) {
+      var p = document.createElement("p");
+      p.className = "lede";
+      p.textContent = Store.T("这个难度还没有内容，跟我说一声我补上。",
+        "Nothing at this level yet. Tell me and I will add it.",
+        "ยังไม่มีเนื้อหาในระดับนี้ บอกมาแล้วเดี๋ยวเพิ่มให้");
+      wrap.appendChild(p);
+      return;
+    }
+
+    items.forEach(function (it) {
+      var d = document.createElement("div");
+      d.className = "entry";
+
+      if (all) {
+        var lvl = document.createElement("div");
+        lvl.className = "lvl";
+        lvl.textContent = Store.levelName(it.l);
+        d.appendChild(lvl);
+      }
+
+      var phrase = document.createElement("div");
+      phrase.className = "phrase";
+      phrase.setAttribute("lang", "en");
+      phrase.textContent = it.en;
+      d.appendChild(phrase);
+
+      var gloss = document.createElement("div");
+      gloss.className = "gloss";
+      var l = Store.lang();
+      gloss.textContent = l === "th" ? it.th : (l === "en" ? it.def : it.zh);
+      if (l === "th") gloss.setAttribute("lang", "th");
+      if (l === "en") gloss.setAttribute("lang", "en");
+      d.appendChild(gloss);
+
+      if (it.col) {
+        var col = document.createElement("div");
+        col.className = "col";
+        col.setAttribute("lang", "en");
+        col.textContent = it.col;
+        d.appendChild(col);
+      }
+
+      var ex = document.createElement("div");
+      ex.className = "ex";
+      ex.setAttribute("lang", "en");
+      ex.textContent = it.ex;
+      d.appendChild(ex);
+
+      wrap.appendChild(d);
+    });
+
+    var count = document.createElement("p");
+    count.className = "tag";
+    count.style.marginTop = ".8rem";
+    count.textContent = items.length + Store.T(" 条", " lines", " ประโยค");
+    wrap.appendChild(count);
+    Store.protectEnglish();
+  }
+
+  function renderAll() { renderTabs(); renderList(); }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("showAll").addEventListener("change", renderList);
+    renderAll();
+  });
+  document.addEventListener("langchange", renderAll);
+  document.addEventListener("levelchange", renderList);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fdfbf7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<title>考试 / Test / แบบทดสอบ</title>
+<link rel="stylesheet" href="assets/style.css">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
+<script src="assets/vocab.js" defer></script>
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<p class="kicker">Test</p>
+<h1><span class="t-zh">考试</span><span class="t-en" lang="en">Test</span><span class="t-th" lang="th">แบบทดสอบ</span></h1>
+<p class="lede">
+  <span class="t-zh">10 题，按你的难度和场合出。每次题目都不一样。成绩记进你的进度，学伴也看得到。</span>
+  <span class="t-en" lang="en">Ten questions, built from your level and your situation. Different every time. Your score goes into your progress, and your study partner can see it.</span>
+  <span class="t-th" lang="th">10 ข้อ สร้างจากระดับและสถานการณ์ของคุณ ไม่ซ้ำกันทุกครั้ง คะแนนจะถูกบันทึกไว้ และคู่ซ้อมของคุณก็เห็นได้</span>
+</p>
+
+<div class="meta">
+  <a href="index.html"><span class="t-zh">← 回首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+</div>
+
+<div id="setup">
+  <h2><span class="t-zh">难度</span><span class="t-en" lang="en">Level</span><span class="t-th" lang="th">ระดับ</span></h2>
+  <div data-levelpicker></div>
+
+  <h2><span class="t-zh">考哪个场合</span><span class="t-en" lang="en">Which situation</span><span class="t-th" lang="th">สอบสถานการณ์ไหน</span></h2>
+  <div class="scenetabs" id="tabs" role="tablist" aria-label="Situation"></div>
+
+  <button type="button" class="act" id="start">Start</button>
+</div>
+
+<div id="exam" hidden>
+  <p class="tag" id="progress" role="status" aria-live="polite"></p>
+  <div id="qbox" tabindex="-1"></div>
+</div>
+
+<div id="result" hidden>
+  <h2 id="resultHead" tabindex="-1"><span class="t-zh">成绩</span><span class="t-en" lang="en">Result</span><span class="t-th" lang="th">ผลคะแนน</span></h2>
+  <div id="scorebox" role="status" aria-live="polite"></div>
+  <h3><span class="t-zh">错的这几题</span><span class="t-en" lang="en">What you got wrong</span><span class="t-th" lang="th">ข้อที่ผิด</span></h3>
+  <div id="wrongbox"></div>
+  <button type="button" class="act" id="again">Again</button>
+</div>
+
+<h2><span class="t-zh">我的成绩记录</span><span class="t-en" lang="en">My test history</span><span class="t-th" lang="th">ประวัติคะแนนของฉัน</span></h2>
+<div id="history"></div>
+
+<div class="ask">
+  <span class="t-zh">题太简单或太难，改上面的难度。想考别的场合或加题型（听写、造句），跟我说。</span>
+  <span class="t-en" lang="en">Too easy or too hard? Change the level above. Want other situations or other question types (dictation, sentence building)? Tell me.</span>
+  <span class="t-th" lang="th">ง่ายไปหรือยากไป ปรับระดับด้านบนได้ อยากได้สถานการณ์อื่นหรือรูปแบบข้อสอบอื่น (เขียนตามคำบอก แต่งประโยค) บอกมาได้เลย</span>
+</div>
+
+<p class="nav">
+  <a href="index.html"><span class="t-zh">← 首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
+  <a href="classmates.html"><span class="t-zh">同学进度</span><span class="t-en" lang="en">Classmates</span><span class="t-th" lang="th">เพื่อนร่วมเรียน</span></a>
+  <a href="vocab.html"><span class="t-zh">场景词库</span><span class="t-en" lang="en">Phrase bank</span><span class="t-th" lang="th">คลังวลี</span></a>
+</p>
+
+<script>
+(function () {
+  var scene = "social";
+  var questions = [];
+  var idx = 0;
+  var wrong = [];
+  var N = 10;
+
+  function T(zh, en, th) { return Store.T(zh, en, th); }
+  function L(o) { var l = Store.lang(); return o[l] || o.en || o.zh; }
+  function gloss(it) { var l = Store.lang(); return l === "th" ? it.th : (l === "en" ? it.def : it.zh); }
+
+  // 洗牌：用题目内容做种子，避免依赖随机数在同一秒重复
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  // 只出「同场合 + 当前难度」的题。混难度会让「该升还是该降」的判断失真
+  function pool() {
+    var lv = Store.level();
+    return VOCAB.items.filter(function (it) { return it.s === scene && it.l === lv; });
+  }
+
+  function distractors(correct, all) {
+    return shuffle(all.filter(function (it) { return it.en !== correct.en; })).slice(0, 3);
+  }
+
+  function build() {
+    var all = pool();
+    var picked = shuffle(all.slice()).slice(0, Math.min(N, all.length));
+    if (!picked.length) { questions = []; return; }
+    questions = picked.map(function (it, i) {
+      var opts = shuffle([it].concat(distractors(it, all)));
+      var type = i % 3 === 2 ? "cloze" : "meaning";
+      return { item: it, opts: opts, answer: opts.indexOf(it), type: type };
+    });
+    idx = 0; wrong = [];
+  }
+
+  function renderQuestion() {
+    var q = questions[idx];
+    document.getElementById("progress").textContent =
+      T("第 " + (idx + 1) + " / " + questions.length + " 题",
+        "Question " + (idx + 1) + " of " + questions.length,
+        "ข้อที่ " + (idx + 1) + " จาก " + questions.length);
+
+    var box = document.getElementById("qbox");
+    box.textContent = "";
+
+    var quiz = document.createElement("div");
+    quiz.className = "quiz";
+
+    var qp = document.createElement("p");
+    qp.className = "q";
+    if (q.type === "meaning") {
+      qp.textContent = T("哪一句是这个意思？", "Which line means this?", "ประโยคไหนมีความหมายนี้");
+      var g = document.createElement("p");
+      g.style.fontSize = "1.05rem";
+      g.style.margin = ".2rem 0 .8rem";
+      g.textContent = gloss(q.item);
+      quiz.appendChild(qp); quiz.appendChild(g);
+    } else {
+      qp.textContent = T("这句话里挖掉的是哪一句？", "Which line fits the gap?", "ประโยคไหนเติมลงในช่องว่างได้");
+      var ex = document.createElement("p");
+      ex.className = "ex";
+      ex.setAttribute("lang", "en");
+      ex.style.fontStyle = "italic";
+      ex.style.margin = ".2rem 0 .8rem";
+      ex.textContent = q.item.ex.replace(q.item.en, "_______");
+      if (ex.textContent === q.item.ex) {
+        // 例句里没原文出现，退回意思题
+        q.type = "meaning";
+        return renderQuestion();
+      }
+      quiz.appendChild(qp); quiz.appendChild(ex);
+    }
+
+    q.opts.forEach(function (o, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opt";
+      b.setAttribute("lang", "en");
+      b.textContent = o.en;
+      b.addEventListener("click", function () { answer(i); });
+      quiz.appendChild(b);
+    });
+
+    box.appendChild(quiz);
+    Store.protectEnglish();
+    box.focus();   // 换题后焦点不掉回 body
+  }
+
+  function answer(i) {
+    var q = questions[idx];
+    if (i !== q.answer) wrong.push(q);
+    idx++;
+    if (idx < questions.length) renderQuestion(); else finish();
+  }
+
+  function finish() {
+    document.getElementById("exam").hidden = true;
+    var score = questions.length - wrong.length;
+    Store.addExam({ scene: scene, level: Store.level(), score: score, total: questions.length });
+
+    var pct = Math.round(score / questions.length * 100);
+    var sb = document.getElementById("scorebox");
+    sb.textContent = "";
+    var big = document.createElement("p");
+    big.style.fontSize = "2rem";
+    big.style.fontWeight = "600";
+    big.style.margin = ".2rem 0";
+    big.textContent = score + " / " + questions.length + "  (" + pct + "%)";
+    sb.appendChild(big);
+
+    var verdict = document.createElement("p");
+    verdict.className = "lede";
+    if (pct >= 90) verdict.textContent = T("这个难度对你太轻了，往上调一级。", "This level is too easy for you. Move up one.", "ระดับนี้ง่ายไปสำหรับคุณ ขยับขึ้นอีกหนึ่งระดับ");
+    else if (pct >= 60) verdict.textContent = T("难度刚好，就停在这一级练。", "The level fits. Stay here and keep drilling.", "ระดับกำลังพอดี อยู่ตรงนี้แล้วฝึกต่อ");
+    else verdict.textContent = T("这一级还太重，往下调一级，不丢人。", "This level is still too heavy. Move down one. That is not failure.", "ระดับนี้ยังหนักไป ลดลงหนึ่งระดับ ไม่ใช่เรื่องน่าอาย");
+    sb.appendChild(verdict);
+
+    var wb = document.getElementById("wrongbox");
+    wb.textContent = "";
+    if (!wrong.length) {
+      var p = document.createElement("p");
+      p.className = "lede";
+      p.textContent = T("全对。", "All correct.", "ถูกทั้งหมด");
+      wb.appendChild(p);
+    } else {
+      wrong.forEach(function (q) {
+        var d = document.createElement("div");
+        d.className = "entry";
+        var ph = document.createElement("div");
+        ph.className = "phrase";
+        ph.setAttribute("lang", "en");
+        ph.textContent = q.item.en;
+        var gl = document.createElement("div");
+        gl.className = "gloss";
+        gl.textContent = gloss(q.item);
+        var ex = document.createElement("div");
+        ex.className = "ex";
+        ex.setAttribute("lang", "en");
+        ex.textContent = q.item.ex;
+        d.appendChild(ph); d.appendChild(gl); d.appendChild(ex);
+        wb.appendChild(d);
+      });
+    }
+
+    document.getElementById("result").hidden = false;
+    renderHistory();
+    Store.protectEnglish();
+    document.getElementById("resultHead").focus();
+  }
+
+  function renderHistory() {
+    var wrap = document.getElementById("history");
+    wrap.className = "numeric";
+    wrap.textContent = "";
+    var exams = Store.load().exams;
+    if (!exams.length) {
+      var p = document.createElement("p");
+      p.className = "lede";
+      p.textContent = T("还没考过。", "No tests taken yet.", "ยังไม่เคยสอบ");
+      wrap.appendChild(p);
+      return;
+    }
+    exams.slice(0, 15).forEach(function (e) {
+      var row = document.createElement("div");
+      row.className = "row";
+      var d = document.createElement("span");
+      d.className = "tag";
+      d.textContent = Store.fmtDate(e.date);
+      var g = document.createElement("div");
+      g.className = "grow";
+      var sc = (VOCAB.scenes.filter(function (s) { return s.id === e.scene; })[0]) || { zh: e.scene, en: e.scene, th: e.scene };
+      g.textContent = L(sc) + " · " + Store.levelName(e.level) + " · " + e.score + "/" + e.total + " (" + e.pct + "%)";
+      row.appendChild(d); row.appendChild(g);
+      wrap.appendChild(row);
+    });
+  }
+
+  function renderTabs() {
+    var tabs = document.getElementById("tabs");
+    tabs.textContent = "";
+    VOCAB.scenes.forEach(function (s) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = L(s);
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", s.id === scene ? "true" : "false");
+      b.addEventListener("click", function () { scene = s.id; renderTabs(); paintButtons(); });
+      tabs.appendChild(b);
+    });
+  }
+
+  function paintButtons() {
+    var n = Math.min(N, pool().length);
+    document.getElementById("start").textContent =
+      T("开始考试（" + n + " 题）", "Start the test (" + n + " questions)", "เริ่มทำข้อสอบ (" + n + " ข้อ)");
+    document.getElementById("again").textContent = T("再考一次（换题）", "Take it again (new questions)", "สอบอีกครั้ง (ข้อใหม่)");
+  }
+
+  function startExam() {
+    build();
+    if (!questions.length) return;
+    document.getElementById("setup").hidden = true;
+    document.getElementById("result").hidden = true;
+    document.getElementById("exam").hidden = false;
+    renderQuestion();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    renderTabs(); paintButtons(); renderHistory();
+    document.getElementById("start").addEventListener("click", startExam);
+    document.getElementById("again").addEventListener("click", function () {
+      document.getElementById("result").hidden = true;
+      startExam();
+    });
+  });
+  document.addEventListener("langchange", function () {
+    renderTabs(); paintButtons(); renderHistory();
+    if (!document.getElementById("exam").hidden) renderQuestion();
+  });
+  document.addEventListener("levelchange", paintButtons);
+})();
+</script>
+
+</body>
+</html>
