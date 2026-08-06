@@ -130,6 +130,20 @@
       if (l === "en") gloss.setAttribute("lang", "en");
       d.appendChild(gloss);
 
+      if (it.up) {
+        var up = document.createElement("div");
+        up.className = "upgrade";
+        var weak = document.createElement("s");
+        weak.setAttribute("lang", "en");
+        weak.textContent = it.up;
+        up.appendChild(document.createTextNode(
+          Store.T("别说 ", "Instead of ", "แทนที่จะพูดว่า ")));
+        up.appendChild(weak);
+        up.appendChild(document.createTextNode(
+          Store.T("，说上面这句", ", say the line above", " ให้พูดประโยคด้านบนแทน")));
+        d.appendChild(up);
+      }
+
       if (it.col) {
         var col = document.createElement("div");
         col.className = "col";

@@ -155,6 +155,9 @@ html[data-lang="th"] .t-zh, html[data-lang="th"] .t-en { display: none !importan
   border-radius: 3px; color: var(--ink-soft); font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;
 }
 .entry .gloss { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 0.75rem; display: block; }
+/* 升级对照：别说这个弱词，说上面那句 */
+.entry .upgrade { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.5rem; }
+.entry .upgrade s { color: var(--bad); text-decoration-thickness: 1px; }
 .entry .col {
   font-size: 0.85rem; color: var(--ink-soft); background-color: var(--accent-soft);
   padding: 0.35rem 0.65rem; border-radius: 4px; margin-bottom: 0.75rem; display: inline-block;
