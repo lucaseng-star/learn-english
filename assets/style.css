@@ -186,15 +186,13 @@ html[data-lang="th"] .t-zh, html[data-lang="th"] .t-en { display: none !importan
 .panel .lede { margin-bottom: 20px; font-size: .91rem; line-height: 1.6; }
 
 .function-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.function-card { position: relative; display: flex; flex-direction: column; min-height: 330px; padding: 28px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden; }
-.function-card::before { content: ""; position: absolute; width: 170px; height: 170px; right: -82px; top: -85px; border-radius: 50%; background: var(--accent-soft); }
-.function-card.practice-card::before { background: #e8f8ef; }
-.function-card.progress-card::before { background: #edf4ff; }
-.function-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 42px; height: 42px; margin-bottom: 34px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); font-family: Georgia, serif; font-size: 1.05rem; font-weight: 800; }
-.practice-card .function-icon { background: #e6f7ee; color: #087a55; }
-.progress-card .function-icon { background: #e9f2ff; color: #175cd3; }
+.function-card { position: relative; display: flex; flex-direction: column; min-height: 480px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden; }
+.function-visual { aspect-ratio: 4 / 3; margin-bottom: 22px; border-radius: 13px; background: var(--surface-2); overflow: hidden; }
+.function-visual img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.function-card:hover .function-visual img { transform: scale(1.025); }
 .function-label { margin: 0 0 8px; color: var(--muted); font-size: .68rem; font-weight: 760; letter-spacing: .12em; text-transform: uppercase; }
-.function-card h3 { margin: 0 0 12px; font-size: 1.3rem; letter-spacing: -.025em; }
+.function-card h3 { margin: 0 10px 12px; font-size: 1.3rem; letter-spacing: -.025em; }
+.function-card .function-label, .function-card > p:not(.function-label), .function-card .function-actions, .function-card > .function-link { margin-left: 10px; margin-right: 10px; }
 .function-card > p:not(.function-label) { margin-bottom: 24px; color: var(--muted); font-size: .88rem; line-height: 1.6; }
 .function-actions { display: grid; gap: 6px; margin-top: auto; }
 .function-link { display: flex; align-items: center; justify-content: space-between; min-height: 42px; padding: 9px 11px; border-radius: 9px; color: var(--ink-2); font-size: .84rem; font-weight: 680; text-decoration: none; transition: background .18s ease, color .18s ease; }
@@ -326,8 +324,8 @@ button.ghost:hover, button.act.ghost:hover { border-color: #c8c3ff; color: var(-
   .setup-grid, .entrylist { grid-template-columns: 1fr; }
   .panel, .entrylist a, .entry, .card, .quiz, .ask { padding: 21px; }
   .entrylist a { min-height: 170px; }
-  .function-card { padding: 23px; }
-  .function-icon { margin-bottom: 24px; }
+  .function-card { min-height: 0; padding: 14px; }
+  .function-visual { margin-bottom: 20px; }
   .profile-settings > summary { padding: 18px; }
   .settings-hint > span { display: none; }
   .profile-settings .setup-grid { padding: 0 12px 12px; }
