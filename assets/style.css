@@ -127,6 +127,7 @@ html[data-lang="th"] .t-zh, html[data-lang="th"] .t-en { display: none !importan
 
 .kicker, .eyebrow { margin: 0 0 12px; color: var(--accent); font-size: .72rem; font-weight: 760; letter-spacing: .13em; text-transform: uppercase; }
 .lede { max-width: 760px; margin-bottom: 28px; color: var(--muted); font-size: 1.06rem; line-height: 1.75; }
+.speech-tip { display: flex; align-items: flex-start; gap: 10px; max-width: 760px; margin: -10px 0 28px; padding: 13px 15px; border: 1px solid #d9d5ff; border-radius: 12px; background: var(--accent-soft); color: var(--ink-2); font-size: .86rem; }
 .meta, .tag { color: var(--muted); font-size: .78rem; font-weight: 570; letter-spacing: .02em; }
 .done { color: var(--good); font-weight: 700; }
 
@@ -230,7 +231,11 @@ html[data-lang="th"] .t-zh, html[data-lang="th"] .t-en { display: none !importan
   box-shadow: var(--shadow-sm);
 }
 .entry { position: relative; }
-.entry .phrase { display: block; margin: 6px 0 8px; color: var(--ink); font-size: 1.32rem; font-weight: 740; letter-spacing: -.02em; }
+.phrase-line { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 6px 0 8px; }
+.entry .phrase { display: block; margin: 0; color: var(--ink); font-size: 1.32rem; font-weight: 740; letter-spacing: -.02em; }
+.speak-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; flex: 0 0 auto; padding: 7px 11px; border: 1px solid #d9d5ff; border-radius: 10px; background: var(--accent-soft); color: var(--accent); font: inherit; font-size: .76rem; font-weight: 720; cursor: pointer; transition: background .18s ease, color .18s ease, transform .18s ease; }
+.speak-btn:hover { transform: translateY(-1px); background: var(--accent); color: #fff; }
+.speak-btn.speaking { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: 0 7px 16px rgba(109,93,252,.2); }
 .entry .lvl { display: inline-block; padding: 3px 8px; border-radius: 7px; background: var(--accent-soft); color: var(--accent); font-size: .68rem; font-weight: 750; text-transform: uppercase; }
 .entry .gloss, .entry .upgrade { display: block; margin-bottom: 10px; color: var(--muted); font-size: .9rem; }
 .entry .upgrade s { color: var(--bad); }
@@ -323,6 +328,8 @@ button.ghost:hover, button.act.ghost:hover { border-color: #c8c3ff; color: var(-
   .section-heading > p { margin-top: 10px; text-align: left; }
   .setup-grid, .entrylist { grid-template-columns: 1fr; }
   .panel, .entrylist a, .entry, .card, .quiz, .ask { padding: 21px; }
+  .phrase-line { align-items: flex-start; }
+  .speak-btn { min-height: 42px; padding: 8px 10px; }
   .entrylist a { min-height: 170px; }
   .function-card { min-height: 0; padding: 14px; }
   .function-visual { margin-bottom: 20px; }
