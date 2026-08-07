@@ -23,6 +23,12 @@
   <span class="t-en" lang="en">Lines you will actually use in this situation, at your level. Scan before you go out and pick three to use today.</span>
   <span class="t-th" lang="th">วลีที่ได้ใช้จริงในสถานการณ์นั้น ตามระดับของคุณ ดูก่อนออกจากบ้าน แล้วเลือกสัก 3 ประโยคไปใช้วันนี้</span>
 </p>
+<p class="speech-tip" id="speechTip" role="status">
+  <span aria-hidden="true">🔊</span>
+  <span class="t-zh">不会读？点击每个单词旁边的“发音”，它会用英文慢速读给你听。</span>
+  <span class="t-en" lang="en">Not sure how it sounds? Tap “Listen” beside any phrase for slow English pronunciation.</span>
+  <span class="t-th" lang="th">ไม่แน่ใจว่าออกเสียงอย่างไร แตะ “ฟังเสียง” ข้างวลีเพื่อฟังการออกเสียงภาษาอังกฤษแบบช้า</span>
+</p>
 
 <div class="meta">
   <a href="index.html"><span class="t-zh">← 回首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a>
@@ -57,8 +63,70 @@
 <script>
 (function () {
   var scene = "social";
+  var activeSpeakButton = null;
+  var englishVoices = [];
 
   function L(o) { var l = Store.lang(); return o[l] || o.en || o.zh; }
+
+  function refreshVoices() {
+    if (!("speechSynthesis" in window)) return;
+    englishVoices = window.speechSynthesis.getVoices().filter(function (v) {
+      return /^en([-_]|$)/i.test(v.lang || "");
+    });
+  }
+
+  function preferredVoice() {
+    return englishVoices.filter(function (v) {
+      return /Samantha|Ava|Serena|Karen|Moira|Tessa|Siri/i.test(v.name || "");
+    })[0] || englishVoices.filter(function (v) {
+      return /^en[-_]GB/i.test(v.lang || "");
+    })[0] || englishVoices[0] || null;
+  }
+
+  function resetSpeakButton(btn) {
+    if (!btn) return;
+    btn.classList.remove("speaking");
+    btn.setAttribute("aria-pressed", "false");
+    btn.innerHTML = '<span aria-hidden="true">🔊</span><span>' +
+      Store.T("发音", "Listen", "ฟังเสียง") + "</span>";
+    if (activeSpeakButton === btn) activeSpeakButton = null;
+  }
+
+  function speak(text, btn) {
+    if (!("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+      var tip = document.getElementById("speechTip");
+      tip.textContent = Store.T("这个浏览器暂时不支持语音朗读。请用 Chrome 或 Safari。",
+        "Speech is not available in this browser. Try Chrome or Safari.",
+        "เบราว์เซอร์นี้ยังไม่รองรับเสียงพูด ลองใช้ Chrome หรือ Safari");
+      return;
+    }
+
+    if (activeSpeakButton === btn && btn.classList.contains("speaking")) {
+      window.speechSynthesis.cancel();
+      resetSpeakButton(btn);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    resetSpeakButton(activeSpeakButton);
+    refreshVoices();
+
+    var utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-GB";
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    var voice = preferredVoice();
+    if (voice) utterance.voice = voice;
+
+    activeSpeakButton = btn;
+    btn.classList.add("speaking");
+    btn.setAttribute("aria-pressed", "true");
+    btn.innerHTML = '<span aria-hidden="true">■</span><span>' +
+      Store.T("停止", "Stop", "หยุด") + "</span>";
+    utterance.onend = function () { resetSpeakButton(btn); };
+    utterance.onerror = function () { resetSpeakButton(btn); };
+    window.speechSynthesis.speak(utterance);
+  }
 
   function renderTabs() {
     var tabs = document.getElementById("tabs");
@@ -86,6 +154,8 @@
   }
 
   function renderList() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    activeSpeakButton = null;
     var wrap = document.getElementById("list");
     wrap.textContent = "";
     var all = document.getElementById("showAll").checked;
@@ -115,11 +185,22 @@
         d.appendChild(lvl);
       }
 
+      var phraseLine = document.createElement("div");
+      phraseLine.className = "phrase-line";
       var phrase = document.createElement("div");
       phrase.className = "phrase";
       phrase.setAttribute("lang", "en");
       phrase.textContent = it.en;
-      d.appendChild(phrase);
+      var speakButton = document.createElement("button");
+      speakButton.type = "button";
+      speakButton.className = "speak-btn";
+      speakButton.setAttribute("aria-pressed", "false");
+      speakButton.setAttribute("aria-label", Store.T("播放英文发音：", "Play English pronunciation: ", "เล่นเสียงภาษาอังกฤษ: ") + it.en);
+      speakButton.innerHTML = '<span aria-hidden="true">🔊</span><span>' + Store.T("发音", "Listen", "ฟังเสียง") + "</span>";
+      speakButton.addEventListener("click", function () { speak(it.en, speakButton); });
+      phraseLine.appendChild(phrase);
+      phraseLine.appendChild(speakButton);
+      d.appendChild(phraseLine);
 
       var gloss = document.createElement("div");
       gloss.className = "gloss";
@@ -171,6 +252,10 @@
   function renderAll() { renderTabs(); renderList(); }
 
   document.addEventListener("DOMContentLoaded", function () {
+    refreshVoices();
+    if ("speechSynthesis" in window && "onvoiceschanged" in window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = refreshVoices;
+    }
     document.getElementById("showAll").addEventListener("change", renderList);
     renderAll();
   });
