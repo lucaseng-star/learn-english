@@ -144,13 +144,13 @@
   var LEVEL_NAMES = [
     null,
     { zh: "① 基础", en: "① Basic", th: "① พื้นฐาน" },
-    { zh: "② 进阶", en: "② Everyday", th: "② ระดับกลาง" },
+    { zh: "② 亚洲通用", en: "② International", th: "② สากล" },
     { zh: "③ 地道", en: "③ Native-like", th: "③ เหมือนเจ้าของภาษา" }
   ];
   var LEVEL_HINTS = [
     null,
     { zh: "短句为主，先求说得出、说得对。", en: "Short lines. The goal is to get the words out correctly.", th: "ประโยคสั้น เน้นพูดออกมาให้ถูกก่อน" },
-    { zh: "整块的自然说法，母语者日常在用的。", en: "Natural chunks that native speakers actually use every day.", th: "วลีที่เจ้าของภาษาใช้จริงในชีวิตประจำวัน" },
+    { zh: "亚洲跨国交流常用的清楚英文：自然、礼貌、容易听懂。", en: "Clear international English: natural, polite, and easy to understand across Asia.", th: "ภาษาอังกฤษสากลที่ชัดเจน เป็นธรรมชาติ สุภาพ และเข้าใจง่ายทั่วเอเชีย" },
     { zh: "带语气和分寸的说法，听起来像本地人。", en: "Lines with tone and nuance. This is where you stop sounding foreign.", th: "ประโยคที่มีน้ำเสียงและชั้นเชิง ฟังแล้วเหมือนคนท้องถิ่น" }
   ];
   function mountLevelPicker() {
