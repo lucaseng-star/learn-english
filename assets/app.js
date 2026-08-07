@@ -49,11 +49,11 @@
 
   // ---------- 顶部导航（每页自动出现，不用逐页写）----------
   var NAV = [
-    { f: "index.html",      zh: "总览",     en: "Overview",    th: "ภาพรวม" },
-    { f: "plan.html",       zh: "学习路线", en: "Roadmap",     th: "แผนการเรียน" },
-    { f: "vocab.html",      zh: "场景词库", en: "Library",     th: "คลังวลี" },
-    { f: "exam.html",       zh: "能力测验", en: "Skill Check", th: "ทดสอบทักษะ" },
-    { f: "classmates.html", zh: "学习伙伴", en: "Partners",    th: "เพื่อนเรียน" }
+    { f: "index.html",      zh: "今天", en: "Today",    th: "วันนี้" },
+    { f: "plan.html",       zh: "学习", en: "Learn",    th: "เรียน" },
+    { f: "vocab.html",      zh: "练习", en: "Practice", th: "ฝึก" },
+    { f: "exam.html",       zh: "测验", en: "Check",    th: "ทดสอบ" },
+    { f: "classmates.html", zh: "进度", en: "Progress", th: "ความคืบหน้า" }
   ];
   // 用样式表的相对路径推算根目录，子目录页面（lessons/、reference/）也能正确链接
   function base() {
