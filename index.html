@@ -3,27 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#fdfbf7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#101828">
 <title>英文口语训练 / Speaking practice / ฝึกพูดอังกฤษ</title>
 <link rel="stylesheet" href="assets/style.css">
 <script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
 <script src="assets/course.js" defer></script>
 <script src="assets/app.js" defer></script>
 </head>
-<body>
+<body class="home">
 
-<p class="kicker">English Speaking Workspace</p>
-<h1>
-  <span class="t-zh">英文口语训练</span>
-  <span class="t-en" lang="en">English speaking practice</span>
-  <span class="t-th" lang="th">ฝึกพูดภาษาอังกฤษ</span>
-</h1>
-<p class="lede">
-  <span class="t-zh">谈生意 · 英文授课 · 朋友社交 · 情侣聊天。一课 5–10 分钟，做完就能当天用出去。</span>
-  <span class="t-en" lang="en">Business · teaching · friends · couples. Each lesson takes 5–10 minutes and gives you something you can use the same day.</span>
-  <span class="t-th" lang="th">ธุรกิจ · การสอน · เพื่อน · คู่รัก แต่ละบทใช้เวลา 5–10 นาที และได้อะไรที่เอาไปใช้ได้ในวันเดียวกัน</span>
-</p>
+<section class="hero">
+  <div class="hero-copy">
+    <p class="kicker">English Speaking Workspace</p>
+    <h1>
+      <span class="t-zh">说得更好。<br>今天就用出去。</span>
+      <span class="t-en" lang="en">Speak better.<br>Use it today.</span>
+      <span class="t-th" lang="th">พูดให้ดีขึ้น<br>ใช้ได้จริงวันนี้</span>
+    </h1>
+    <p class="lede">
+      <span class="t-zh">为真实对话设计的 5–10 分钟口语训练：商务、教学、朋友与亲密关系。</span>
+      <span class="t-en" lang="en">5–10 minute speaking sessions for real conversations—business, teaching, friends and relationships.</span>
+      <span class="t-th" lang="th">ฝึกพูด 5–10 นาทีสำหรับบทสนทนาจริง ทั้งธุรกิจ การสอน เพื่อน และความสัมพันธ์</span>
+    </p>
+    <a class="primary-link" href="lessons/0001-softening.html">
+      <span class="t-zh">继续今天的训练 <span aria-hidden="true">→</span></span>
+      <span class="t-en" lang="en">Continue today’s practice <span aria-hidden="true">→</span></span>
+      <span class="t-th" lang="th">ฝึกต่อวันนี้ <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+  <div class="hero-orbit" aria-hidden="true">
+    <div class="orbit-card orbit-card-main"><span>Today</span><strong>Speak with tact</strong><small>Lesson 0001 · 8 min</small><i>→</i></div>
+    <div class="orbit-card orbit-card-mini"><span>LEVEL</span><strong>B1</strong></div>
+    <div class="soundwave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+<section class="dashboard" aria-label="Learning dashboard">
+  <div class="stat"><span class="stat-icon">↗</span><small><span class="t-zh">学习路线</span><span class="t-en" lang="en">Roadmap</span><span class="t-th" lang="th">แผนการเรียน</span></small><strong id="statWeek">Week 1 / 12</strong></div>
+  <div class="stat"><span class="stat-icon">◇</span><small><span class="t-zh">已完成课程</span><span class="t-en" lang="en">Lessons done</span><span class="t-th" lang="th">บทเรียนที่จบ</span></small><strong id="statLessons">0 / 1</strong></div>
+  <div class="stat"><span class="stat-icon">⌁</span><small><span class="t-zh">真实开口</span><span class="t-en" lang="en">Real conversations</span><span class="t-th" lang="th">บทสนทนาจริง</span></small><strong id="statConversations">0</strong></div>
+  <div class="stat"><span class="stat-icon">A</span><small><span class="t-zh">当前程度</span><span class="t-en" lang="en">Current level</span><span class="t-th" lang="th">ระดับปัจจุบัน</span></small><strong id="statLevel">Everyday</strong></div>
+</section>
+
+<div class="section-heading">
+  <div><p class="eyebrow">Your workspace</p><h2><span class="t-zh">设置你的训练</span><span class="t-en" lang="en">Set up your practice</span><span class="t-th" lang="th">ตั้งค่าการฝึกของคุณ</span></h2></div>
+  <p><span class="t-zh">进度只保存在这台设备上。</span><span class="t-en" lang="en">Your progress stays on this device.</span><span class="t-th" lang="th">ความคืบหน้าเก็บไว้ในอุปกรณ์นี้</span></p>
+</div>
+
+<section class="setup-grid">
+<div class="panel">
 
 <h2><span class="t-zh">谁在学</span><span class="t-en" lang="en">Who is learning</span><span class="t-th" lang="th">ใครกำลังเรียน</span></h2>
 <p class="lede">
@@ -35,7 +63,9 @@
 <input type="text" id="who" name="learner-name" autocomplete="name" spellcheck="false" placeholder="Lucas">
 <button type="button" class="act" id="saveWho"><span class="t-zh">保存名字</span><span class="t-en" lang="en">Save Name</span><span class="t-th" lang="th">บันทึกชื่อ</span></button>
 <p class="why" id="whoMsg" role="status" aria-live="polite" hidden></p>
+</div>
 
+<div class="panel">
 <h2><span class="t-zh">我的英文难度</span><span class="t-en" lang="en">My English level</span><span class="t-th" lang="th">ระดับภาษาอังกฤษของฉัน</span></h2>
 <p class="lede">
   <span class="t-zh">选一个，场景词库会按这个难度给你说法。选高了看不懂就往回调，不丢人。</span>
@@ -43,31 +73,35 @@
   <span class="t-th" lang="th">เลือกหนึ่งระดับ คลังวลีจะให้ประโยคตามระดับนี้ ถ้ารู้สึกยากเกินไปให้ลดลงได้ ไม่ใช่เรื่องน่าอาย</span>
 </p>
 <div data-levelpicker></div>
+</div>
+</section>
 
-<h2 id="entries"><span class="t-zh">四个入口</span><span class="t-en" lang="en">Four Places To Go</span><span class="t-th" lang="th">สี่ทางเข้า</span></h2>
+<div class="section-heading">
+  <div><p class="eyebrow">Explore</p><h2 id="entries"><span class="t-zh">你的学习空间</span><span class="t-en" lang="en">Your learning space</span><span class="t-th" lang="th">พื้นที่การเรียนของคุณ</span></h2></div>
+</div>
 <ul class="entrylist" aria-labelledby="entries">
   <li><a href="plan.html">
-    <span class="name"><span class="t-zh">3 个月计划</span><span class="t-en" lang="en">3-Month Plan</span><span class="t-th" lang="th">แผน 3 เดือน</span></span>
+    <span class="entry-no">01</span><span class="name"><span class="t-zh">学习路线</span><span class="t-en" lang="en">My Roadmap</span><span class="t-th" lang="th">แผนการเรียน</span></span>
     <span class="desc"><span class="t-zh">每天 20 分钟做什么，12 周一周一格，做完打勾。<strong>先从这里开始。</strong></span><span class="t-en" lang="en">What to do in your 20 minutes a day, one row per week for 12 weeks. <strong>Start here.</strong></span><span class="t-th" lang="th">วันละ 20 นาทีทำอะไรบ้าง 12 สัปดาห์ สัปดาห์ละแถว <strong>เริ่มที่นี่</strong></span></span>
   </a></li>
   <li><a href="vocab.html">
-    <span class="name"><span class="t-zh">场景词库</span><span class="t-en" lang="en">Phrase Bank</span><span class="t-th" lang="th">คลังวลี</span></span>
+    <span class="entry-no">02</span><span class="name"><span class="t-zh">场景词库</span><span class="t-en" lang="en">Phrase Library</span><span class="t-th" lang="th">คลังวลี</span></span>
     <span class="desc"><span class="t-zh">朋友聚会 / 商务 / 情侣 / 专业词汇 / 上课 / 知识产权法，按你的难度给现成说法。</span><span class="t-en" lang="en">Friends, business, couples, technical terms, teaching, IP law. Ready-made lines at your level.</span><span class="t-th" lang="th">เพื่อน ธุรกิจ คู่รัก ศัพท์เฉพาะทาง การสอน กฎหมายทรัพย์สินทางปัญญา วลีพร้อมใช้ตามระดับของคุณ</span></span>
   </a></li>
   <li><a href="exam.html">
-    <span class="name"><span class="t-zh">考试</span><span class="t-en" lang="en">Test</span><span class="t-th" lang="th">แบบทดสอบ</span></span>
+    <span class="entry-no">03</span><span class="name"><span class="t-zh">能力测验</span><span class="t-en" lang="en">Skill Check</span><span class="t-th" lang="th">แบบทดสอบ</span></span>
     <span class="desc"><span class="t-zh">每次都换题。分数会告诉你该升级还是该降级。</span><span class="t-en" lang="en">Different questions every time. Your score tells you whether to move up or down a level.</span><span class="t-th" lang="th">ข้อสอบไม่ซ้ำทุกครั้ง คะแนนจะบอกว่าควรขยับขึ้นหรือลง</span></span>
   </a></li>
   <li><a href="classmates.html">
-    <span class="name"><span class="t-zh">同学进度</span><span class="t-en" lang="en">Classmates</span><span class="t-th" lang="th">เพื่อนร่วมเรียน</span></span>
+    <span class="entry-no">04</span><span class="name"><span class="t-zh">学习伙伴</span><span class="t-en" lang="en">Learning Partners</span><span class="t-th" lang="th">เพื่อนร่วมเรียน</span></span>
     <span class="desc"><span class="t-zh">你和学伴的进度并排看：课程、周计划、考试分、开口条数。</span><span class="t-en" lang="en">Your progress and your partner's side by side: lessons, weekly plan, test scores, speaking log.</span><span class="t-th" lang="th">ความคืบหน้าของคุณกับคู่ซ้อมวางเทียบกัน: บทเรียน แผนรายสัปดาห์ คะแนนสอบ บันทึกการพูด</span></span>
   </a></li>
 </ul>
 
-<h2><span class="t-zh">课程</span><span class="t-en" lang="en">Lessons</span><span class="t-th" lang="th">บทเรียน</span></h2>
+<div class="section-heading"><div><p class="eyebrow">Continue learning</p><h2><span class="t-zh">课程</span><span class="t-en" lang="en">Lessons</span><span class="t-th" lang="th">บทเรียน</span></h2></div></div>
 <div id="lessons"></div>
 
-<h2><span class="t-zh">我的开口记录</span><span class="t-en" lang="en">My speaking log</span><span class="t-th" lang="th">บันทึกการพูดของฉัน</span></h2>
+<div class="section-heading"><div><p class="eyebrow">Proof of practice</p><h2><span class="t-zh">我的开口记录</span><span class="t-en" lang="en">My speaking log</span><span class="t-th" lang="th">บันทึกการพูดของฉัน</span></h2></div></div>
 <p class="lede">
   <span class="t-zh">每次真的把学的句子说出去了，就在课里记一笔。这里汇总。</span>
   <span class="t-en" lang="en">Every time you actually say one of these lines to a real person, log it inside the lesson. Everything shows up here.</span>
@@ -99,6 +133,17 @@
     whoInput.value = Store.who();
     renderLessons();
     renderLog();
+    renderDashboard();
+  }
+
+  function renderDashboard() {
+    var data = Store.load();
+    var completedWeeks = Object.keys(data.plan || {}).filter(function (k) { return data.plan[k]; }).length;
+    var doneLessons = Object.keys(data.done || {}).length;
+    document.getElementById("statWeek").textContent = T("第 ", "Week ", "สัปดาห์ที่ ") + Math.min(completedWeeks + 1, 12) + " / 12";
+    document.getElementById("statLessons").textContent = doneLessons + " / " + (window.COURSE || []).length;
+    document.getElementById("statConversations").textContent = (data.log || []).length;
+    document.getElementById("statLevel").textContent = Store.levelName();
   }
 
   document.getElementById("saveWho").addEventListener("click", function () {

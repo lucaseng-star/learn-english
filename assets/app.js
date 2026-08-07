@@ -49,11 +49,11 @@
 
   // ---------- 顶部导航（每页自动出现，不用逐页写）----------
   var NAV = [
-    { f: "index.html",      zh: "首页",    en: "Home",    th: "หน้าแรก" },
-    { f: "plan.html",       zh: "计划",    en: "Plan",    th: "แผน" },
-    { f: "vocab.html",      zh: "词库",    en: "Phrases", th: "คลังวลี" },
-    { f: "exam.html",       zh: "考试",    en: "Test",    th: "สอบ" },
-    { f: "classmates.html", zh: "同学",    en: "Partner", th: "เพื่อน" }
+    { f: "index.html",      zh: "总览",     en: "Overview",    th: "ภาพรวม" },
+    { f: "plan.html",       zh: "学习路线", en: "Roadmap",     th: "แผนการเรียน" },
+    { f: "vocab.html",      zh: "场景词库", en: "Library",     th: "คลังวลี" },
+    { f: "exam.html",       zh: "能力测验", en: "Skill Check", th: "ทดสอบทักษะ" },
+    { f: "classmates.html", zh: "学习伙伴", en: "Partners",    th: "เพื่อนเรียน" }
   ];
   // 用样式表的相对路径推算根目录，子目录页面（lessons/、reference/）也能正确链接
   function base() {
@@ -61,7 +61,7 @@
     var href = link ? link.getAttribute("href") : "assets/style.css";
     return href.replace(/assets\/style\.css.*$/, "");
   }
-  function mountNav() {
+  function mountNav(langBar) {
     var b = base();
     var here = location.pathname.split("/").pop() || "index.html";
 
@@ -79,6 +79,13 @@
         skip.textContent = T("跳到主内容", "Skip to main content", "ข้ามไปยังเนื้อหาหลัก");
       });
     }
+
+    var shell = document.createElement("header");
+    shell.className = "topbar";
+    var brand = document.createElement("a");
+    brand.className = "brand";
+    brand.href = b + "index.html";
+    brand.innerHTML = '<span class="brandmark" aria-hidden="true">E</span><span class="brandcopy"><strong>English OS</strong><small>Speaking workspace</small></span>';
 
     var nav = document.createElement("nav");
     nav.className = "topnav";
@@ -101,7 +108,10 @@
     }
     paint();
     document.addEventListener("langchange", paint);
-    document.body.insertBefore(nav, document.body.firstChild);
+    shell.appendChild(brand);
+    shell.appendChild(nav);
+    if (langBar) shell.appendChild(langBar);
+    document.body.insertBefore(shell, document.body.firstChild);
     // 跳转链接必须是 Tab 的第一站，所以最后插，插在最前面
     if (skip) document.body.insertBefore(skip, document.body.firstChild);
   }
@@ -127,7 +137,7 @@
     }
     paint();
     document.addEventListener("langchange", paint);
-    document.body.insertBefore(bar, document.body.firstChild);
+    return bar;
   }
 
   // ---------- 难度选择器 <div data-levelpicker></div> ----------
@@ -418,8 +428,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     applyLang(lang());
     document.documentElement.setAttribute("data-level", String(level()));
-    mountLangSwitch();
-    mountNav();
+    var langBar = mountLangSwitch();
+    mountNav(langBar);
     mountLevelPicker();
     if (!ok) warnNoStorage();
     mountQuizzes(); mountComplete(); mountPractice();
