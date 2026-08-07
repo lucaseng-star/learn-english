@@ -7,8 +7,8 @@
 <title>场景词库 / Phrase bank / คลังวลี</title>
 <link rel="stylesheet" href="assets/style.css?v=9a2ce3c">
 <script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
-<script src="assets/vocab.js?v=asia1" defer></script>
-<script src="assets/app.js?v=asia1" defer></script>
+<script src="assets/vocab.js?v=asia2" defer></script>
+<script src="assets/app.js?v=asia2" defer></script>
 </head>
 <body>
 
@@ -210,7 +210,9 @@
       if (l === "en") gloss.setAttribute("lang", "en");
       d.appendChild(gloss);
 
-      if (it.up) {
+      // International English is taught as a complete useful sentence, not as
+      // a correction of a supposedly "weaker" expression.
+      if (it.up && it.l !== 2) {
         var up = document.createElement("div");
         up.className = "upgrade";
         var weak = document.createElement("s");
