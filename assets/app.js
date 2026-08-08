@@ -50,7 +50,7 @@
   // ---------- 顶部导航（每页自动出现，不用逐页写）----------
   var NAV = [
     { f: "index.html",      zh: "今天", en: "Today",    th: "วันนี้" },
-    { f: "plan.html",       zh: "学习", en: "Learn",    th: "เรียน" },
+    { f: "course.html",     zh: "课程", en: "Course",   th: "หลักสูตร" },
     { f: "grammar.html",    zh: "语法", en: "Grammar",  th: "ไวยากรณ์" },
     { f: "vocab.html",      zh: "练习", en: "Practice", th: "ฝึก" },
     { f: "exam.html",       zh: "测验", en: "Check",    th: "ทดสอบ" },
@@ -313,6 +313,8 @@
   }
   function mountQuizzes() {
     Array.prototype.forEach.call(document.querySelectorAll(".quiz[data-answer]"), function (quiz) {
+      if (quiz.dataset.quizMounted) return;
+      quiz.dataset.quizMounted = "1";
       var answer = parseInt(quiz.getAttribute("data-answer"), 10);
       var opts = quiz.querySelectorAll("button.opt");
       var why = quiz.querySelector(".why");
@@ -354,6 +356,8 @@
   // ---------- 「我做完了」 ----------
   function mountComplete() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-complete]"), function (slot) {
+      if (slot.dataset.completeMounted) return;
+      slot.dataset.completeMounted = "1";
       var id = slot.getAttribute("data-complete");
       var btn = document.createElement("button");
       btn.type = "button";
@@ -379,6 +383,8 @@
   // ---------- 开口任务记录 ----------
   function mountPractice() {
     Array.prototype.forEach.call(document.querySelectorAll("[data-practice]"), function (slot) {
+      if (slot.dataset.practiceMounted) return;
+      slot.dataset.practiceMounted = "1";
       var id = slot.getAttribute("data-practice");
       var lab = document.createElement("label");
       lab.setAttribute("for", "p-" + id);
@@ -425,6 +431,11 @@
       slot.appendChild(lab); slot.appendChild(ta); slot.appendChild(btn); slot.appendChild(msg);
     });
   }
+
+  // Dynamic lesson pages can replace their content after a language change.
+  Store.refreshWidgets = function () {
+    mountQuizzes(); mountComplete(); mountPractice(); protectEnglish();
+  };
 
   document.addEventListener("DOMContentLoaded", function () {
     applyLang(lang());

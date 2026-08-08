@@ -1,25 +1,216 @@
-/* 课程清单 —— 新增一课只改这一个文件
-   Course list — adding a lesson means editing only this file */
-window.COURSE = [
-  {
-    id: "0001",
-    title: {
-      zh: "别让英文听起来太冲：5 个软化器",
-      en: "Stop sounding blunt: 5 softeners",
-      th: "อย่าให้ภาษาอังกฤษฟังดูห้วน: 5 วิธีทำให้นุ่มลง"
-    },
-    goal: {
-      zh: "还价、拒绝、纠正学员时，语气不伤人",
-      en: "Push back on price, say no, and correct a student without damaging the relationship",
-      th: "ต่อราคา ปฏิเสธ และแก้ไขลูกศิษย์ได้โดยไม่ทำให้ความสัมพันธ์เสีย"
-    },
-    minutes: 8,
-    file: "lessons/0001-softening.html",
-    ref: "reference/0001-softening-phrasebook.html",
-    tags: {
-      zh: ["谈生意", "授课", "社交"],
-      en: ["business", "teaching", "social"],
-      th: ["ธุรกิจ", "การสอน", "สังคม"]
-    }
+/* 12-week speaking course: 2 complete lessons per week. */
+(function () {
+  function tr(zh, en, th) { return { zh: zh, en: en, th: th }; }
+  function phrase(en, zh, th) { return { en: en, zh: zh, th: th }; }
+  function lesson(id, week, title, goal, tags, focus, phrases, quiz, mission) {
+    return {
+      id: id, week: week, title: title, goal: goal, tags: tags, focus: focus,
+      phrases: phrases, quiz: quiz, mission: mission, minutes: 12,
+      file: id === "0001" ? "lessons/0001-softening.html" : "lesson.html?id=" + id,
+      ref: id === "0001" ? "reference/0001-softening-phrasebook.html" : "vocab.html"
+    };
   }
-];
+  var sharedTags = {
+    daily: tr(["日常", "清楚表达"], ["daily", "clear speech"], ["ชีวิตประจำวัน", "พูดชัดเจน"]),
+    social: tr(["朋友", "社交"], ["friends", "social"], ["เพื่อน", "สังคม"]),
+    business: tr(["商务", "会议"], ["business", "meetings"], ["ธุรกิจ", "การประชุม"]),
+    teaching: tr(["授课", "反馈"], ["teaching", "feedback"], ["การสอน", "ข้อเสนอแนะ"]),
+    relationship: tr(["关系", "沟通"], ["relationships", "communication"], ["ความสัมพันธ์", "การสื่อสาร"]),
+    fluency: tr(["流畅", "综合"], ["fluency", "integration"], ["ความคล่อง", "บูรณาการ"])
+  };
+
+  window.COURSE = [
+    lesson("0001", 1,
+      tr("别让英文听起来太冲：5 个软化器", "Stop sounding blunt: 5 softeners", "อย่าให้ภาษาอังกฤษฟังดูห้วน: 5 วิธีทำให้นุ่มลง"),
+      tr("还价、拒绝、纠正学员时，语气不伤人", "Push back, say no, and correct someone without damaging the relationship", "ต่อรอง ปฏิเสธ และแก้ไขผู้อื่นโดยไม่ทำลายความสัมพันธ์"),
+      tr(["商务", "授课", "社交"], ["business", "teaching", "social"], ["ธุรกิจ", "การสอน", "สังคม"]),
+      tr("用 could、a bit、I think 等词缓冲直接的英文。", "Use could, a bit, and I think to soften direct English.", "ใช้ could, a bit และ I think เพื่อทำให้ภาษาอังกฤษนุ่มลง"),
+      [phrase("Could we look at another option?", "我们可以看看另一个选择吗？", "เราลองดูตัวเลือกอื่นได้ไหม"), phrase("That is a bit more than we expected.", "这比我们预期的高一点。", "ราคาสูงกว่าที่เราคาดไว้นิดหน่อย"), phrase("I do not think we can do that today.", "我想我们今天做不到。", "ฉันคิดว่าวันนี้เราคงทำไม่ได้"), phrase("I was hoping we could start smaller.", "我原本希望我们可以从小规模开始。", "ฉันหวังว่าเราจะเริ่มจากขนาดเล็กก่อนได้"), phrase("Let me check and come back to you.", "让我确认后回复你。", "ขอฉันตรวจสอบแล้วจะตอบกลับ")],
+      { q: tr("哪一句最适合礼貌地不同意？", "Which line politely disagrees?", "ประโยคใดใช้ไม่เห็นด้วยอย่างสุภาพ"), options: ["No. You are wrong.", "I am not sure that will work for us.", "That is impossible."], answer: 1, why: tr("先表达不确定，再说明立场，比较容易继续对话。", "It leaves room for the conversation while stating your position.", "ประโยคนี้บอกจุดยืนแต่ยังเปิดพื้นที่ให้คุยต่อ") },
+      tr("今天在真实对话中使用一个软化句，并记录对方的反应。", "Use one softener in a real conversation today and record the reaction.", "วันนี้ใช้ประโยคทำให้นุ่มหนึ่งประโยคในการสนทนาจริงและบันทึกปฏิกิริยา")),
+
+    lesson("0002", 1,
+      tr("完整句子：别漏掉 am / is / are", "Complete sentences with am / is / are", "ประโยคสมบูรณ์ด้วย am / is / are"),
+      tr("介绍自己、状态和地点时说出完整句子", "Use complete sentences for identity, condition, and location", "พูดประโยคสมบูรณ์เมื่อบอกตัวตน สภาพ และสถานที่"), sharedTags.daily,
+      tr("中文和泰语有时不需要 be，但英文在形容词和身份前通常需要。", "Chinese and Thai may omit be, but English normally needs it before adjectives and identities.", "ภาษาจีนและไทยอาจละ be ได้ แต่ภาษาอังกฤษมักต้องมีหน้าคำคุณศัพท์และตัวตน"),
+      [phrase("I am ready to begin.", "我准备好开始了。", "ฉันพร้อมเริ่มแล้ว"), phrase("She is responsible for training.", "她负责培训。", "เธอรับผิดชอบการฝึกอบรม"), phrase("We are at the main entrance.", "我们在正门。", "เราอยู่ที่ทางเข้าหลัก"), phrase("The samples are ready.", "样品准备好了。", "ตัวอย่างพร้อมแล้ว"), phrase("It is not available today.", "今天没有供应。", "วันนี้ไม่มีสินค้า")],
+      { q: tr("选择完整句子", "Choose the complete sentence", "เลือกประโยคที่สมบูรณ์"), options: ["She very busy.", "She is very busy.", "She be very busy."], answer: 1, why: tr("形容词 busy 前需要 is。", "The adjective busy needs is here.", "คำคุณศัพท์ busy ต้องมี is ข้างหน้า") },
+      tr("用 am、is、are 各造一个与你今天有关的句子。", "Make one true sentence about today with each of am, is, and are.", "แต่งประโยคจริงเกี่ยวกับวันนี้โดยใช้ am, is และ are อย่างละหนึ่งประโยค")),
+
+    lesson("0003", 2,
+      tr("把问题问清楚：do / does / did", "Ask clear questions with do / does / did", "ถามให้ชัดด้วย do / does / did"),
+      tr("在工作与日常聊天中正确提问和追问", "Ask and follow up correctly at work and in daily life", "ถามและถามต่อได้ถูกต้องทั้งในการทำงานและชีวิตประจำวัน"), sharedTags.daily,
+      tr("一般动词的问题需要助动词；用了 did 后，主要动词回到原形。", "Questions with ordinary verbs need a helper. After did, use the base verb.", "คำถามที่มีกริยาทั่วไปต้องใช้กริยาช่วย และหลัง did ใช้กริยารูปเดิม"),
+      [phrase("Do you need any help?", "你需要帮忙吗？", "คุณต้องการความช่วยเหลือไหม"), phrase("Does this price include delivery?", "这个价格包括运送吗？", "ราคานี้รวมค่าจัดส่งไหม"), phrase("Did you receive my message?", "你收到我的信息了吗？", "คุณได้รับข้อความของฉันไหม"), phrase("What time does the class start?", "课程几点开始？", "คลาสเริ่มกี่โมง"), phrase("Why did the schedule change?", "日程为什么改变了？", "ทำไมตารางถึงเปลี่ยน")],
+      { q: tr("哪个过去式问题正确？", "Which past question is correct?", "คำถามอดีตข้อใดถูกต้อง"), options: ["Did you received it?", "Did you receive it?", "Do you received it?"], answer: 1, why: tr("did 已经表示过去，所以 receive 用原形。", "Did carries the past tense, so receive stays in its base form.", "did แสดงอดีตแล้ว receive จึงใช้รูปเดิม") },
+      tr("今天至少问别人三个英文问题，其中一个用 did。", "Ask someone three English questions today, including one with did.", "วันนี้ถามคำถามภาษาอังกฤษอย่างน้อยสามข้อ โดยมีหนึ่งข้อใช้ did")),
+
+    lesson("0004", 2,
+      tr("讲昨天发生的事：一般过去时", "Talk about finished events in the past", "เล่าเหตุการณ์ที่จบแล้วในอดีต"),
+      tr("用清楚的时间顺序讲完一件小事", "Tell a short event in a clear time order", "เล่าเหตุการณ์สั้น ๆ ตามลำดับเวลาอย่างชัดเจน"), sharedTags.daily,
+      tr("有 yesterday、last week、this morning 等结束时间时，动词要用过去式。", "Use past verbs with finished times such as yesterday, last week, and this morning.", "ใช้กริยาอดีตกับเวลาที่จบแล้ว เช่น yesterday, last week และ this morning"),
+      [phrase("I met a new client yesterday.", "我昨天见了一位新客户。", "ฉันพบลูกค้าใหม่เมื่อวาน"), phrase("We discussed the training plan.", "我们讨论了培训计划。", "เราคุยเรื่องแผนการฝึกอบรม"), phrase("She asked about the price.", "她问了价格。", "เธอถามเรื่องราคา"), phrase("I sent the details after lunch.", "午餐后我发了详细资料。", "ฉันส่งรายละเอียดหลังอาหารกลางวัน"), phrase("Everything went well.", "一切都很顺利。", "ทุกอย่างผ่านไปด้วยดี")],
+      { q: tr("昨天完成的动作应该怎么说？", "How do you describe a finished action yesterday?", "พูดถึงการกระทำที่จบเมื่อวานอย่างไร"), options: ["I meet him yesterday.", "I met him yesterday.", "I am meet him yesterday."], answer: 1, why: tr("meet 的过去式是 met。", "The past form of meet is met.", "รูปอดีตของ meet คือ met") },
+      tr("用五句话讲述昨天的一件事，并用 first、then、finally 串起来。", "Tell one event from yesterday in five sentences using first, then, and finally.", "เล่าเหตุการณ์หนึ่งจากเมื่อวานห้าประโยค โดยใช้ first, then และ finally")),
+
+    lesson("0005", 3,
+      tr("朋友聊天：开始与延续话题", "Start and continue a friendly conversation", "เริ่มและต่อบทสนทนากับเพื่อน"),
+      tr("不只回答 yes / no，让对话自然继续", "Move beyond yes or no and keep the conversation going", "ไม่ตอบแค่ yes/no แต่ทำให้บทสนทนาดำเนินต่อ"), sharedTags.social,
+      tr("好对话常用“回答 + 一个细节 + 反问”三个步骤。", "A useful pattern is answer + one detail + a return question.", "รูปแบบที่ดีคือ ตอบ + เพิ่มรายละเอียดหนึ่งอย่าง + ถามกลับ"),
+      [phrase("I have been busy with a new project. How about you?", "我最近忙一个新项目。你呢？", "ช่วงนี้ฉันยุ่งกับโปรเจกต์ใหม่ แล้วคุณล่ะ"), phrase("That sounds interesting. What happened next?", "听起来很有趣。后来呢？", "ฟังดูน่าสนใจ แล้วเกิดอะไรขึ้นต่อ"), phrase("I have not tried it yet. Is it good?", "我还没试过。好用吗？", "ฉันยังไม่เคยลอง ดีไหม"), phrase("We should meet for coffee sometime.", "我们改天应该一起喝咖啡。", "ไว้เราไปดื่มกาแฟกันนะ"), phrase("It was nice talking to you.", "很高兴和你聊天。", "ดีใจที่ได้คุยกับคุณ")],
+      { q: tr("怎样让对话继续？", "Which answer keeps the conversation going?", "คำตอบใดทำให้บทสนทนาดำเนินต่อ"), options: ["Yes.", "Yes, I went last week. Have you been there?", "I do not know."], answer: 1, why: tr("它给了细节，也把问题交回对方。", "It adds a detail and returns a question.", "มีรายละเอียดและถามกลับอีกฝ่าย") },
+      tr("和朋友进行三分钟英文聊天，每次回答后都加一个问题。", "Have a three-minute English chat and add a question after each answer.", "คุยภาษาอังกฤษกับเพื่อนสามนาที และเพิ่มคำถามหลังทุกคำตอบ")),
+
+    lesson("0006", 3,
+      tr("邀请、改时间与礼貌拒绝", "Invite, reschedule, and decline politely", "ชวน เลื่อนเวลา และปฏิเสธอย่างสุภาพ"),
+      tr("把安排说清楚，同时保留关系温度", "Make plans clearly while keeping the relationship warm", "นัดหมายให้ชัดเจนพร้อมรักษาความสัมพันธ์"), sharedTags.social,
+      tr("拒绝时使用感谢 + 简短原因 + 替代安排。", "When declining, use appreciation + a brief reason + an alternative.", "เวลาปฏิเสธ ใช้คำขอบคุณ + เหตุผลสั้น ๆ + ทางเลือกใหม่"),
+      [phrase("Would you like to join us for dinner?", "你想和我们一起吃晚餐吗？", "คุณอยากมาทานอาหารเย็นกับเราไหม"), phrase("Saturday works well for me.", "星期六我方便。", "วันเสาร์สะดวกสำหรับฉัน"), phrase("I am sorry, I cannot make it tonight.", "对不起，我今晚来不了。", "ขอโทษนะ คืนนี้ฉันไปไม่ได้"), phrase("Could we meet on Sunday instead?", "我们可以改成星期日见吗？", "เปลี่ยนไปเจอกันวันอาทิตย์ได้ไหม"), phrase("Thank you for inviting me.", "谢谢你邀请我。", "ขอบคุณที่ชวนนะ")],
+      { q: tr("哪一句拒绝得最完整？", "Which decline is most complete?", "ประโยคปฏิเสธใดสมบูรณ์ที่สุด"), options: ["No.", "I cannot.", "Thanks for asking. I am busy tonight, but Sunday is free."], answer: 2, why: tr("它感谢对方、说明原因，也给出替代时间。", "It appreciates the invitation, gives a reason, and offers an alternative.", "ขอบคุณ บอกเหตุผล และเสนอเวลาอื่น") },
+      tr("邀请一位朋友，并练习接受、拒绝和改时间三种回答。", "Invite a friend and practise accepting, declining, and rescheduling.", "ชวนเพื่อนหนึ่งคนและฝึกตอบรับ ปฏิเสธ และเลื่อนเวลา")),
+
+    lesson("0007", 4,
+      tr("餐厅与服务：清楚表达需要", "Clear English for restaurants and service", "ภาษาอังกฤษชัดเจนในร้านอาหารและงานบริการ"),
+      tr("点餐、确认选择和提出简单要求", "Order, confirm choices, and make simple requests", "สั่งอาหาร ยืนยันตัวเลือก และขอสิ่งที่ต้องการ"), sharedTags.daily,
+      tr("礼貌请求用 Could I have…? 或 Could you…?，比单独说名词更清楚。", "Use Could I have…? or Could you…? instead of naming the item alone.", "ใช้ Could I have…? หรือ Could you…? แทนการพูดชื่อสิ่งของเพียงอย่างเดียว"),
+      [phrase("Could I have the menu, please?", "可以给我菜单吗？", "ขอเมนูหน่อยได้ไหม"), phrase("I would like this without sugar.", "我想要这个，不加糖。", "ฉันขออันนี้ไม่ใส่น้ำตาล"), phrase("Does this contain nuts?", "这个含坚果吗？", "เมนูนี้มีถั่วไหม"), phrase("Could we have separate bills?", "我们可以分开结账吗？", "แยกบิลได้ไหม"), phrase("Everything was very good, thank you.", "一切都很好，谢谢。", "ทุกอย่างดีมาก ขอบคุณ")],
+      { q: tr("哪一句是清楚礼貌的请求？", "Which is a clear polite request?", "ประโยคใดเป็นคำขอที่ชัดเจนและสุภาพ"), options: ["Water.", "Give water.", "Could I have some water, please?"], answer: 2, why: tr("完整请求让服务人员马上知道你需要什么。", "The full request makes your need immediately clear.", "คำขอสมบูรณ์ทำให้พนักงานเข้าใจทันที") },
+      tr("模拟点一份餐、问一个成分问题并结账。", "Role-play ordering one meal, asking about an ingredient, and paying.", "จำลองการสั่งอาหาร ถามส่วนผสมหนึ่งอย่าง และชำระเงิน")),
+
+    lesson("0008", 4,
+      tr("听不懂时：确认、重复与澄清", "Clarify when you do not understand", "ขอคำชี้แจงเมื่อไม่เข้าใจ"),
+      tr("不假装听懂，及时把意思确认正确", "Stop pretending and confirm the meaning accurately", "ไม่แกล้งทำเป็นเข้าใจ แต่ยืนยันความหมายให้ถูกต้อง"), sharedTags.daily,
+      tr("澄清不是英文差，而是专业沟通；先指出哪一部分不清楚。", "Clarifying is professional communication. Identify the exact part that is unclear.", "การขอคำชี้แจงเป็นการสื่อสารอย่างมืออาชีพ ให้ระบุส่วนที่ไม่ชัดเจน"),
+      [phrase("Could you say that again more slowly?", "你可以慢一点再说一次吗？", "ช่วยพูดอีกครั้งช้าลงได้ไหม"), phrase("What does that word mean?", "那个词是什么意思？", "คำนั้นหมายความว่าอะไร"), phrase("Do you mean we should start today?", "你的意思是我们今天应该开始吗？", "หมายถึงว่าเราควรเริ่มวันนี้ใช่ไหม"), phrase("Let me check that I understood correctly.", "让我确认我理解正确。", "ขอฉันตรวจสอบว่าเข้าใจถูกต้อง"), phrase("Could you give me an example?", "你可以给我一个例子吗？", "ยกตัวอย่างให้หน่อยได้ไหม")],
+      { q: tr("只听不懂一个词时怎么问？", "What should you ask when one word is unclear?", "ถ้าไม่เข้าใจคำเดียวควรถามอย่างไร"), options: ["Again.", "What does that word mean?", "Your English is difficult."], answer: 1, why: tr("它准确指出问题，对方容易帮助你。", "It identifies the exact problem and is easy to answer.", "ระบุปัญหาชัดเจน อีกฝ่ายช่วยได้ง่าย") },
+      tr("今天至少使用一次澄清句，不要用点头假装听懂。", "Use one clarification line today instead of pretending to understand.", "วันนี้ใช้ประโยคขอคำชี้แจงอย่างน้อยหนึ่งครั้ง แทนการพยักหน้าทั้งที่ไม่เข้าใจ")),
+
+    lesson("0009", 5,
+      tr("商务自我介绍：30 秒说清价值", "A clear 30-second business introduction", "แนะนำตัวทางธุรกิจให้ชัดใน 30 วินาที"),
+      tr("介绍你是谁、做什么、帮助谁以及下一步", "Explain who you are, what you do, who you help, and the next step", "บอกว่าคุณคือใคร ทำอะไร ช่วยใคร และขั้นต่อไปคืออะไร"), sharedTags.business,
+      tr("使用名字 + 角色 + 价值 + 问题四步结构，不要只报职位。", "Use name + role + value + question, not only a job title.", "ใช้ ชื่อ + บทบาท + คุณค่า + คำถาม ไม่ใช่บอกแค่ตำแหน่ง"),
+      [phrase("I am Lucas from JWC Academy.", "我是来自 JWC Academy 的 Lucas。", "ฉันคือลูคัสจาก JWC Academy"), phrase("I train coffee professionals and business teams.", "我培训咖啡专业人士和企业团队。", "ฉันฝึกอบรมผู้เชี่ยวชาญกาแฟและทีมธุรกิจ"), phrase("We help teams improve quality and consistency.", "我们帮助团队提升质量与稳定性。", "เราช่วยทีมพัฒนาคุณภาพและความสม่ำเสมอ"), phrase("Most of our programmes are practical and hands-on.", "我们的课程大多注重实践操作。", "หลักสูตรส่วนใหญ่เน้นการลงมือทำจริง"), phrase("What kind of training are you looking for?", "你正在寻找哪种培训？", "คุณกำลังมองหาการฝึกอบรมแบบไหน")],
+      { q: tr("商务介绍最后最好做什么？", "How should a business introduction usually end?", "ควรจบการแนะนำตัวทางธุรกิจอย่างไร"), options: ["Say your title again.", "Ask a relevant question.", "Stop without a next step."], answer: 1, why: tr("相关问题会把介绍变成真正的对话。", "A relevant question turns the introduction into a conversation.", "คำถามที่เกี่ยวข้องเปลี่ยนการแนะนำตัวให้เป็นบทสนทนา") },
+      tr("录一段 30 秒介绍：名字、工作、价值、一个问题。", "Record a 30-second introduction: name, work, value, and one question.", "อัดเสียงแนะนำตัว 30 วินาที: ชื่อ งาน คุณค่า และหนึ่งคำถาม")),
+
+    lesson("0010", 5,
+      tr("会议英文：更新进度与确认行动", "Give updates and confirm actions in meetings", "อัปเดตและยืนยันงานในการประชุม"),
+      tr("简短报告完成事项、问题和下一步", "Report what is done, the issue, and the next step", "รายงานสิ่งที่เสร็จ ปัญหา และขั้นต่อไปอย่างสั้นกระชับ"), sharedTags.business,
+      tr("使用 Done / Issue / Next 三段结构，避免漫无目的地讲背景。", "Use Done / Issue / Next so the update stays focused.", "ใช้โครงสร้าง Done / Issue / Next เพื่อให้อัปเดตตรงประเด็น"),
+      [phrase("We completed the first draft yesterday.", "我们昨天完成了初稿。", "เราเสร็จร่างแรกเมื่อวาน"), phrase("The main issue is the delivery date.", "主要问题是交付日期。", "ปัญหาหลักคือวันส่งมอบ"), phrase("We are waiting for the final price.", "我们正在等待最终价格。", "เรากำลังรอราคาสุดท้าย"), phrase("The next step is to confirm the schedule.", "下一步是确认日程。", "ขั้นต่อไปคือยืนยันตาราง"), phrase("Who will take responsibility for this?", "谁会负责这件事？", "ใครจะรับผิดชอบเรื่องนี้")],
+      { q: tr("最清楚的进度更新结构是？", "Which update structure is clearest?", "โครงสร้างอัปเดตใดชัดเจนที่สุด"), options: ["Long background only", "Done, issue, next step", "Several unrelated details"], answer: 1, why: tr("听的人能快速知道现况与行动。", "Listeners quickly understand the status and action.", "ผู้ฟังเข้าใจสถานะและการดำเนินการได้เร็ว") },
+      tr("用三句话给出今天的 Done / Issue / Next 更新。", "Give a three-sentence Done / Issue / Next update today.", "วันนี้อัปเดต Done / Issue / Next ด้วยสามประโยค")),
+
+    lesson("0011", 6,
+      tr("谈价格：数字、范围与交换条件", "Discuss price, ranges, and trade-offs", "คุยราคา ช่วงราคา และเงื่อนไขแลกเปลี่ยน"),
+      tr("清楚讨论预算，不冒犯也不含糊", "Discuss budgets clearly without sounding aggressive or vague", "คุยงบประมาณชัดเจนโดยไม่ก้าวร้าวหรือคลุมเครือ"), sharedTags.business,
+      tr("先确认范围，再谈价格；让步时说明你需要交换什么。", "Confirm the scope before the price. When conceding, state what you need in return.", "ยืนยันขอบเขตก่อนราคา และเมื่อยอมให้บอกสิ่งที่ต้องการแลกเปลี่ยน"),
+      [phrase("Our budget is between five and six thousand.", "我们的预算在五千到六千之间。", "งบประมาณของเราอยู่ระหว่างห้าถึงหกพัน"), phrase("Could you give us an estimated price?", "可以给我们一个估计价格吗？", "ขอราคาประมาณการได้ไหม"), phrase("What is included in that price?", "那个价格包括什么？", "ราคานั้นรวมอะไรบ้าง"), phrase("We can accept that if delivery is included.", "如果包括运送，我们可以接受。", "เรายอมรับได้ถ้ารวมการจัดส่ง"), phrase("Let us confirm the scope before we decide.", "决定前让我们先确认范围。", "มายืนยันขอบเขตก่อนตัดสินใจ")],
+      { q: tr("让步时最好的说法是？", "Which line makes a useful trade-off?", "ประโยคใดเป็นการแลกเปลี่ยนที่ชัดเจน"), options: ["Fine, anything.", "We can accept that if delivery is included.", "Your price is bad."], answer: 1, why: tr("它把让步与明确条件连接起来。", "It connects the concession to a clear condition.", "เชื่อมการยอมรับกับเงื่อนไขที่ชัดเจน") },
+      tr("模拟一次两分钟谈价：预算、包括内容、一个交换条件。", "Role-play a two-minute price discussion with a budget, inclusions, and one trade-off.", "จำลองการคุยราคาสองนาที โดยมีงบ สิ่งที่รวม และหนึ่งเงื่อนไขแลกเปลี่ยน")),
+
+    lesson("0012", 6,
+      tr("期限与责任：不再说得模糊", "Make deadlines and ownership clear", "กำหนดเส้นตายและผู้รับผิดชอบให้ชัด"),
+      tr("确认谁、做什么、什么时候完成", "Confirm who will do what and by when", "ยืนยันว่าใครทำอะไรและเสร็จเมื่อไร"), sharedTags.business,
+      tr("有效行动项必须同时有负责人、动作和期限。", "A useful action item needs an owner, an action, and a deadline.", "งานที่ชัดเจนต้องมีผู้รับผิดชอบ การกระทำ และกำหนดเวลา"),
+      [phrase("I will send the proposal by Friday.", "我会在星期五前发送提案。", "ฉันจะส่งข้อเสนอภายในวันศุกร์"), phrase("Maya will confirm the numbers tomorrow.", "Maya 明天会确认数字。", "มายาจะยืนยันตัวเลขพรุ่งนี้"), phrase("Could we move the deadline to Monday?", "我们可以把期限改到星期一吗？", "เลื่อนกำหนดส่งเป็นวันจันทร์ได้ไหม"), phrase("We need two more days to finish this properly.", "我们需要多两天才能妥善完成。", "เราต้องการอีกสองวันเพื่อทำให้เสร็จอย่างเหมาะสม"), phrase("Let me summarise the agreed actions.", "让我总结已同意的行动。", "ขอสรุปงานที่ตกลงกัน")],
+      { q: tr("哪个行动项最清楚？", "Which action item is clearest?", "งานใดชัดเจนที่สุด"), options: ["Someone will do it soon.", "Maya will send the invoice by 3 p.m. Friday.", "We should think about it."], answer: 1, why: tr("它包含负责人、动作和明确时间。", "It includes an owner, action, and exact time.", "มีผู้รับผิดชอบ การกระทำ และเวลาชัดเจน") },
+      tr("把今天三个待办事项说成“人 + 动作 + 时间”的英文句子。", "State three tasks today as person + action + time.", "พูดงานสามอย่างวันนี้เป็น คน + การกระทำ + เวลา")),
+
+    lesson("0013", 7,
+      tr("英文授课：给出清楚步骤", "Give clear instructions in English", "ให้คำแนะนำเป็นขั้นตอนภาษาอังกฤษ"),
+      tr("让学员听一次就知道先做什么、再做什么", "Help learners understand what to do first and next", "ช่วยให้ผู้เรียนรู้ว่าต้องทำอะไรก่อนและต่อไป"), sharedTags.teaching,
+      tr("每次只给一个动作，使用顺序词，并在下一步前检查理解。", "Give one action at a time, use sequence words, and check before moving on.", "ให้ทีละหนึ่งการกระทำ ใช้คำบอกลำดับ และตรวจความเข้าใจก่อนขั้นต่อไป"),
+      [phrase("First, weigh eighteen grams of coffee.", "首先，称十八克咖啡。", "ขั้นแรก ชั่งกาแฟสิบแปดกรัม"), phrase("Next, distribute the grounds evenly.", "接着，把咖啡粉分布均匀。", "ต่อไป เกลี่ยผงกาแฟให้สม่ำเสมอ"), phrase("Keep the tamper level.", "保持压粉器水平。", "รักษาแทมเปอร์ให้ได้ระดับ"), phrase("Now try it once by yourself.", "现在自己试一次。", "ตอนนี้ลองทำเองหนึ่งครั้ง"), phrase("Is everything clear so far?", "到这里都清楚吗？", "ถึงตรงนี้เข้าใจไหม")],
+      { q: tr("指令为什么要分步骤？", "Why should instructions be divided into steps?", "ทำไมคำแนะนำต้องแบ่งเป็นขั้นตอน"), options: ["To sound longer", "To reduce memory load and confusion", "To use more difficult words"], answer: 1, why: tr("一次一个动作更容易听懂和执行。", "One action at a time is easier to understand and perform.", "ทีละหนึ่งการกระทำเข้าใจและทำตามง่ายกว่า") },
+      tr("选择一个你熟悉的操作，用 first / next / finally 教给同伴。", "Teach a familiar process using first, next, and finally.", "สอนขั้นตอนที่คุ้นเคยโดยใช้ first, next และ finally")),
+
+    lesson("0014", 7,
+      tr("纠正学员：具体而不打击", "Correct a learner without discouraging them", "แก้ผู้เรียนโดยไม่ทำให้เสียกำลังใจ"),
+      tr("指出一个可改变的动作，再让学员马上重试", "Identify one changeable action and invite an immediate retry", "ชี้หนึ่งการกระทำที่แก้ได้ แล้วให้ลองใหม่ทันที"), sharedTags.teaching,
+      tr("反馈结构：肯定一个点 + 指出一个动作 + 立即重试。", "Use one positive point + one specific action + an immediate retry.", "ใช้ จุดที่ดีหนึ่งอย่าง + การกระทำเฉพาะหนึ่งจุด + ลองใหม่ทันที"),
+      [phrase("Your timing is much better.", "你的时间掌握好多了。", "จังหวะของคุณดีขึ้นมาก"), phrase("Try holding the jug a little lower.", "试着把奶缸放低一点。", "ลองถือเหยือกให้ต่ำลงนิดหนึ่ง"), phrase("Focus on keeping your wrist relaxed.", "专注让手腕放松。", "เน้นผ่อนคลายข้อมือ"), phrase("That is close. Try it once more.", "很接近了。再试一次。", "ใกล้แล้ว ลองอีกครั้ง"), phrase("What changed that time?", "这次有什么变化？", "ครั้งนี้อะไรเปลี่ยนไป")],
+      { q: tr("哪一个反馈最容易让人改进？", "Which feedback is easiest to act on?", "ข้อเสนอแนะใดนำไปปรับปรุงได้ง่ายที่สุด"), options: ["Wrong.", "Be better.", "Keep your wrist relaxed and try once more."], answer: 2, why: tr("它指出具体动作，也给了下一次机会。", "It names a specific action and gives an immediate next attempt.", "ระบุการกระทำชัดเจนและให้ลองใหม่ทันที") },
+      tr("今天只纠正同伴一个动作，并在纠正前说出一个做得好的地方。", "Correct only one action today and name one good point first.", "วันนี้แก้เพียงหนึ่งการกระทำ และบอกจุดที่ทำได้ดีก่อน")),
+
+    lesson("0015", 8,
+      tr("描述咖啡与产品：具体感官英文", "Describe coffee and products precisely", "อธิบายกาแฟและสินค้าอย่างแม่นยำ"),
+      tr("不用 good / nice，改用可理解的具体特点", "Replace good and nice with specific, understandable qualities", "แทน good/nice ด้วยลักษณะเฉพาะที่เข้าใจได้"), sharedTags.teaching,
+      tr("描述顺序：类别 + 两个特点 + 适合谁或什么用途。", "Describe category + two qualities + who or what it suits.", "อธิบาย ประเภท + สองลักษณะ + เหมาะกับใครหรืออะไร"),
+      [phrase("This coffee has a medium body and low acidity.", "这款咖啡醇厚度中等，酸度低。", "กาแฟนี้มีบอดี้ปานกลางและความเปรี้ยวต่ำ"), phrase("It tastes like chocolate and roasted nuts.", "它有巧克力和烤坚果的味道。", "รสชาติคล้ายช็อกโกแลตและถั่วคั่ว"), phrase("The finish is clean and slightly sweet.", "余韵干净，略带甜味。", "รสท้ายสะอาดและหวานเล็กน้อย"), phrase("It works well with milk.", "它很适合搭配牛奶。", "เข้ากันได้ดีกับนม"), phrase("I recommend it for customers who prefer a balanced cup.", "我推荐给喜欢均衡咖啡的顾客。", "แนะนำสำหรับลูกค้าที่ชอบกาแฟสมดุล")],
+      { q: tr("哪个描述最具体？", "Which description is most specific?", "คำอธิบายใดเฉพาะเจาะจงที่สุด"), options: ["It is nice.", "It is very good.", "It has a medium body and a chocolate finish."], answer: 2, why: tr("具体特点让听者能够想象和比较。", "Specific qualities help listeners imagine and compare it.", "ลักษณะเฉพาะช่วยให้ผู้ฟังจินตนาการและเปรียบเทียบได้") },
+      tr("选择一个产品，用类别、两个特点和适合对象介绍 45 秒。", "Describe one product for 45 seconds using category, two qualities, and best user.", "อธิบายสินค้าหนึ่งชิ้น 45 วินาที โดยใช้ประเภท สองลักษณะ และผู้ใช้ที่เหมาะสม")),
+
+    lesson("0016", 8,
+      tr("比较与推荐：帮助别人做决定", "Compare options and make a recommendation", "เปรียบเทียบและแนะนำเพื่อช่วยตัดสินใจ"),
+      tr("比较差异、说明取舍并给出有理由的建议", "Compare differences, explain trade-offs, and recommend with a reason", "เปรียบเทียบความต่าง อธิบายข้อแลกเปลี่ยน และแนะนำพร้อมเหตุผล"), sharedTags.business,
+      tr("使用 whereas / compared with / better for 说明差异，不说绝对的 better。", "Use whereas, compared with, and better for to explain differences instead of absolute better.", "ใช้ whereas, compared with และ better for เพื่ออธิบายความต่าง แทนการพูดว่า better แบบเด็ดขาด"),
+      [phrase("Option A is cheaper, whereas Option B is more flexible.", "方案 A 较便宜，而方案 B 更灵活。", "ตัวเลือก A ถูกกว่า ในขณะที่ตัวเลือก B ยืดหยุ่นกว่า"), phrase("This model is easier to maintain.", "这个型号比较容易维护。", "รุ่นนี้ดูแลรักษาง่ายกว่า"), phrase("The larger package offers better value.", "大包装更划算。", "แพ็กเกจใหญ่คุ้มค่ากว่า"), phrase("It depends on how often you will use it.", "这取决于你使用的频率。", "ขึ้นอยู่กับว่าคุณจะใช้บ่อยแค่ไหน"), phrase("I would recommend Option B for your team.", "我会向你的团队推荐方案 B。", "ฉันแนะนำตัวเลือก B สำหรับทีมของคุณ")],
+      { q: tr("好的推荐必须包含什么？", "What does a useful recommendation need?", "คำแนะนำที่ดีต้องมีอะไร"), options: ["Only a favourite", "A choice and a relevant reason", "The highest price"], answer: 1, why: tr("理由必须与对方的需要有关。", "The reason should connect to the other person's need.", "เหตุผลต้องเชื่อมโยงกับความต้องการของอีกฝ่าย") },
+      tr("比较你工作中的两个选择，并针对不同用户各推荐一个。", "Compare two work options and recommend one for each of two different users.", "เปรียบเทียบสองตัวเลือกในงาน และแนะนำให้ผู้ใช้สองแบบอย่างละหนึ่งตัวเลือก")),
+
+    lesson("0017", 9,
+      tr("表达感受与需要：不指责", "Express feelings and needs without blame", "บอกความรู้สึกและความต้องการโดยไม่ตำหนิ"),
+      tr("把冲突从“你怎么了”改成“我需要什么”", "Move conflict from what is wrong with you to what I need", "เปลี่ยนความขัดแย้งจากการโทษอีกฝ่ายเป็นการบอกความต้องการ"), sharedTags.relationship,
+      tr("使用 When… I feel… because… I need…，描述事件而不是攻击人格。", "Use When… I feel… because… I need… and describe the event, not the person's character.", "ใช้ When… I feel… because… I need… และพูดถึงเหตุการณ์ ไม่โจมตีตัวตน"),
+      [phrase("When plans change suddenly, I feel stressed.", "计划突然改变时，我会感到有压力。", "เมื่อแผนเปลี่ยนกะทันหัน ฉันรู้สึกเครียด"), phrase("I need a little more notice next time.", "下次我需要早一点知道。", "ครั้งหน้าฉันอยากให้บอกล่วงหน้ามากกว่านี้"), phrase("I am not angry. I am trying to understand.", "我不是生气，我只是想理解。", "ฉันไม่ได้โกรธ ฉันกำลังพยายามเข้าใจ"), phrase("Can you tell me how you see it?", "你可以告诉我你怎么看吗？", "บอกฉันได้ไหมว่าคุณมองเรื่องนี้อย่างไร"), phrase("Let us find a solution that works for both of us.", "让我们找一个双方都可以的解决办法。", "มาหาทางออกที่ใช้ได้สำหรับเราทั้งคู่")],
+      { q: tr("哪一句没有指责对方？", "Which line avoids blame?", "ประโยคใดไม่ตำหนิอีกฝ่าย"), options: ["You never care.", "When I do not hear from you, I feel worried.", "You always make problems."], answer: 1, why: tr("它描述具体情况和自己的感受。", "It describes a specific situation and the speaker's feeling.", "อธิบายสถานการณ์เฉพาะและความรู้สึกของผู้พูด") },
+      tr("把一句“你总是……”改成 When / I feel / I need 结构。", "Rewrite one you always statement with When / I feel / I need.", "เปลี่ยนประโยค “คุณมักจะ…” เป็นโครงสร้าง When / I feel / I need")),
+
+    lesson("0018", 9,
+      tr("不同意之后：修复对话", "Repair a conversation after disagreement", "ซ่อมแซมบทสนทนาหลังไม่เห็นด้วย"),
+      tr("降低情绪、确认对方意思并重新开始", "Lower the tension, confirm meaning, and restart", "ลดความตึงเครียด ยืนยันความหมาย และเริ่มใหม่"), sharedTags.relationship,
+      tr("修复句不是认输，而是先把关系恢复到可以解决问题的状态。", "A repair phrase is not surrender. It restores enough safety to solve the problem.", "ประโยคซ่อมแซมไม่ใช่การยอมแพ้ แต่ทำให้กลับมาคุยแก้ปัญหาได้"),
+      [phrase("I am sorry. That came out badly.", "对不起，我刚才说得不好。", "ขอโทษ เมื่อกี้ฉันพูดไม่ดี"), phrase("Let me say that again more clearly.", "让我重新说清楚一点。", "ขอพูดใหม่ให้ชัดเจนกว่าเดิม"), phrase("I understand why you felt that way.", "我理解你为什么有那种感受。", "ฉันเข้าใจว่าทำไมคุณถึงรู้สึกแบบนั้น"), phrase("We may be talking about different things.", "我们可能在说不同的事情。", "เราอาจกำลังพูดคนละเรื่อง"), phrase("Can we pause and continue in ten minutes?", "我们可以暂停，十分钟后继续吗？", "พักก่อนแล้วคุยต่ออีกสิบนาทีได้ไหม")],
+      { q: tr("情绪升高时最有帮助的是？", "What helps most when tension rises?", "อะไรช่วยได้มากที่สุดเมื่ออารมณ์สูงขึ้น"), options: ["Speak louder", "Pause and restate the meaning", "Repeat the accusation"], answer: 1, why: tr("暂停和重述能降低误解。", "A pause and restatement reduce misunderstanding.", "การพักและพูดใหม่ช่วยลดความเข้าใจผิด") },
+      tr("与同伴模拟一次误会，使用道歉、重述和确认三个步骤。", "Role-play a misunderstanding using apology, restatement, and confirmation.", "จำลองความเข้าใจผิดโดยใช้ ขอโทษ พูดใหม่ และยืนยัน")),
+
+    lesson("0019", 10,
+      tr("报告进展：现在完成时", "Report progress with the present perfect", "รายงานความคืบหน้าด้วย present perfect"),
+      tr("区分已经完成、明确过去时间和仍在进行", "Separate completed results, finished times, and ongoing work", "แยกผลที่เสร็จแล้ว เวลาอดีตชัดเจน และงานที่ยังดำเนินอยู่"), sharedTags.business,
+      tr("没有明确过去时间、结果影响现在时，用 have / has + 过去分词。", "Use have or has plus a past participle when no finished time is stated and the result matters now.", "ใช้ have/has + past participle เมื่อไม่ระบุเวลาอดีตที่จบและผลสำคัญต่อปัจจุบัน"),
+      [phrase("We have completed the first stage.", "我们已经完成第一阶段。", "เราเสร็จขั้นแรกแล้ว"), phrase("The client has approved the design.", "客户已经批准设计。", "ลูกค้าอนุมัติแบบแล้ว"), phrase("I sent the invoice yesterday.", "我昨天发送了发票。", "ฉันส่งใบแจ้งหนี้เมื่อวาน"), phrase("We have not received payment yet.", "我们还没收到付款。", "เรายังไม่ได้รับการชำระเงิน"), phrase("How much have we completed so far?", "到目前为止我们完成了多少？", "จนถึงตอนนี้เราเสร็จไปเท่าไรแล้ว")],
+      { q: tr("结果现在很重要，而且没说具体过去时间", "The result matters now and no finished time is given", "ผลสำคัญตอนนี้และไม่ได้ระบุเวลาอดีต"), options: ["We completed it yesterday.", "We have completed it.", "We complete it last week."], answer: 1, why: tr("现在完成时连接过去动作与现在结果。", "The present perfect connects the past action to the present result.", "present perfect เชื่อมการกระทำในอดีตกับผลในปัจจุบัน") },
+      tr("汇报三个项目状态：已完成、未完成、昨天完成各一句。", "Report three project states: completed, not yet completed, and completed yesterday.", "รายงานสถานะโครงการสามแบบ: เสร็จแล้ว ยังไม่เสร็จ และเสร็จเมื่อวาน")),
+
+    lesson("0020", 10,
+      tr("条件与选择：if / will / would", "Discuss conditions and options", "คุยเงื่อนไขและตัวเลือกด้วย if / will / would"),
+      tr("说清真实条件、可能结果和假设方案", "Explain real conditions, likely results, and hypothetical options", "อธิบายเงื่อนไขจริง ผลที่เป็นไปได้ และตัวเลือกสมมติ"), sharedTags.business,
+      tr("真实可能：if + 现在时，will；假设方案：if + 过去式，would。", "Real possibility: if + present, will. Hypothetical: if + past, would.", "ความเป็นไปได้จริง: if + present, will; สมมติ: if + past, would"),
+      [phrase("If you confirm today, we will start Monday.", "如果你今天确认，我们星期一开始。", "ถ้าคุณยืนยันวันนี้ เราจะเริ่มวันจันทร์"), phrase("If the price changes, I will let you know.", "如果价格改变，我会告诉你。", "ถ้าราคาเปลี่ยน ฉันจะแจ้งให้ทราบ"), phrase("If we had more time, we would test another option.", "如果我们有更多时间，会测试另一个选择。", "ถ้ามีเวลามากกว่านี้ เราจะทดสอบอีกตัวเลือก"), phrase("What would you do in this situation?", "这种情况下你会怎么做？", "คุณจะทำอย่างไรในสถานการณ์นี้"), phrase("We could reduce the cost if we changed the format.", "如果改变形式，我们可以降低成本。", "เราลดต้นทุนได้ถ้าเปลี่ยนรูปแบบ")],
+      { q: tr("哪个真实未来条件正确？", "Which real future condition is correct?", "เงื่อนไขอนาคตจริงข้อใดถูกต้อง"), options: ["If you will confirm, we start.", "If you confirm, we will start.", "If you confirmed, we will started."], answer: 1, why: tr("if 从句用现在时，结果句用 will。", "Use present in the if-clause and will in the result.", "ใช้ present ใน if-clause และ will ในผลลัพธ์") },
+      tr("为工作中的一个真实选择说两个 if 结果，再说一个假设方案。", "Give two real if-results and one hypothetical option for a work decision.", "พูดผลลัพธ์ if จริงสองข้อและทางเลือกสมมติหนึ่งข้อสำหรับการตัดสินใจในงาน")),
+
+    lesson("0021", 11,
+      tr("讲故事有逻辑：连接词与重点", "Tell a clear story with links and focus", "เล่าเรื่องชัดเจนด้วยคำเชื่อมและประเด็นสำคัญ"),
+      tr("让听者跟得上背景、转折、结果和收获", "Guide listeners through context, change, result, and lesson", "พาผู้ฟังตามทันบริบท จุดเปลี่ยน ผลลัพธ์ และบทเรียน"), sharedTags.fluency,
+      tr("使用 Situation / Change / Result / Lesson 四段，不需要讲所有细节。", "Use Situation / Change / Result / Lesson. You do not need every detail.", "ใช้ Situation / Change / Result / Lesson ไม่จำเป็นต้องเล่าทุกรายละเอียด"),
+      [phrase("At first, everything was going well.", "一开始，一切都很顺利。", "ตอนแรกทุกอย่างเป็นไปด้วยดี"), phrase("However, the delivery arrived late.", "但是，货物迟到了。", "อย่างไรก็ตาม การจัดส่งมาช้า"), phrase("Because of that, we changed the schedule.", "因此，我们改变了日程。", "เพราะเหตุนี้ เราจึงเปลี่ยนตาราง"), phrase("In the end, the client was satisfied.", "最后，客户很满意。", "ท้ายที่สุด ลูกค้าพอใจ"), phrase("The main lesson was to confirm earlier.", "主要收获是要更早确认。", "บทเรียนหลักคือต้องยืนยันให้เร็วขึ้น")],
+      { q: tr("故事里 however 的作用是什么？", "What does however do in a story?", "however ทำหน้าที่อะไรในเรื่อง"), options: ["Adds the same idea", "Introduces a contrast or change", "Ends every story"], answer: 1, why: tr("它告诉听者方向发生了变化。", "It signals that the direction is changing.", "บอกผู้ฟังว่าทิศทางกำลังเปลี่ยน") },
+      tr("用 Situation / Change / Result / Lesson 讲一个 60 秒真实故事。", "Tell a 60-second real story using Situation / Change / Result / Lesson.", "เล่าเรื่องจริง 60 วินาทีด้วย Situation / Change / Result / Lesson")),
+
+    lesson("0022", 11,
+      tr("不卡住：赢得思考时间", "Keep speaking while you think", "พูดต่อได้ระหว่างคิด"),
+      tr("用自然的缓冲句代替沉默或切回母语", "Replace silence or switching languages with natural thinking phrases", "แทนความเงียบหรือการเปลี่ยนภาษา ด้วยวลีช่วยคิดที่เป็นธรรมชาติ"), sharedTags.fluency,
+      tr("流畅不是永不暂停，而是能管理暂停并让听者知道你还没说完。", "Fluency is not zero pauses. It is managing pauses so listeners know you are continuing.", "ความคล่องไม่ใช่ไม่หยุดเลย แต่คือจัดการช่วงหยุดให้ผู้ฟังรู้ว่ายังพูดต่อ"),
+      [phrase("Let me think for a moment.", "让我想一下。", "ขอคิดสักครู่"), phrase("How can I explain this clearly?", "我要怎样清楚解释呢？", "จะอธิบายให้ชัดเจนอย่างไรดี"), phrase("What I mean is…", "我的意思是……", "สิ่งที่ฉันหมายถึงคือ…"), phrase("Let me put it another way.", "让我换一种说法。", "ขอพูดอีกแบบหนึ่ง"), phrase("The main point is…", "重点是……", "ประเด็นหลักคือ…")],
+      { q: tr("忘记一个词时最好的做法？", "What should you do when you forget a word?", "ควรทำอย่างไรเมื่อลืมคำหนึ่งคำ"), options: ["Stop completely", "Use a thinking phrase and explain around the word", "Immediately change language"], answer: 1, why: tr("你可以保持话轮，也让对方继续理解。", "You keep your turn and help the listener follow.", "ยังรักษาจังหวะพูดและช่วยให้ผู้ฟังตามได้") },
+      tr("连续说两分钟；忘词时必须用一个缓冲句继续，不切换语言。", "Speak for two minutes and use a thinking phrase whenever you get stuck.", "พูดต่อเนื่องสองนาที และใช้วลีช่วยคิดทุกครั้งที่ติดขัด")),
+
+    lesson("0023", 12,
+      tr("综合模拟：商务、教学与社交", "Full simulations for business, teaching, and social English", "สถานการณ์จำลองธุรกิจ การสอน และสังคม"),
+      tr("把前 22 课放进三段真实角色扮演", "Combine the first 22 lessons in three realistic role-plays", "รวม 22 บทแรกในบทบาทสมมติสามสถานการณ์"), sharedTags.fluency,
+      tr("每段模拟先设定目标，结束后只复盘一个最重要的改进点。", "Set one goal for each role-play and review only the most important improvement afterward.", "ตั้งหนึ่งเป้าหมายต่อสถานการณ์ และทบทวนเพียงจุดสำคัญที่สุดหลังจบ"),
+      [phrase("Let me make sure I understand your goal.", "让我确认我理解你的目标。", "ขอยืนยันว่าฉันเข้าใจเป้าหมายของคุณ"), phrase("Here are the two options I recommend.", "这是我推荐的两个选择。", "นี่คือสองตัวเลือกที่ฉันแนะนำ"), phrase("Let me show you the first step.", "让我示范第一步。", "ขอแสดงขั้นตอนแรก"), phrase("Could you try that once more?", "你可以再试一次吗？", "ลองอีกครั้งได้ไหม"), phrase("Before we finish, let us confirm the next step.", "结束前，让我们确认下一步。", "ก่อนจบ มายืนยันขั้นต่อไปกัน")],
+      { q: tr("角色扮演后应该纠正多少重点？", "How many priorities should you correct after one role-play?", "หลังบทบาทสมมติหนึ่งครั้งควรแก้กี่ประเด็นหลัก"), options: ["Every mistake", "One important improvement", "Nothing"], answer: 1, why: tr("一次一个重点更容易记住并在下一轮改变。", "One priority is easier to remember and change in the next round.", "หนึ่งประเด็นจำง่ายและปรับได้ในรอบต่อไป") },
+      tr("完成三段各三分钟模拟：客户会议、教一个动作、朋友安排聚会。", "Complete three three-minute simulations: a client meeting, teaching a skill, and planning with a friend.", "ทำสถานการณ์จำลองสามแบบ แบบละสามนาที: ประชุมลูกค้า สอนทักษะ และนัดกับเพื่อน")),
+
+    lesson("0024", 12,
+      tr("最终挑战：证明你真的会用", "Final challenge: prove you can use it", "ภารกิจสุดท้าย: พิสูจน์ว่าใช้ได้จริง"),
+      tr("完成三分钟表达、现场问答和真实行动计划", "Deliver a three-minute talk, answer live questions, and make a real action plan", "พูดสามนาที ตอบคำถามสด และวางแผนใช้จริง"), sharedTags.fluency,
+      tr("最终目标不是零错误，而是意思清楚、能继续、能修正并完成沟通目的。", "The final goal is not zero errors. It is clear meaning, continuation, repair, and a completed purpose.", "เป้าหมายสุดท้ายไม่ใช่ไม่มีข้อผิดพลาด แต่คือสื่อสารชัด พูดต่อ แก้ไข และบรรลุเป้าหมาย"),
+      [phrase("Today I would like to explain what I have learned.", "今天我想说明我学到了什么。", "วันนี้ฉันอยากอธิบายสิ่งที่ได้เรียนรู้"), phrase("The biggest change is that I can speak more clearly.", "最大的变化是我可以说得更清楚。", "การเปลี่ยนแปลงใหญ่ที่สุดคือฉันพูดได้ชัดขึ้น"), phrase("I still need to improve my accuracy.", "我仍然需要提升准确度。", "ฉันยังต้องพัฒนาความแม่นยำ"), phrase("When I get stuck, I now know how to continue.", "卡住时，我现在知道怎样继续。", "เมื่อติดขัด ตอนนี้ฉันรู้วิธีพูดต่อ"), phrase("My next goal is to use English every day.", "我的下一个目标是每天使用英文。", "เป้าหมายต่อไปคือใช้ภาษาอังกฤษทุกวัน")],
+      { q: tr("怎样才算完成这套课程？", "What counts as completing this course?", "อะไรถือว่าเรียนหลักสูตรนี้สำเร็จ"), options: ["Memorising every line", "Using clear English to complete real conversations", "Never making a mistake"], answer: 1, why: tr("课程目标是可以真实沟通，而不是完美背诵。", "The goal is real communication, not perfect memorisation.", "เป้าหมายคือการสื่อสารจริง ไม่ใช่ท่องจำอย่างสมบูรณ์") },
+      tr("录制三分钟最终视频，与第一周录音对比，并写下未来 30 天计划。", "Record a three-minute final video, compare it with week one, and write a 30-day plan.", "อัดวิดีโอสุดท้ายสามนาที เปรียบเทียบกับสัปดาห์แรก และเขียนแผน 30 วัน"))
+  ];
+})();
