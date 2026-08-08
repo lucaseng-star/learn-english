@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="assets/style.css?v=9a2ce3c">
 <script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
 <script src="assets/vocab.js?v=asia2" defer></script>
-<script src="assets/app.js?v=asia2" defer></script>
+<script src="assets/app.js?v=grammar1" defer></script>
 </head>
 <body>
 
@@ -205,7 +205,8 @@
       var gloss = document.createElement("div");
       gloss.className = "gloss";
       var l = Store.lang();
-      gloss.textContent = l === "th" ? it.th : (l === "en" ? it.def : it.zh);
+      gloss.textContent = l === "th" ? "คำแปลไทย: " + it.th :
+        (l === "en" ? "Meaning: " + it.def : "中文：" + it.zh);
       if (l === "th") gloss.setAttribute("lang", "th");
       if (l === "en") gloss.setAttribute("lang", "en");
       d.appendChild(gloss);
