@@ -51,6 +51,7 @@
   var NAV = [
     { f: "index.html",      zh: "今天", en: "Today",    th: "วันนี้" },
     { f: "plan.html",       zh: "学习", en: "Learn",    th: "เรียน" },
+    { f: "grammar.html",    zh: "语法", en: "Grammar",  th: "ไวยากรณ์" },
     { f: "vocab.html",      zh: "练习", en: "Practice", th: "ฝึก" },
     { f: "exam.html",       zh: "测验", en: "Check",    th: "ทดสอบ" },
     { f: "classmates.html", zh: "进度", en: "Progress", th: "ความคืบหน้า" }
