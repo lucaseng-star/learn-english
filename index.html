@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101828">
 <title>英文口语训练 / Speaking practice / ฝึกพูดอังกฤษ</title>
-<link rel="stylesheet" href="assets/style.css?v=grammar1">
+<link rel="stylesheet" href="assets/style.css?v=course24">
 <script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
-<script src="assets/course.js" defer></script>
-<script src="assets/app.js?v=grammar1" defer></script>
+<script src="assets/course.js?v=course24" defer></script>
+<script src="assets/app.js?v=course24" defer></script>
 </head>
 <body class="home">
 
@@ -25,7 +25,7 @@
       <span class="t-en" lang="en">5–10 minute speaking sessions for real conversations—business, teaching, friends and relationships.</span>
       <span class="t-th" lang="th">ฝึกพูด 5–10 นาทีสำหรับบทสนทนาจริง ทั้งธุรกิจ การสอน เพื่อน และความสัมพันธ์</span>
     </p>
-    <a class="primary-link" href="lessons/0001-softening.html">
+    <a class="primary-link" id="continueToday" href="lessons/0001-softening.html">
       <span class="t-zh">继续今天的训练 <span aria-hidden="true">→</span></span>
       <span class="t-en" lang="en">Continue today’s practice <span aria-hidden="true">→</span></span>
       <span class="t-th" lang="th">ฝึกต่อวันนี้ <span aria-hidden="true">→</span></span>
@@ -46,8 +46,8 @@
 </section>
 
 <div class="section-heading">
-  <div><p class="eyebrow">Today</p><h2><span class="t-zh">今天只做这一课</span><span class="t-en" lang="en">Your next lesson</span><span class="t-th" lang="th">บทเรียนถัดไปของคุณ</span></h2></div>
-  <p><span class="t-zh">先完成，再探索其他功能。</span><span class="t-en" lang="en">Finish one focused session before exploring.</span><span class="t-th" lang="th">เรียนให้จบหนึ่งบทก่อนสำรวจส่วนอื่น</span></p>
+  <div><p class="eyebrow">Today</p><h2><span class="t-zh">你的下一课</span><span class="t-en" lang="en">Your next lesson</span><span class="t-th" lang="th">บทเรียนถัดไปของคุณ</span></h2></div>
+  <p><a href="course.html"><span class="t-zh">查看完整 24 课 →</span><span class="t-en" lang="en">View all 24 lessons →</span><span class="t-th" lang="th">ดูทั้งหมด 24 บท →</span></a></p>
 </div>
 <div id="lessons"></div>
 
@@ -61,6 +61,7 @@
     <h3><span class="t-zh">系统学习</span><span class="t-en" lang="en">Learn with a plan</span><span class="t-th" lang="th">เรียนตามแผน</span></h3>
     <p><span class="t-zh">先学基础与进阶语法，再按 12 周路线练成口语。</span><span class="t-en" lang="en">Build basic and advanced grammar, then turn it into speech with the 12-week roadmap.</span><span class="t-th" lang="th">เรียนไวยากรณ์พื้นฐานและขั้นสูง แล้วฝึกให้พูดได้ตามแผน 12 สัปดาห์</span></p>
     <div class="function-actions">
+      <a class="function-link" href="course.html"><span class="t-zh">完整 24 课</span><span class="t-en" lang="en">Full 24-lesson course</span><span class="t-th" lang="th">หลักสูตรครบ 24 บท</span><span aria-hidden="true">→</span></a>
       <a class="function-link" href="grammar.html"><span class="t-zh">基础 + 进阶语法</span><span class="t-en" lang="en">Basic + advanced grammar</span><span class="t-th" lang="th">ไวยากรณ์พื้นฐาน + ขั้นสูง</span><span aria-hidden="true">→</span></a>
       <a class="function-link" href="plan.html"><span class="t-zh">打开学习路线</span><span class="t-en" lang="en">Open roadmap</span><span class="t-th" lang="th">เปิดแผนการเรียน</span><span aria-hidden="true">→</span></a>
     </div>
@@ -152,6 +153,8 @@
     document.getElementById("statLessons").textContent = doneLessons + " / " + (window.COURSE || []).length;
     document.getElementById("statConversations").textContent = (data.log || []).length;
     document.getElementById("statLevel").textContent = Store.levelName();
+    var next = (window.COURSE || []).filter(function (l) { return !data.done[l.id]; })[0] || (window.COURSE || [])[0];
+    if (next) document.getElementById("continueToday").href = next.file;
   }
 
   document.getElementById("saveWho").addEventListener("click", function () {
@@ -171,7 +174,9 @@
     var wrap = document.getElementById("lessons");
     wrap.textContent = "";
     var data = Store.load();
-    (window.COURSE || []).forEach(function (l) {
+    var allLessons = window.COURSE || [];
+    var nextLesson = allLessons.filter(function (l) { return !data.done[l.id]; })[0] || allLessons[allLessons.length - 1];
+    (nextLesson ? [nextLesson] : []).forEach(function (l) {
       var row = document.createElement("div");
       row.className = "row";
 
