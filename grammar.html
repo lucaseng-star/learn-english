@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101828">
+<title>语法学习 / Grammar path / เรียนไวยากรณ์</title>
+<link rel="stylesheet" href="assets/style.css?v=grammar1">
+<script>try{document.documentElement.dataset.lang=localStorage.getItem("eng:lang")||"zh"}catch(e){}</script>
+<script src="assets/grammar.js?v=grammar1" defer></script>
+<script src="assets/app.js?v=grammar1" defer></script>
+</head>
+<body>
+
+<p class="kicker">Grammar Path</p>
+<h1><span class="t-zh">语法不是考试。<br>是把话说清楚。</span><span class="t-en" lang="en">Grammar is not a test.<br>It makes your meaning clear.</span><span class="t-th" lang="th">ไวยากรณ์ไม่ใช่ข้อสอบ<br>แต่ช่วยให้สื่อสารชัดเจน</span></h1>
+<p class="lede"><span class="t-zh">给马来西亚与泰国学生的国际英语语法课。每次学一个规则、说一个例句、完成一个小测验。</span><span class="t-en" lang="en">An International English grammar path for learners from Malaysia and Thailand. Learn one rule, say one example, and complete one quick check.</span><span class="t-th" lang="th">เส้นทางไวยากรณ์ภาษาอังกฤษสากลสำหรับผู้เรียนมาเลเซียและไทย เรียนทีละกฎ พูดหนึ่งตัวอย่าง แล้วทำแบบทดสอบสั้น ๆ</span></p>
+
+<section class="teacher-method" aria-labelledby="teacherTitle">
+  <div class="teacher-badge" aria-hidden="true">T</div>
+  <div>
+    <p class="eyebrow">Your English teacher</p>
+    <h2 id="teacherTitle"><span class="t-zh">我会怎样教你们两个人</span><span class="t-en" lang="en">How I will teach both of you</span><span class="t-th" lang="th">ฉันจะสอนคุณทั้งสองคนอย่างไร</span></h2>
+    <div class="method-steps">
+      <div><b>1</b><span><strong><span class="t-zh">同一个英文目标</span><span class="t-en" lang="en">One shared English goal</span><span class="t-th" lang="th">เป้าหมายภาษาอังกฤษเดียวกัน</span></strong><small><span class="t-zh">学习亚洲朋友都容易听懂的清楚英文。</span><span class="t-en" lang="en">Clear English that works across Asia.</span><span class="t-th" lang="th">ภาษาอังกฤษชัดเจนที่ใช้ได้ทั่วเอเชีย</span></small></span></div>
+      <div><b>2</b><span><strong><span class="t-zh">不同母语解释</span><span class="t-en" lang="en">Different first-language coaching</span><span class="t-th" lang="th">อธิบายตามภาษาแม่</span></strong><small><span class="t-zh">中文解释给马来西亚学生，泰文解释给泰国学生。</span><span class="t-en" lang="en">Chinese support for the Malaysian learner; Thai support for the Thai learner.</span><span class="t-th" lang="th">อธิบายภาษาจีนสำหรับผู้เรียนมาเลเซีย และภาษาไทยสำหรับผู้เรียนไทย</span></small></span></div>
+      <div><b>3</b><span><strong><span class="t-zh">互相教一次</span><span class="t-en" lang="en">Teach it to each other</span><span class="t-th" lang="th">สอนกันอีกหนึ่งรอบ</span></strong><small><span class="t-zh">一人造句，另一人听意思并纠正一个重点。</span><span class="t-en" lang="en">One makes a sentence; the other checks the meaning and one grammar point.</span><span class="t-th" lang="th">คนหนึ่งแต่งประโยค อีกคนตรวจความหมายและไวยากรณ์หนึ่งจุด</span></small></span></div>
+      <div><b>4</b><span><strong><span class="t-zh">当天真实使用</span><span class="t-en" lang="en">Use it the same day</span><span class="t-th" lang="th">ใช้จริงภายในวันเดียวกัน</span></strong><small><span class="t-zh">语法只有说出去，才会变成能力。</span><span class="t-en" lang="en">Grammar becomes a skill only when you use it.</span><span class="t-th" lang="th">ไวยากรณ์จะกลายเป็นทักษะเมื่อได้นำไปใช้จริง</span></small></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-heading"><div><p class="eyebrow">12 mini lessons</p><h2><span class="t-zh">选择学习阶段</span><span class="t-en" lang="en">Choose your stage</span><span class="t-th" lang="th">เลือกระดับการเรียน</span></h2></div><p id="grammarProgress" aria-live="polite"></p></div>
+<div class="grammar-tabs" role="tablist" aria-label="Grammar level">
+  <button type="button" role="tab" data-grammar-level="basic" aria-selected="true"><span class="t-zh">① 基础语法</span><span class="t-en" lang="en">① Basic grammar</span><span class="t-th" lang="th">① ไวยากรณ์พื้นฐาน</span></button>
+  <button type="button" role="tab" data-grammar-level="advanced" aria-selected="false"><span class="t-zh">② 进阶语法</span><span class="t-en" lang="en">② Advanced grammar</span><span class="t-th" lang="th">② ไวยากรณ์ขั้นสูง</span></button>
+</div>
+<div id="grammarList" class="grammar-grid" role="tabpanel"></div>
+
+<div class="section-heading"><div><p class="eyebrow">Quick check</p><h2><span class="t-zh">马上检查是否学会</span><span class="t-en" lang="en">Check what you understood</span><span class="t-th" lang="th">ตรวจว่าคุณเข้าใจแล้วหรือยัง</span></h2></div><p><span class="t-zh">答完立刻显示正确答案。</span><span class="t-en" lang="en">Get the answer immediately.</span><span class="t-th" lang="th">เห็นคำตอบทันทีหลังเลือก</span></p></div>
+<div id="grammarQuiz"></div>
+
+<div class="ask"><span class="t-zh"><strong>两人练习：</strong>马来西亚学生用今天的规则说一句工作英文，泰国学生用自己的话复述意思；然后交换。每次只纠正一个错误。</span><span class="t-en" lang="en"><strong>Partner practice:</strong> the Malaysian learner says one work sentence using today’s rule; the Thai learner explains the meaning in their own words. Then switch. Correct only one error each time.</span><span class="t-th" lang="th"><strong>แบบฝึกคู่:</strong> ผู้เรียนมาเลเซียพูดประโยคเกี่ยวกับงานโดยใช้กฎวันนี้ ผู้เรียนไทยอธิบายความหมายด้วยคำของตัวเอง แล้วสลับกัน แก้เพียงหนึ่งจุดต่อครั้ง</span></div>
+
+<p class="nav"><a href="index.html"><span class="t-zh">← 首页</span><span class="t-en" lang="en">← Home</span><span class="t-th" lang="th">← หน้าแรก</span></a><a href="vocab.html"><span class="t-zh">场景词库 →</span><span class="t-en" lang="en">Phrase library →</span><span class="t-th" lang="th">คลังวลี →</span></a></p>
+
+<script>
+(function () {
+  var current = "basic";
+  var activeSpeech = null;
+  function L(o) { var l = Store.lang(); return o[l] || o.en || o.zh; }
+  function T(zh, en, th) { return Store.T(zh, en, th); }
+  function progressKey() { return "eng:grammar:" + (Store.who() || "guest"); }
+  function loadProgress() { try { return JSON.parse(localStorage.getItem(progressKey()) || "{}"); } catch (e) { return {}; } }
+  function saveProgress(p) { try { localStorage.setItem(progressKey(), JSON.stringify(p)); } catch (e) {} }
+  function speak(text, button) {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    if (activeSpeech === button && button.classList.contains("speaking")) { button.classList.remove("speaking"); activeSpeech = null; return; }
+    document.querySelectorAll(".speak-btn.speaking").forEach(function (b) { b.classList.remove("speaking"); });
+    var u = new SpeechSynthesisUtterance(text); u.lang = "en-GB"; u.rate = .82;
+    activeSpeech = button; button.classList.add("speaking");
+    u.onend = u.onerror = function () { button.classList.remove("speaking"); activeSpeech = null; };
+    window.speechSynthesis.speak(u);
+  }
+  function renderProgress() {
+    var p = loadProgress(), done = GRAMMAR.filter(function (g) { return p[g.id]; }).length;
+    document.getElementById("grammarProgress").textContent = T("已完成 " + done + " / 12", done + " / 12 completed", "เรียนจบ " + done + " / 12");
+  }
+  function renderLessons() {
+    var wrap = document.getElementById("grammarList"), p = loadProgress(); wrap.textContent = "";
+    GRAMMAR.filter(function (g) { return g.level === current; }).forEach(function (g, i) {
+      var card = document.createElement("article"); card.className = "grammar-card";
+      var head = document.createElement("div"); head.className = "grammar-head";
+      head.innerHTML = '<span class="grammar-icon" aria-hidden="true">' + g.icon + '</span><div><small>' + T("第 ", "Lesson ", "บทที่ ") + (i + 1) + '</small><h3>' + L(g.title) + '</h3></div>';
+      var rule = document.createElement("p"); rule.className = "grammar-rule"; rule.textContent = L(g.rule);
+      var formula = document.createElement("div"); formula.className = "grammar-formula"; formula.lang = "en"; formula.textContent = g.formula;
+      var ex = document.createElement("div"); ex.className = "grammar-example";
+      var phrase = document.createElement("strong"); phrase.lang = "en"; phrase.textContent = g.example;
+      var listen = document.createElement("button"); listen.type = "button"; listen.className = "speak-btn"; listen.innerHTML = "🔊 " + T("发音", "Listen", "ฟังเสียง"); listen.addEventListener("click", function () { speak(g.example, listen); });
+      var meaning = document.createElement("span"); meaning.textContent = T("中文：", "Meaning: ", "คำแปลไทย: ") + L(g.meaning);
+      ex.appendChild(phrase); ex.appendChild(listen); ex.appendChild(meaning);
+      var coach = document.createElement("div"); coach.className = "learner-coach";
+      if (Store.lang() === "th") coach.innerHTML = '<b>🇹🇭 ' + T("泰国学生提醒", "Thai learner note", "ข้อควรจำสำหรับผู้เรียนไทย") + '</b><p>' + L(g.thai) + '</p>';
+      else if (Store.lang() === "en") coach.innerHTML = '<b>🇲🇾 Malaysia</b><p>' + g.my.en + '</p><b>🇹🇭 Thailand</b><p>' + g.thai.en + '</p>';
+      else coach.innerHTML = '<b>🇲🇾 ' + T("马来西亚学生提醒", "Malaysian learner note", "ข้อควรจำสำหรับผู้เรียนมาเลเซีย") + '</b><p>' + L(g.my) + '</p>';
+      var done = document.createElement("label"); done.className = "grammar-done";
+      var check = document.createElement("input"); check.type = "checkbox"; check.checked = !!p[g.id];
+      var labelText = document.createElement("span"); labelText.textContent = T("这课我学会了", "I understand this lesson", "ฉันเข้าใจบทนี้แล้ว");
+      check.addEventListener("change", function () { var next = loadProgress(); if (check.checked) next[g.id] = true; else delete next[g.id]; saveProgress(next); renderProgress(); });
+      done.appendChild(check); done.appendChild(labelText);
+      card.appendChild(head); card.appendChild(rule); card.appendChild(formula); card.appendChild(ex); card.appendChild(coach); card.appendChild(done); wrap.appendChild(card);
+    });
+    Store.protectEnglish(); renderProgress();
+  }
+  function renderQuiz() {
+    var wrap = document.getElementById("grammarQuiz"); wrap.textContent = "";
+    GRAMMAR_QUIZ.filter(function (q) { return q.level === current; }).forEach(function (q, n) {
+      var box = document.createElement("div"); box.className = "quiz";
+      var title = document.createElement("div"); title.className = "q"; title.textContent = (n + 1) + ". " + L(q.q); box.appendChild(title);
+      q.options.forEach(function (op, i) { var b = document.createElement("button"); b.type = "button"; b.className = "opt"; b.lang = "en"; b.textContent = op; b.addEventListener("click", function () { box.querySelectorAll("button.opt").forEach(function (x, j) { x.disabled = true; if (j === q.answer) x.classList.add("right"); }); if (i !== q.answer) b.classList.add("wrong"); }); box.appendChild(b); });
+      wrap.appendChild(box);
+    }); Store.protectEnglish();
+  }
+  function paintTabs() { document.querySelectorAll("[data-grammar-level]").forEach(function (b) { b.setAttribute("aria-selected", b.dataset.grammarLevel === current ? "true" : "false"); }); }
+  document.addEventListener("DOMContentLoaded", function () { document.querySelectorAll("[data-grammar-level]").forEach(function (b) { b.addEventListener("click", function () { current = b.dataset.grammarLevel; paintTabs(); renderLessons(); renderQuiz(); }); }); paintTabs(); renderLessons(); renderQuiz(); });
+  document.addEventListener("langchange", function () { renderLessons(); renderQuiz(); });
+})();
+</script>
+</body>
+</html>
