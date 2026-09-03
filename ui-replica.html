@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#171a1f">
+<title>Inbox UI 复刻 · Design replication</title>
+<link rel="stylesheet" href="assets/ui-replica.css?v=1">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs>
+
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/></symbol>
+<symbol id="i-chat-solid" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.8h2.1l1.7 4.1-2 1.4a11.4 11.4 0 0 0 5.2 5.2l1.4-2 4.1 1.7v2.1a2.4 2.4 0 0 1-2.6 2.4A14.3 14.3 0 0 1 3.9 6.4a2.4 2.4 0 0 1 2.4-2.6Z"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 3.4v2.3M7.6 5.7h8.8a2.4 2.4 0 0 1 2.4 2.4v6.5a2.4 2.4 0 0 1-2.4 2.4H7.6a2.4 2.4 0 0 1-2.4-2.4V8.1a2.4 2.4 0 0 1 2.4-2.4ZM8.4 20.6h7.2M4.2 10.6H3M21 10.6h-1.2"/><circle cx="9.6" cy="11.2" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="11.2" r="1.15" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4.2 9.8h3l7.6-3.9v12.2l-7.6-3.9h-3a1.4 1.4 0 0 1-1.4-1.4v-1.6a1.4 1.4 0 0 1 1.4-1.4ZM7.2 14.2v4.1a1.4 1.4 0 0 0 1.4 1.4h.9a1.4 1.4 0 0 0 1.4-1.4v-2.6M18.4 9.1a4 4 0 0 1 0 5.8"/></symbol>
+<symbol id="i-contacts" viewBox="0 0 24 24"><circle cx="10.4" cy="9.2" r="3.3"/><path d="M4.6 19.4c0-2.8 2.6-4.7 5.8-4.7s5.8 1.9 5.8 4.7M17.6 8.6h3.2M17.6 12.2h3.2"/></symbol>
+<symbol id="i-team" viewBox="0 0 24 24"><circle cx="9.2" cy="7.6" r="3.4"/><path d="M2.6 19.6v-1.4a4.2 4.2 0 0 1 4.2-4.2h4.8a4.2 4.2 0 0 1 4.2 4.2v1.4M16.6 4.4a3.5 3.5 0 0 1 0 6.6M18.2 14.3a4.2 4.2 0 0 1 3.2 4v1.3"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.4 19.4h15.2M7.4 19.4v-6.2M12 19.4V6.6M16.6 19.4v-8.6"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.8 5.4h16.4l-6.4 7.3v5.4l-3.6 2v-7.4Z"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-emoji" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><circle cx="9.2" cy="9.8" r="1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="9.8" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 19.6c0-3.1 3-5.2 6.6-5.2s6.6 2.1 6.6 5.2"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
+<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-nodes" viewBox="0 0 24 24"><circle cx="6.2" cy="6.6" r="2.6"/><circle cx="17.8" cy="6.6" r="2.6"/><circle cx="12" cy="17.6" r="2.6"/><path d="M8.4 8.4 10.4 15.4M15.6 8.4 13.6 15.4M8.8 6.6h6.4"/></symbol>
+<symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.6a9.3 9.3 0 0 0-8 14.1L2.7 21.4l4.9-1.3A9.3 9.3 0 1 0 12 2.6Zm5.2 13c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1a13 13 0 0 1-5.7-4.9c-.4-.6-.9-1.5-.9-2.4 0-.9.5-1.4.7-1.6.2-.2.4-.3.6-.3h.5c.2 0 .4-.1.6.4l.8 1.9c.1.2.1.3 0 .5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.5-.1 1.1Z"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M14.6 3.6c-.4-.4-1-.6-1.6-.5l-.9.3a3 3 0 0 0-1.5-.9c-1.8-.4-3.2 1.2-3.9 3.4l-1.6.5c-.5.2-.5.2-.6.7L3 20.3l9.6 1.8 5.7-1.4S14.9 4.3 14.8 4c0-.2-.1-.3-.2-.4Zm-3.1 1-1.3.4C10.6 3.7 11.2 3.3 11.7 3c.2.4.3 1 .3 1.6l-.5-.1Zm-1.6-1.5c-.5.4-1 1.3-1.2 2.6l-1.1.3c.4-1.3 1.2-2.6 2.3-2.9Z"/></symbol>
+<symbol id="i-asterisk" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.4c.9 0 1.6.7 1.6 1.6v4.5l3.2-3.2a1.6 1.6 0 1 1 2.3 2.3l-3.2 3.2H20a1.6 1.6 0 1 1 0 3.2h-4.1l3.2 3.2a1.6 1.6 0 1 1-2.3 2.3l-3.2-3.2V20a1.6 1.6 0 1 1-3.2 0v-4.1l-3.2 3.2a1.6 1.6 0 0 1-2.3-2.3l3.2-3.2H4a1.6 1.6 0 1 1 0-3.2h4.1L4.9 7.6a1.6 1.6 0 0 1 2.3-2.3l3.2 3.2V4c0-.9.7-1.6 1.6-1.6Z"/></symbol>
+<symbol id="i-sprocket" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" d="M17.8 2.6v3.6M15.7 10.6l-3.1 2.2"/><circle cx="17.8" cy="8.4" r="2.5" fill="currentColor" stroke="none"/><circle cx="9.4" cy="15.8" r="4.9" fill="none" stroke="currentColor" stroke-width="2.1"/></symbol>
+
+<symbol id="ava-a" viewBox="0 0 40 40"><rect width="40" height="40" fill="#efe3d8"/><path d="M20 6c5.3 0 8.4 3.6 8.4 9.4 0 5-1.4 8-3.3 9.6H14.9c-1.9-1.6-3.3-4.6-3.3-9.6C11.6 9.6 14.7 6 20 6Z" fill="#3b2a23"/><path d="M4.6 40c.8-6.9 6.6-9.9 15.4-9.9S34.6 33.1 35.4 40Z" fill="#e8dfd6"/><path d="M16.8 24.2h6.4v6.3c0 1.8-1.4 3-3.2 3s-3.2-1.2-3.2-3Z" fill="#e6b596"/><path d="M20 10.6c4.2 0 6.6 2.7 6.6 7.1 0 5.2-2.9 9.3-6.6 9.3s-6.6-4.1-6.6-9.3c0-4.4 2.4-7.1 6.6-7.1Z" fill="#f0c3a3"/><path d="M13.9 15.4c1.6-3.2 4.5-4.4 6.9-4.4 2.7 0 5 1.4 5.9 3.4-2.1.5-4-.4-5.4-1.5-1.4 1.5-4.6 2.4-7.4 2.5Z" fill="#3b2a23"/><path d="M17.8 22.7c1.3.9 3 .9 4.4 0" fill="none" stroke="#c98a6b" stroke-width="1" stroke-linecap="round"/></symbol>
+<symbol id="ava-b" viewBox="0 0 40 40"><rect width="40" height="40" fill="#e2e6ec"/><path d="M4.6 40c.8-6.9 6.6-9.9 15.4-9.9S34.6 33.1 35.4 40Z" fill="#3d4756"/><path d="M16.8 24.2h6.4v6.3c0 1.8-1.4 3-3.2 3s-3.2-1.2-3.2-3Z" fill="#dda880"/><path d="M20 10.2c4.3 0 6.7 2.8 6.7 7.3 0 5.2-3 9.4-6.7 9.4s-6.7-4.2-6.7-9.4c0-4.5 2.4-7.3 6.7-7.3Z" fill="#eab98f"/><path d="M12.9 16.1C13.2 9.9 16 7.2 20 7.2s6.8 2.7 7.1 8.9c-1.5-2.2-2.4-3.9-2.8-5.2-2 1.7-6.3 2.3-9.1 1.6-.4.9-1.1 2-2.3 3.6Z" fill="#241a15"/><path d="M17.8 22.7c1.3.9 3 .9 4.4 0" fill="none" stroke="#c08a62" stroke-width="1" stroke-linecap="round"/></symbol>
+
+<symbol id="product" viewBox="0 0 132 104"><rect width="132" height="104" fill="#efe7dd"/><rect y="72" width="132" height="32" fill="#c79a63"/><rect y="72" width="132" height="5" fill="#b3874f"/><rect x="20" y="30" width="24" height="42" rx="4" fill="#fbf8f4"/><rect x="26" y="22" width="12" height="9" rx="2" fill="#e6ded3"/><rect x="24" y="46" width="16" height="12" rx="2" fill="#e9e2d8"/><rect x="50" y="20" width="30" height="52" rx="5" fill="#fdfbf8"/><rect x="60" y="10" width="10" height="11" rx="2" fill="#dcd3c7"/><rect x="55" y="40" width="20" height="16" rx="2" fill="#ece5da"/><rect x="86" y="38" width="20" height="34" rx="4" fill="#f7f1e6"/><rect x="90" y="30" width="12" height="9" rx="2" fill="#dfd6c8"/><rect x="88" y="50" width="16" height="10" rx="2" fill="#e7dfd0"/><path d="M108 72c0-10 5-16 11-16s11 6 11 16Z" fill="#8fae7a"/></symbol>
+
+</defs></svg>
+
+<main class="stage">
+<div class="app">
+
+  <!-- ── 1. icon rail ───────────────────────────────── -->
+  <nav class="rail" aria-label="Main">
+    <div class="rail-top">
+      <button class="rail-btn" aria-label="Chats"><svg class="ic"><use href="#i-chat"/></svg></button>
+    </div>
+    <div class="rail-main">
+      <button class="rail-btn is-active" aria-label="Inbox" aria-current="page"><svg class="ic"><use href="#i-chat-solid"/></svg></button>
+      <button class="rail-btn" aria-label="Calls"><svg class="ic"><use href="#i-phone"/></svg></button>
+      <button class="rail-btn" aria-label="Bots"><svg class="ic"><use href="#i-bot"/></svg></button>
+      <button class="rail-btn" aria-label="Broadcasts"><svg class="ic"><use href="#i-megaphone"/></svg></button>
+      <button class="rail-btn" aria-label="Contacts"><svg class="ic"><use href="#i-contacts"/></svg></button>
+      <button class="rail-btn" aria-label="Analytics"><svg class="ic"><use href="#i-chart"/></svg></button>
+      <button class="rail-btn" aria-label="Team"><svg class="ic"><use href="#i-team"/></svg></button>
+    </div>
+    <div class="rail-foot">
+      <button class="rail-btn" aria-label="Settings"><svg class="ic"><use href="#i-gear"/></svg></button>
+    </div>
+  </nav>
+
+  <!-- ── 2. inbox list ──────────────────────────────── -->
+  <section class="inbox" aria-label="Inbox">
+    <header class="inbox-head">
+      <h1>Inbox</h1>
+      <div class="inbox-tools">
+        <button class="ghost-btn" aria-label="Search"><svg class="ic"><use href="#i-search"/></svg></button>
+        <button class="ghost-btn" aria-label="Filter"><svg class="ic"><use href="#i-filter"/></svg></button>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab is-active" role="tab" aria-selected="true">All <span class="count">12</span></button>
+      <button class="tab" role="tab" aria-selected="false">Open <span class="count">3</span></button>
+      <button class="tab" role="tab" aria-selected="false">Unassigned <span class="count">2</span></button>
+    </div>
+
+    <ul class="threads">
+      <li class="thread is-active">
+        <span class="avatar"><svg viewBox="0 0 40 40"><use href="#ava-a"/></svg><i class="wa"><svg class="ic"><use href="#i-wa"/></svg></i></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Sarah Lee</span><time>11:07 AM</time></div>
+          <p class="snippet">Hi, I’d like to know more re</p>
+        </div>
+        <span class="unread">2</span>
+      </li>
+      <li class="thread">
+        <span class="avatar"><svg viewBox="0 0 40 40"><use href="#ava-b"/></svg><i class="wa"><svg class="ic"><use href="#i-wa"/></svg></i></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Alex Chan</span><time>11:05 AM</time></div>
+          <p class="snippet">What’s the delivery time?</p>
+        </div>
+      </li>
+      <li class="thread">
+        <span class="avatar"><svg viewBox="0 0 40 40"><use href="#ava-a"/></svg><i class="wa"><svg class="ic"><use href="#i-wa"/></svg></i></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Jane Wong</span><time>11:01 AM</time></div>
+          <p class="snippet">Can I get a quotation?</p>
+        </div>
+      </li>
+      <li class="thread">
+        <span class="avatar"><svg viewBox="0 0 40 40"><use href="#ava-b"/></svg><i class="wa"><svg class="ic"><use href="#i-wa"/></svg></i></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Michael Lam</span><time>10:58 AM</time></div>
+          <p class="snippet">I need help with<br>my order.</p>
+        </div>
+      </li>
+      <li class="thread">
+        <span class="avatar"><svg viewBox="0 0 40 40"><use href="#ava-a"/></svg><i class="wa"><svg class="ic"><use href="#i-wa"/></svg></i></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Emily Cheung</span><time>10:54 AM</time></div>
+          <p class="snippet">Do you have this item<br>in stock?</p>
+        </div>
+      </li>
+      <li class="thread">
+        <span class="avatar avatar-wa"><svg class="ic"><use href="#i-wa"/></svg></span>
+        <div class="thread-body">
+          <div class="thread-row"><span class="name">Customer Support</span><time>10:50 AM</time></div>
+          <p class="snippet">Hi! How can we<br>help you today?</p>
+        </div>
+      </li>
+    </ul>
+
+    <footer class="inbox-foot">
+      <button class="new-chat"><svg class="ic"><use href="#i-plus"/></svg> New Chat</button>
+    </footer>
+  </section>
+
+  <!-- ── 3. conversation ────────────────────────────── -->
+  <section class="chat" aria-label="Conversation with Sarah Lee">
+    <header class="chat-head">
+      <span class="avatar avatar-lg"><svg viewBox="0 0 40 40"><use href="#ava-a"/></svg></span>
+      <div class="chat-who">
+        <p class="chat-name">Sarah Lee <svg class="ic badge-verified"><use href="#i-verified"/></svg></p>
+        <p class="chat-phone">+852 9123 4567</p>
+      </div>
+      <div class="chat-actions">
+        <button class="ghost-btn" aria-label="Search"><svg class="ic"><use href="#i-search"/></svg></button>
+        <button class="ghost-btn" aria-label="Call"><svg class="ic"><use href="#i-phone"/></svg></button>
+        <button class="ghost-btn" aria-label="Details"><svg class="ic"><use href="#i-info"/></svg></button>
+        <button class="ghost-btn" aria-label="More"><svg class="ic"><use href="#i-more"/></svg></button>
+      </div>
+    </header>
+
+    <div class="stream">
+      <div class="msg in">
+        <div class="bubble">
+          <p>Hi, I’d like to know more<br>about your product.</p>
+          <span class="meta"><time>11:07 AM</time></span>
+        </div>
+      </div>
+
+      <div class="msg out">
+        <div class="bubble">
+          <p>Hi Sarah! 👋<br>Which product are you<br>interested in?</p>
+          <span class="meta"><time>11:08 AM</time><svg class="ic tick"><use href="#i-check2"/></svg></span>
+        </div>
+      </div>
+
+      <div class="msg in">
+        <div class="bubble">
+          <p>I’m interested in the<br>Skincare Starter Set.</p>
+          <span class="meta"><time>11:09 AM</time></span>
+        </div>
+      </div>
+
+      <div class="msg in">
+        <div class="bubble card">
+          <span class="card-media"><svg viewBox="0 0 132 104" preserveAspectRatio="none"><use href="#product"/></svg></span>
+          <div class="card-body">
+            <p class="card-title">Skincare Starter Set</p>
+            <p class="card-price">HK$680</p>
+            <hr>
+            <div class="card-foot"><a href="#">View details</a><time>11:10 AM</time></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msg out">
+        <div class="bubble">
+          <p>Great choice! ✨<br>Would you like me to send<br>ingredients and more details?</p>
+          <span class="meta"><time>11:11 AM</time><svg class="ic tick"><use href="#i-check2"/></svg></span>
+        </div>
+      </div>
+
+      <div class="msg in">
+        <div class="bubble voice">
+          <button class="play" aria-label="Play voice message"><svg class="ic"><use href="#i-play"/></svg></button>
+          <div class="wave">
+            <span class="scrub"></span>
+            <svg class="bars" viewBox="0 0 200 24" preserveAspectRatio="none" aria-hidden="true">
+              <g stroke="#c9ccd1" stroke-width="2.4" stroke-linecap="round">
+                <path d="M6 12v0"/><path d="M12 9v6"/><path d="M18 7v10"/><path d="M24 10v4"/><path d="M30 5v14"/><path d="M36 8v8"/><path d="M42 11v2"/><path d="M48 6v12"/><path d="M54 9v6"/><path d="M60 4v16"/><path d="M66 10v4"/><path d="M72 7v10"/><path d="M78 11v2"/><path d="M84 8v8"/><path d="M90 5v14"/><path d="M96 10v4"/><path d="M102 7v10"/><path d="M108 9v6"/><path d="M114 11v2"/><path d="M120 6v12"/><path d="M126 9v6"/><path d="M132 4v16"/><path d="M138 10v4"/><path d="M144 8v8"/><path d="M150 11v2"/><path d="M156 7v10"/><path d="M162 9v6"/><path d="M168 5v14"/><path d="M174 10v4"/><path d="M180 11v2"/><path d="M186 8v8"/><path d="M192 10v4"/>
+              </g>
+            </svg>
+          </div>
+          <span class="voice-meta"><time class="dur">0:23</time><time class="sent">11:11 AM</time></span>
+          <span class="avatar avatar-sm"><svg viewBox="0 0 40 40"><use href="#ava-b"/></svg><i class="ok"><svg class="ic"><use href="#i-check2"/></svg></i></span>
+        </div>
+      </div>
+    </div>
+
+    <footer class="composer">
+      <button class="ghost-btn" aria-label="Emoji"><svg class="ic"><use href="#i-emoji"/></svg></button>
+      <button class="ghost-btn" aria-label="Attach"><svg class="ic"><use href="#i-clip"/></svg></button>
+      <input class="field" type="text" placeholder="Type a message" aria-label="Type a message">
+      <button class="ghost-btn ghost-dark" aria-label="Record voice message"><svg class="ic"><use href="#i-mic"/></svg></button>
+    </footer>
+  </section>
+
+  <!-- ── 4. tools ───────────────────────────────────── -->
+  <aside class="tools" aria-label="Tools">
+    <header class="tools-head"><h2>Tools</h2></header>
+
+    <div class="tool-block">
+      <button class="tool-row"><svg class="ic"><use href="#i-user"/></svg><span>Contact</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+    </div>
+
+    <div class="tool-block">
+      <button class="tool-row"><svg class="ic"><use href="#i-tag"/></svg><span>Label</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+      <div class="pills">
+        <span class="pill pill-blue">New Lead</span>
+        <span class="pill pill-yellow">High Potential</span>
+      </div>
+    </div>
+
+    <div class="tool-block">
+      <button class="tool-row"><svg class="ic"><use href="#i-quick"/></svg><span>Quick Replies</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+    </div>
+
+    <div class="tool-block">
+      <button class="tool-row"><svg class="ic"><use href="#i-megaphone"/></svg><span>Broadcast</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+    </div>
+
+    <div class="tool-block">
+      <button class="tool-row"><svg class="ic"><use href="#i-nodes"/></svg><span>Integrations</span><svg class="ic chev"><use href="#i-chevron"/></svg></button>
+      <div class="apps">
+        <span class="app-tile tile-green" aria-label="Store"><svg class="ic"><use href="#i-bag"/></svg></span>
+        <span class="app-tile tile-orange" aria-label="Automation"><svg class="ic"><use href="#i-asterisk"/></svg></span>
+        <span class="app-tile tile-coral" aria-label="CRM"><svg class="ic"><use href="#i-sprocket"/></svg></span>
+      </div>
+    </div>
+  </aside>
+
+</div>
+</main>
+
+</body>
+</html>
