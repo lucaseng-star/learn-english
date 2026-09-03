@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14181d">
+<title>UI Kit 设计规范 · Design system spec</title>
+<link rel="stylesheet" href="assets/ui-kit.css?v=1">
+<style>
+  body { margin: 0; background: var(--uk-canvas); }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 56px 24px 96px; }
+
+  .lede { max-width: 640px; }
+  .lede h1 { margin: 0 0 10px; font-size: 30px; font-weight: 700; letter-spacing: -.025em; }
+  .lede p { margin: 0 0 6px; color: var(--uk-muted); font-size: var(--uk-fs-md); line-height: 1.6; }
+  .lede code { background: var(--uk-surface-2); padding: 1px 5px; border-radius: 4px; font-size: 12.5px; }
+
+  .warn { display: none; margin: 20px 0 0; padding: 12px 14px; border-radius: var(--uk-r-md);
+          background: var(--uk-tag-yellow-bg); color: var(--uk-tag-yellow-fg); font-size: var(--uk-fs-md); }
+  .warn.on { display: block; }
+
+  section { margin-top: 52px; }
+  section > h2 { margin: 0 0 4px; font-size: var(--uk-fs-lg); font-weight: 700; letter-spacing: -.01em; }
+  section > .hint { margin: 0 0 20px; color: var(--uk-muted); font-size: var(--uk-fs-md); }
+
+  .grid { display: grid; gap: 12px; }
+  .g-swatch { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); }
+  .g-icon   { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+  .g-two    { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+  .swatch { border: 1px solid var(--uk-line); border-radius: var(--uk-r-md); overflow: hidden; background: var(--uk-surface); }
+  .swatch .chip { height: 56px; border-bottom: 1px solid var(--uk-line); }
+  .swatch .meta { padding: 9px 11px; }
+  .swatch b { display: block; font-size: 12.5px; font-weight: 600; }
+  .swatch code { font-size: 11px; color: var(--uk-muted); }
+
+  .icon-cell { display: flex; flex-direction: column; align-items: center; gap: 8px;
+               padding: 16px 6px; border: 1px solid var(--uk-line); border-radius: var(--uk-r-md); background: var(--uk-surface); }
+  .icon-cell code { font-size: 10.5px; color: var(--uk-muted); text-align: center; word-break: break-all; }
+
+  .demo { padding: 22px; border: 1px solid var(--uk-line); border-radius: var(--uk-r-lg); background: var(--uk-surface); }
+  .demo > h3 { margin: 0 0 14px; font-size: var(--uk-fs-md); font-weight: 600; color: var(--uk-muted); }
+  .demo-rail { background: var(--uk-ink); border-radius: var(--uk-r-md); padding: 12px 0; width: 72px; }
+  .demo-list { border: 1px solid var(--uk-line); border-radius: var(--uk-r-md); overflow: hidden; }
+  .demo-list .uk-row:last-child { border-bottom: 0; }
+  .row-flex { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+  table.map { width: 100%; border-collapse: collapse; font-size: var(--uk-fs-md); }
+  table.map th, table.map td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--uk-line); vertical-align: top; }
+  table.map th { font-size: var(--uk-fs-sm); font-weight: 600; color: var(--uk-muted); text-transform: uppercase; letter-spacing: .04em; }
+  table.map code { font-size: 12px; }
+
+  .rule { margin: 0; padding-left: 20px; color: var(--uk-ink-2); font-size: var(--uk-fs-md); line-height: 1.75; }
+  .rule strong { color: var(--uk-ink); }
+</style>
+</head>
+<body class="uk">
+<div id="sprite-host" hidden></div>
+
+<div class="wrap">
+
+  <div class="lede">
+    <h1>UI Kit 设计规范</h1>
+    <p>从 <code>ui-replica.html</code> 抽出的设计语言，与布局解耦。任何新后台复用这一层，布局各写各的。</p>
+    <p>三个文件：<code>assets/ui-kit.css</code>（变量 + 组件）、<code>assets/ui-icons.svg</code>（32 个图标）、本页（规范与样例）。</p>
+  </div>
+  <p class="warn" id="warn">图标未加载：本页需通过 http 打开。本地运行 <code>npx serve</code> 后访问，或直接看 <code>assets/ui-icons.svg</code>。</p>
+
+  <!-- ── 颜色 ─────────────────────────────── -->
+  <section>
+    <h2>颜色</h2>
+    <p class="hint">共 4 组。新增颜色前先确认现有的哪一个不够用——大多数情况下够用。</p>
+    <div class="grid g-swatch" id="swatches"></div>
+  </section>
+
+  <!-- ── 字号 ─────────────────────────────── -->
+  <section>
+    <h2>字号阶</h2>
+    <p class="hint">只有 6 级。字重只用 500 / 600 / 700 三档。</p>
+    <div class="demo">
+      <p style="margin:0 0 10px;font-size:var(--uk-fs-xl);font-weight:700;letter-spacing:-.01em">20px / 700 — 页面标题　<code style="font-size:11px;font-weight:400;color:var(--uk-muted)">--uk-fs-xl</code></p>
+      <p style="margin:0 0 10px;font-size:var(--uk-fs-lg);font-weight:700;letter-spacing:-.01em">18px / 700 — 面板标题　<code style="font-size:11px;font-weight:400;color:var(--uk-muted)">--uk-fs-lg</code></p>
+      <p style="margin:0 0 10px;font-size:var(--uk-fs-base);font-weight:600">14px / 600 — 列表标题、菜单项　<code style="font-size:11px;font-weight:400;color:var(--uk-muted)">--uk-fs-base</code></p>
+      <p style="margin:0 0 10px;font-size:var(--uk-fs-md)">13.5px / 400 — 正文　<code style="font-size:11px;color:var(--uk-muted)">--uk-fs-md</code></p>
+      <p style="margin:0 0 10px;font-size:var(--uk-fs-sm);color:var(--uk-muted)">12.5px — 标签、辅助文字　<code style="font-size:11px">--uk-fs-sm</code></p>
+      <p style="margin:0;font-size:var(--uk-fs-xs);color:var(--uk-time)">10.5px — 时间戳　<code style="font-size:11px">--uk-fs-xs</code></p>
+    </div>
+  </section>
+
+  <!-- ── 图标 ─────────────────────────────── -->
+  <section>
+    <h2>图标</h2>
+    <p class="hint">统一 <code>viewBox="0 0 24 24"</code>，描边 1.7、圆头圆角。样式由 <code>.uk-ic</code> 控制，路径本身不带样式——换色只改 <code>color</code>。</p>
+    <div class="grid g-icon" id="icons"></div>
+  </section>
+
+  <!-- ── 组件 ─────────────────────────────── -->
+  <section>
+    <h2>组件</h2>
+    <p class="hint">这些是跨后台复用的原子。列表行、标签、按钮、工具栏行——bot 后台照样用得上。</p>
+    <div class="grid g-two">
+
+      <div class="demo">
+        <h3>深色导航栏 .uk-rail</h3>
+        <div class="uk-rail demo-rail" style="border-radius:var(--uk-r-md)">
+          <div class="uk-rail-group">
+            <button class="uk-rail-btn" aria-current="page"><svg class="uk-ic uk-ic--solid"><use href="#i-chat-solid"/></svg></button>
+            <button class="uk-rail-btn"><svg class="uk-ic"><use href="#i-bot"/></svg></button>
+            <button class="uk-rail-btn"><svg class="uk-ic"><use href="#i-chart"/></svg></button>
+            <button class="uk-rail-btn"><svg class="uk-ic"><use href="#i-gear"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo">
+        <h3>标签页 .uk-tabs</h3>
+        <div class="uk-tabs" style="padding:0">
+          <button class="uk-tab" aria-selected="true">全部 <span class="uk-count">12</span></button>
+          <button class="uk-tab" aria-selected="false">进行中 <span class="uk-count">3</span></button>
+          <button class="uk-tab" aria-selected="false">未分配 <span class="uk-count">2</span></button>
+        </div>
+      </div>
+
+      <div class="demo" style="grid-column:1/-1">
+        <h3>列表行 .uk-row —— 选中态 / 未读徽标 / 双行摘要</h3>
+        <ul class="uk-list demo-list" style="overflow:visible">
+          <li class="uk-row" aria-selected="true">
+            <span class="uk-avatar"><svg viewBox="0 0 40 40"><use href="#ava-a"/></svg>
+              <i class="uk-avatar-dot"><svg class="uk-ic uk-ic--solid"><use href="#i-wa"/></svg></i></span>
+            <div class="uk-row-body">
+              <div class="uk-row-top"><span class="uk-row-title">意图未命中：退货流程</span><span class="uk-row-time">11:07</span></div>
+              <p class="uk-row-sub">用户连续 3 轮未匹配，已转人工</p>
+            </div>
+            <span class="uk-badge">2</span>
+          </li>
+          <li class="uk-row">
+            <span class="uk-avatar"><svg viewBox="0 0 40 40"><use href="#ava-b"/></svg></span>
+            <div class="uk-row-body">
+              <div class="uk-row-top"><span class="uk-row-title">欢迎语 v3</span><span class="uk-row-time">10:58</span></div>
+              <p class="uk-row-sub">触达 1,204 次<br>完成率 68%</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="demo">
+        <h3>标签 .uk-tag</h3>
+        <div class="row-flex">
+          <span class="uk-tag uk-tag--blue">新线索</span>
+          <span class="uk-tag uk-tag--yellow">高意向</span>
+          <span class="uk-tag uk-tag--green">已上线</span>
+          <span class="uk-tag uk-tag--gray">草稿</span>
+        </div>
+      </div>
+
+      <div class="demo">
+        <h3>按钮 / 输入</h3>
+        <div class="row-flex" style="margin-bottom:12px">
+          <button class="uk-btn-primary"><svg class="uk-ic uk-ic--sm"><use href="#i-plus"/></svg> 新建</button>
+          <button class="uk-btn-ghost"><svg class="uk-ic"><use href="#i-search"/></svg></button>
+          <button class="uk-btn-ghost"><svg class="uk-ic"><use href="#i-filter"/></svg></button>
+          <button class="uk-btn-ghost"><svg class="uk-ic"><use href="#i-more"/></svg></button>
+        </div>
+        <button class="uk-btn-soft" style="margin-bottom:12px"><svg class="uk-ic uk-ic--sm"><use href="#i-plus"/></svg> 次级动作</button>
+        <input class="uk-field" placeholder="搜索…" aria-label="搜索">
+      </div>
+
+      <div class="demo" style="grid-column:1/-1">
+        <h3>工具栏行 .uk-side-row + 图标砖 .uk-tile</h3>
+        <div style="max-width:240px;border:1px solid var(--uk-line);border-radius:var(--uk-r-md);overflow:hidden">
+          <div class="uk-side-block">
+            <button class="uk-side-row"><svg class="uk-ic"><use href="#i-user"/></svg><span>联系人</span><svg class="uk-ic uk-chev"><use href="#i-chevron"/></svg></button>
+          </div>
+          <div class="uk-side-block" style="border-bottom:0">
+            <button class="uk-side-row"><svg class="uk-ic"><use href="#i-nodes"/></svg><span>集成</span><svg class="uk-ic uk-chev"><use href="#i-chevron"/></svg></button>
+            <div style="display:flex;gap:12px;padding:2px 18px 20px">
+              <span class="uk-tile" style="color:#5e8e3e"><svg class="uk-ic uk-ic--lg uk-ic--solid"><use href="#i-bag"/></svg></span>
+              <span class="uk-tile" style="color:#f2662f"><svg class="uk-ic uk-ic--lg uk-ic--solid"><use href="#i-asterisk"/></svg></span>
+              <span class="uk-tile" style="color:#ff7a59"><svg class="uk-ic uk-ic--lg"><use href="#i-sprocket"/></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── 移植 ─────────────────────────────── -->
+  <section>
+    <h2>移植到其他技术栈</h2>
+    <p class="hint">变量层是纯 CSS 自定义属性，任何框架都能直接用。下表是常见栈的对应关系。</p>
+    <table class="map">
+      <thead><tr><th>目标栈</th><th>怎么接</th></tr></thead>
+      <tbody>
+        <tr><td><b>原生 HTML/CSS</b></td><td>直接 <code>&lt;link&gt;</code> 引 <code>assets/ui-kit.css</code>，容器加 <code>class="uk"</code>。</td></tr>
+        <tr><td><b>Tailwind</b></td><td>把 <code>:root</code> 里的值填进 <code>theme.extend</code>（colors / borderRadius / boxShadow / fontSize），组件类不用移植，用工具类重组。</td></tr>
+        <tr><td><b>React / Vue</b></td><td>引入 <code>ui-kit.css</code> 当全局样式，组件只负责结构与状态；<code>aria-selected</code> / <code>aria-current</code> 驱动选中态，不要另造 <code>.active</code> 类。</td></tr>
+        <tr><td><b>图标</b></td><td>同源下 <code>&lt;use href="assets/ui-icons.svg#i-bot"/&gt;</code>；跨域或打包场景把需要的 <code>&lt;symbol&gt;</code> 直接内联。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── 约束 ─────────────────────────────── -->
+  <section>
+    <h2>不可协商的约束</h2>
+    <p class="hint">违反任何一条，"看起来是一套"就会当场失效。</p>
+    <ol class="rule">
+      <li><strong>颜色只从变量取。</strong>出现第 5 个绿色，说明是漏了变量，不是需要新颜色。</li>
+      <li><strong>字号只用 6 级。</strong>需要"介于 14 和 18 之间"，先问为什么，而不是加一级。</li>
+      <li><strong>图标只用这 32 个的描边风格。</strong>混进实心图标库（Material、FontAwesome）立刻破功。</li>
+      <li><strong>选中态永远是 <code>--uk-brand-soft</code> 底色，不是左边框、不是加粗。</strong></li>
+      <li><strong>状态用 ARIA 属性表达</strong>（<code>aria-selected</code> / <code>aria-current</code>），不另造类名——样式和可访问性同一套真相。</li>
+      <li><strong>深色导航栏只放一级导航。</strong>二级永远进列表栏或工具栏。</li>
+    </ol>
+  </section>
+
+</div>
+
+<script>
+// sprite 单一来源：从 assets/ui-icons.svg 注入，避免每个页面各存一份
+fetch('assets/ui-icons.svg')
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(t => {
+    document.getElementById('sprite-host').innerHTML = t;
+    render();
+  })
+  .catch(() => { document.getElementById('warn').classList.add('on'); render(); });
+
+const TOKENS = [
+  ['中性', [['--uk-ink','主文字 / 深色栏'],['--uk-ink-2','次级文字、图标'],['--uk-muted','描述、摘要'],
+            ['--uk-time','时间戳'],['--uk-line','结构分隔线'],['--uk-line-soft','行内分隔线'],
+            ['--uk-surface-2','次级按钮底'],['--uk-canvas','页面底']]],
+  ['品牌与语义', [['--uk-brand','选中 / 未读 / 成功'],['--uk-brand-soft','选中行底'],['--uk-accent','己方气泡'],
+            ['--uk-link','链接'],['--uk-tick','已读双勾'],['--uk-warm','会话流暖底']]],
+  ['标签', [['--uk-tag-blue-bg','蓝 · 底'],['--uk-tag-yellow-bg','黄 · 底'],
+            ['--uk-tag-green-bg','绿 · 底'],['--uk-tag-gray-bg','灰 · 底']]],
+];
+
+function render() {
+  const cs = getComputedStyle(document.documentElement);
+  const sw = document.getElementById('swatches');
+  sw.innerHTML = TOKENS.map(([group, items]) =>
+    `<div style="grid-column:1/-1;margin:10px 0 -2px;font-size:12.5px;font-weight:600;color:var(--uk-muted)">${group}</div>` +
+    items.map(([v, label]) => {
+      const hex = cs.getPropertyValue(v).trim();
+      return `<div class="swatch"><div class="chip" style="background:${hex}"></div>
+        <div class="meta"><b>${label}</b><code>${v} · ${hex}</code></div></div>`;
+    }).join('')
+  ).join('');
+
+  const host = document.getElementById('sprite-host');
+  const ids = [...host.querySelectorAll('symbol')].map(s => s.id);
+  document.getElementById('icons').innerHTML = ids.map(id => {
+    const isAvatar = id.startsWith('ava-') || id === 'product';
+    const box = isAvatar ? 'width:40px;height:40px' : '';
+    const cls = (id === 'i-wa' || id === 'i-verified' || id === 'i-play' ||
+                 id === 'i-bag' || id === 'i-asterisk' || id === 'i-chat-solid')
+                ? 'uk-ic uk-ic--lg uk-ic--solid' : 'uk-ic uk-ic--lg';
+    const svg = isAvatar
+      ? `<svg viewBox="0 0 40 40" style="${box};border-radius:${id === 'product' ? '6px' : '50%'}"><use href="#${id}"/></svg>`
+      : `<svg class="${cls}"><use href="#${id}"/></svg>`;
+    return `<div class="icon-cell">${svg}<code>${id}</code></div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>

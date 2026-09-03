@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1a73e8; text-decoration: none; }
+    a:hover { color: #1557b0; text-decoration: underline; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .ic-s { fill: currentColor; stroke: none; }
+    .bar .tip { opacity: 0; }
+    .bar:hover .tip { opacity: 1; }
+    .bar .hit { fill: transparent; }
+    .bar:hover .hit { fill: rgba(20,24,29,.035); }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 3.4v2.3M7.6 5.7h8.8a2.4 2.4 0 0 1 2.4 2.4v6.5a2.4 2.4 0 0 1-2.4 2.4H7.6a2.4 2.4 0 0 1-2.4-2.4V8.1a2.4 2.4 0 0 1 2.4-2.4ZM8.4 20.6h7.2M4.2 10.6H3M21 10.6h-1.2"/><circle cx="9.6" cy="11.2" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="11.2" r="1.15" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.4 19.4h15.2M7.4 19.4v-6.2M12 19.4V6.6M16.6 19.4v-8.6"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/></symbol>
+<symbol id="i-nodes" viewBox="0 0 24 24"><circle cx="6.2" cy="6.6" r="2.6"/><circle cx="17.8" cy="6.6" r="2.6"/><circle cx="12" cy="17.6" r="2.6"/><path d="M8.4 8.4 10.4 15.4M15.6 8.4 13.6 15.4M8.8 6.6h6.4"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4.2 9.8h3l7.6-3.9v12.2l-7.6-3.9h-3a1.4 1.4 0 0 1-1.4-1.4v-1.6a1.4 1.4 0 0 1 1.4-1.4ZM7.2 14.2v4.1a1.4 1.4 0 0 0 1.4 1.4h.9a1.4 1.4 0 0 0 1.4-1.4v-2.6M18.4 9.1a4 4 0 0 1 0 5.8"/></symbol>
+<symbol id="i-team" viewBox="0 0 24 24"><circle cx="9.2" cy="7.6" r="3.4"/><path d="M2.6 19.6v-1.4a4.2 4.2 0 0 1 4.2-4.2h4.8a4.2 4.2 0 0 1 4.2 4.2v1.4M16.6 4.4a3.5 3.5 0 0 1 0 6.6M18.2 14.3a4.2 4.2 0 0 1 3.2 4v1.3"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.8 5.4h16.4l-6.4 7.3v5.4l-3.6 2v-7.4Z"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+<symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 19.6c0-3.1 3-5.2 6.6-5.2s6.6 2.1 6.6 5.2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
+<symbol id="i-emoji" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><circle cx="9.2" cy="9.8" r="1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="9.8" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
+<symbol id="i-contacts" viewBox="0 0 24 24"><circle cx="10.4" cy="9.2" r="3.3"/><path d="M4.6 19.4c0-2.8 2.6-4.7 5.8-4.7s5.8 1.9 5.8 4.7M17.6 8.6h3.2M17.6 12.2h3.2"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M14.6 3.6c-.4-.4-1-.6-1.6-.5l-.9.3a3 3 0 0 0-1.5-.9c-1.8-.4-3.2 1.2-3.9 3.4l-1.6.5c-.5.2-.5.2-.6.7L3 20.3l9.6 1.8 5.7-1.4S14.9 4.3 14.8 4c0-.2-.1-.3-.2-.4Zm-3.1 1-1.3.4C10.6 3.7 11.2 3.3 11.7 3c.2.4.3 1 .3 1.6l-.5-.1Zm-1.6-1.5c-.5.4-1 1.3-1.2 2.6l-1.1.3c.4-1.3 1.2-2.6 2.3-2.9Z"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.8h2.1l1.7 4.1-2 1.4a11.4 11.4 0 0 0 5.2 5.2l1.4-2 4.1 1.7v2.1a2.4 2.4 0 0 1-2.6 2.4A14.3 14.3 0 0 1 3.9 6.4a2.4 2.4 0 0 1 2.4-2.6Z"/></symbol>
+</defs></svg>
+
+<div style="width:1440px;height:900px;padding:24px;background:#fbfbfc">
+  <div style="display:grid;grid-template-columns:72px minmax(0,1fr) 212px;width:1392px;height:852px;background:#ffffff;border-radius:22px;box-shadow:0 1px 2px rgba(16,24,40,.05), 0 24px 60px rgba(16,24,40,.13);overflow:hidden">
+
+    <!-- 一级导航 -->
+    <nav style="display:flex;flex-direction:column;align-items:center;padding:14px 0 22px;background:#14181d">
+      <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#ffffff;margin-bottom:26px">
+        <svg viewBox="0 0 24 24" width="24" height="24" class="ic" style="stroke-width:1.9"><use href="#i-bot"></use></svg>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#2ec06a;color:#ffffff"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chart"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chat"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-nodes"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-tag"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-megaphone"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-team"></use></svg></div>
+      </div>
+      <div style="margin-top:auto;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-gear"></use></svg></div>
+    </nav>
+
+    <!-- 主区 -->
+    <main style="display:flex;flex-direction:column;gap:18px;padding:26px 28px;min-width:0;overflow:hidden">
+
+      <div style="display:flex;align-items:center;gap:16px;height:34px">
+        <h1 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;color:#14181d">总览</h1>
+        <span style="font-size:12.5px;color:#7b838e">客服机器人 · 生产环境</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <div style="display:flex;gap:2px;padding:3px;border-radius:9px;background:#f5f6f7">
+            <span style="padding:4px 12px;border-radius:7px;font-size:12.5px;color:#7b838e">今天</span>
+            <span style="padding:4px 12px;border-radius:7px;background:#ffffff;box-shadow:0 1px 2px rgba(16,24,40,.06);font-size:12.5px;font-weight:600;color:#14181d">7 天</span>
+            <span style="padding:4px 12px;border-radius:7px;font-size:12.5px;color:#7b838e">30 天</span>
+          </div>
+          <span style="display:flex;align-items:center;gap:6px;height:32px;padding:0 14px;border:1px solid #e9eaec;border-radius:10px;font-size:13px;font-weight:500;color:#3c444e">导出</span>
+        </div>
+      </div>
+
+      <!-- 关键指标 -->
+      <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:16px;height:100px">
+        <div style="padding:16px 18px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12.5px;color:#7b838e">今日会话</span>
+          <span style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:#14181d;line-height:1.1">197</span>
+          <span style="font-size:11.5px;color:#9aa1ab">较昨日 −12%</span>
+        </div>
+        <div style="padding:16px 18px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12.5px;color:#7b838e">自动解决率</span>
+          <span style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:#14181d;line-height:1.1">89.3%</span>
+          <span style="font-size:11.5px;font-weight:600;color:#1e7a45">较上周 +1.4pt</span>
+        </div>
+        <div style="padding:16px 18px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12.5px;color:#7b838e">转人工率</span>
+          <span style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:#14181d;line-height:1.1">10.7%</span>
+          <span style="font-size:11.5px;font-weight:600;color:#1e7a45">较上周 −1.4pt</span>
+        </div>
+        <div style="padding:16px 18px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12.5px;color:#7b838e">平均首响</span>
+          <span style="font-size:26px;font-weight:700;letter-spacing:-.02em;color:#14181d;line-height:1.1">1.2s</span>
+          <span style="font-size:11.5px;color:#9aa1ab">与上周持平</span>
+        </div>
+      </div>
+
+      <!-- 会话量趋势 -->
+      <div style="height:308px;padding:18px 20px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:18px;height:30px">
+          <span style="font-size:14px;font-weight:600;color:#14181d">近 7 天会话量</span>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:#7b838e"><span style="width:10px;height:10px;border-radius:3px;background:#1e9e55"></span>自动解决</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:#7b838e"><span style="width:10px;height:10px;border-radius:3px;background:#3757c8"></span>转人工</span>
+          </div>
+          <span style="margin-left:auto;display:flex;align-items:center;gap:6px;height:28px;padding:0 12px;border:1px solid #e9eaec;border-radius:8px;font-size:12.5px;color:#3c444e">表格视图</span>
+        </div>
+
+        <svg viewBox="0 0 1012 232" width="1012" height="230" role="img" aria-label="近 7 天会话量，按自动解决与转人工拆分">
+          <g stroke="#f0f1f3" stroke-width="1">
+            <line x1="46" y1="0" x2="856" y2="0"></line>
+            <line x1="46" y1="47.5" x2="856" y2="47.5"></line>
+            <line x1="46" y1="95" x2="856" y2="95"></line>
+            <line x1="46" y1="142.5" x2="856" y2="142.5"></line>
+          </g>
+          <line x1="46" y1="190" x2="856" y2="190" stroke="#e9eaec" stroke-width="1"></line>
+          <g fill="#9aa1ab" font-size="10.5" text-anchor="end">
+            <text x="36" y="4">400</text><text x="36" y="51.5">300</text><text x="36" y="99">200</text><text x="36" y="146.5">100</text><text x="36" y="194">0</text>
+          </g>
+
+          <g class="bar"><rect class="hit" x="46" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="78" y="62.7" width="52" height="127.3" fill="#1e9e55"></rect>
+            <path d="M78,60.7 L78,44.7 Q78,40.7 82,40.7 L126,40.7 Q130,40.7 130,44.7 L130,60.7 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="46" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="112" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周一 310 · 自动 86%</text></g></g>
+          <g class="bar"><rect class="hit" x="161.5" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="193.5" y="51.8" width="52" height="138.2" fill="#1e9e55"></rect>
+            <path d="M193.5,49.8 L193.5,35.7 Q193.5,31.7 197.5,31.7 L241.5,31.7 Q245.5,31.7 245.5,35.7 L245.5,49.8 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="153.5" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="219.5" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周二 329 · 自动 88%</text></g></g>
+          <g class="bar"><rect class="hit" x="277.5" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="309.5" y="69.3" width="52" height="120.7" fill="#1e9e55"></rect>
+            <path d="M309.5,67.3 L309.5,47.1 Q309.5,43.1 313.5,43.1 L357.5,43.1 Q361.5,43.1 361.5,47.1 L361.5,67.3 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="269.5" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="335.5" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周三 305 · 自动 83%</text></g></g>
+          <g class="bar"><rect class="hit" x="393" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="425" y="46.5" width="52" height="143.5" fill="#1e9e55"></rect>
+            <path d="M425,44.5 L425,27.6 Q425,23.6 429,23.6 L473,23.6 Q477,23.6 477,27.6 L477,44.5 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="385" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="451" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周四 346 · 自动 87%</text></g></g>
+          <g class="bar"><rect class="hit" x="508.5" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="540.5" y="30.4" width="52" height="159.6" fill="#1e9e55"></rect>
+            <path d="M540.5,28.4 L540.5,4.8 Q540.5,0.8 544.5,0.8 L588.5,0.8 Q592.5,0.8 592.5,4.8 L592.5,28.4 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="500.5" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="566.5" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周五 394 · 自动 85%</text></g></g>
+          <g class="bar"><rect class="hit" x="624.5" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="656.5" y="95.9" width="52" height="94.1" fill="#1e9e55"></rect>
+            <path d="M656.5,93.9 L656.5,85.1 Q656.5,81.1 660.5,81.1 L704.5,81.1 Q708.5,81.1 708.5,85.1 L708.5,93.9 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="616.5" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="682.5" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周六 225 · 自动 88%</text></g></g>
+          <g class="bar"><rect class="hit" x="740" y="0" width="116" height="190" rx="6"></rect>
+            <rect x="772" y="106.4" width="52" height="83.6" fill="#1e9e55"></rect>
+            <path d="M772,104.4 L772,98.4 Q772,94.4 776,94.4 L820,94.4 Q824,94.4 824,98.4 L824,104.4 Z" fill="#3757c8"></path>
+            <g class="tip"><rect x="724" y="8" width="132" height="30" rx="6" fill="#14181d"></rect><text x="790" y="27" fill="#ffffff" font-size="11" text-anchor="middle">周日 197 · 自动 89%</text></g></g>
+
+          <circle cx="838" cy="99.4" r="4" fill="#3757c8"></circle>
+          <text x="850" y="103" fill="#7b838e" font-size="11">转人工 21</text>
+          <circle cx="838" cy="148.2" r="4" fill="#1e9e55"></circle>
+          <text x="850" y="152" fill="#7b838e" font-size="11">自动解决 176</text>
+
+          <g fill="#7b838e" font-size="11" text-anchor="middle">
+            <text x="104" y="208">周一</text><text x="219.5" y="208">周二</text><text x="335.5" y="208">周三</text><text x="451" y="208">周四</text><text x="566.5" y="208">周五</text><text x="682.5" y="208">周六</text><text x="798" y="208">周日</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 未命中：这台机器人当前最该修的东西 -->
+      <div style="height:292px;padding:18px 20px;border:1px solid #e9eaec;border-radius:14px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;gap:10px;height:30px">
+          <span style="font-size:14px;font-weight:600;color:#14181d">未命中的用户问题</span>
+          <span style="font-size:12.5px;color:#7b838e">近 24 小时 · 115 次</span>
+          <span style="margin-left:auto;display:flex;align-items:center;gap:4px;font-size:12.5px;color:#3c444e">全部<svg viewBox="0 0 24 24" width="14" height="14" class="ic" style="stroke-width:2"><use href="#i-chevron"></use></svg></span>
+        </div>
+        <div style="display:flex;flex-direction:column">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;padding:0 0 10px;border-bottom:1px solid #e9eaec;font-size:11.5px;color:#9aa1ab">
+            <span>用户原话</span><span>出现次数</span><span>最近一次</span><span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;align-items:center;height:36px;border-bottom:1px solid #f0f1f3">
+            <span style="font-size:13.5px;color:#14181d">可以退货吗，要几天到账</span><span style="font-size:13px;font-weight:600;color:#14181d">34</span><span style="font-size:12.5px;color:#7b838e">12 分钟前</span>
+            <span style="justify-self:end;display:flex;align-items:center;gap:5px;height:26px;padding:0 10px;border-radius:8px;background:#edf7f0;font-size:12px;font-weight:600;color:#1e7a45"><svg viewBox="0 0 24 24" width="13" height="13" class="ic" style="stroke-width:2.2"><use href="#i-plus"></use></svg>建为意图</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;align-items:center;height:36px;border-bottom:1px solid #f0f1f3">
+            <span style="font-size:13.5px;color:#14181d">发顺丰还是圆通</span><span style="font-size:13px;font-weight:600;color:#14181d">27</span><span style="font-size:12.5px;color:#7b838e">26 分钟前</span><span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;align-items:center;height:36px;border-bottom:1px solid #f0f1f3">
+            <span style="font-size:13.5px;color:#14181d">发票怎么开公司抬头</span><span style="font-size:13px;font-weight:600;color:#14181d">21</span><span style="font-size:12.5px;color:#7b838e">41 分钟前</span><span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;align-items:center;height:36px;border-bottom:1px solid #f0f1f3">
+            <span style="font-size:13.5px;color:#14181d">优惠券可以叠加用吗</span><span style="font-size:13px;font-weight:600;color:#14181d">18</span><span style="font-size:12.5px;color:#7b838e">1 小时前</span><span></span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 90px 120px 108px;gap:12px;align-items:center;height:36px">
+            <span style="font-size:13.5px;color:#14181d">换货运费谁承担</span><span style="font-size:13px;font-weight:600;color:#14181d">15</span><span style="font-size:12.5px;color:#7b838e">2 小时前</span><span></span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 人工队列 -->
+    <aside style="border-left:1px solid #e9eaec;display:flex;flex-direction:column;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;padding:26px 16px 20px;border-bottom:1px solid #e9eaec">
+        <h2 style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em;color:#14181d">需要人工</h2>
+        <span style="min-width:20px;height:20px;padding:0 6px;display:flex;align-items:center;justify-content:center;border-radius:999px;background:#2ec06a;color:#ffffff;font-size:11.5px;font-weight:700">3</span>
+      </div>
+      <div style="display:flex;flex-direction:column;padding:6px 0">
+        <div style="display:flex;flex-direction:column;gap:7px;padding:14px 16px;border-bottom:1px solid #f0f1f3">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">用户 8821</span>
+            <span style="font-size:11.5px;font-weight:600;color:#b42318">等待 6 分</span>
+          </div>
+          <p style="margin:0;font-size:12.5px;line-height:1.4;color:#7b838e">连续 3 轮未命中</p>
+          <span style="align-self:flex-start;padding:3px 9px;border-radius:7px;background:#fdf3c9;color:#7a5f18;font-size:11.5px;font-weight:500">退货</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;padding:14px 16px;border-bottom:1px solid #f0f1f3">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">用户 7413</span>
+            <span style="font-size:11.5px;color:#9aa1ab">等待 2 分</span>
+          </div>
+          <p style="margin:0;font-size:12.5px;line-height:1.4;color:#7b838e">用户主动要求转人工</p>
+          <span style="align-self:flex-start;padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500">投诉</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px;padding:14px 16px">
+          <div style="display:flex;align-items:baseline;gap:8px">
+            <span style="flex:1;min-width:0;font-size:13.5px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">用户 9052</span>
+            <span style="font-size:11.5px;color:#9aa1ab">等待 1 分</span>
+          </div>
+          <p style="margin:0;font-size:12.5px;line-height:1.4;color:#7b838e">置信度 0.41，低于阈值</p>
+          <span style="align-self:flex-start;padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500">未分类</span>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

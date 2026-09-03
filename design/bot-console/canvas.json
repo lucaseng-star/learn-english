@@ -1,0 +1,13 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",          "x": 0,    "y": 0,    "w": 1440, "h": 900, "title": "总览" },
+    { "file": "Conversations.dc.html", "x": 1520, "y": 0,    "w": 1440, "h": 900, "title": "会话记录" },
+    { "file": "Flows.dc.html",         "x": 3040, "y": 0,    "w": 1440, "h": 900, "title": "流程编排" },
+    { "file": "Intents.dc.html",       "x": 0,    "y": 1020, "w": 1440, "h": 900, "title": "意图知识库" },
+    { "file": "Integrations.dc.html",  "x": 1520, "y": 1020, "w": 1440, "h": 900, "title": "集成设置" }
+  ],
+  "annotations": [
+    { "id": "assumption", "x": 0, "y": -186, "w": 620, "text": "信息架构是假设的：bot 的实际用途还没确认，这里按通用客服机器人后台推的（会话 / 流程 / 知识库 / 集成）。用途一变，这五页的结构要重排。\n视觉语言不是假设 —— 颜色、字号、圆角、图标全部取自 assets/ui-kit.css，与已复刻的收件箱一致。" }
+  ],
+  "launch": { "view": "canvas" }
+}
