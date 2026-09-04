@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14181d" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="秒回">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="description" content="秒回 —— 手机上的客户消息回复台：按等待时长排队，AI 起草，你改一句就发。">
+<title>秒回 · 客户消息回复台</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+<!-- APP:BODY:START -->
+
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs>
+<!-- 取自 assets/ui-icons.svg（ui-kit sprite），viewBox 统一 0 0 24 24，样式由 CSS 控制 -->
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
+<symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
+<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="i-asterisk" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.4c.9 0 1.6.7 1.6 1.6v4.5l3.2-3.2a1.6 1.6 0 1 1 2.3 2.3l-3.2 3.2H20a1.6 1.6 0 1 1 0 3.2h-4.1l3.2 3.2a1.6 1.6 0 1 1-2.3 2.3l-3.2-3.2V20a1.6 1.6 0 1 1-3.2 0v-4.1l-3.2 3.2a1.6 1.6 0 0 1-2.3-2.3l3.2-3.2H4a1.6 1.6 0 1 1 0-3.2h4.1L4.9 7.6a1.6 1.6 0 0 1 2.3-2.3l3.2 3.2V4c0-.9.7-1.6 1.6-1.6Z"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
+<!-- 手机端新增，同一支笔：fill:none / stroke-width:1.7 / 圆头 -->
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M20.6 3.4 3.6 10.2l6.5 2.6M20.6 3.4l-3 17-4.1-5.9M20.6 3.4 10.1 12.8v5.5l3.4-3.4"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.1"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.4 2.6 5.2 13.4h5.1l-.9 8 8.4-11h-5.2Z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.2s6.4-6 6.4-10.8a6.4 6.4 0 0 0-12.8 0C5.6 15.2 12 21.2 12 21.2Z"/><circle cx="12" cy="10.2" r="2.4"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M13.8 3.4H7.4a2 2 0 0 0-2 2v13.2a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2V8.2Z"/><path d="M13.6 3.6v4.4h4.6M8.8 13h6.4M8.8 16.4h4.2"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.6a3.4 3.4 0 0 0 4.8 0l3.4-3.4a3.4 3.4 0 0 0-4.8-4.8l-1.2 1.2"/><path d="M14 10.4a3.4 3.4 0 0 0-4.8 0l-3.4 3.4a3.4 3.4 0 0 0 4.8 4.8l1.2-1.2"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<!-- 课程卡缩略图 -->
+<symbol id="pic-course" viewBox="0 0 132 104"><rect width="132" height="104" fill="#efe7dd"/><rect y="72" width="132" height="32" fill="#c79a63"/><rect y="72" width="132" height="5" fill="#b3874f"/><rect x="20" y="30" width="24" height="42" rx="4" fill="#fbf8f4"/><rect x="26" y="22" width="12" height="9" rx="2" fill="#e6ded3"/><rect x="24" y="46" width="16" height="12" rx="2" fill="#e9e2d8"/><rect x="50" y="20" width="30" height="52" rx="5" fill="#fdfbf8"/><rect x="60" y="10" width="10" height="11" rx="2" fill="#dcd3c7"/><rect x="55" y="40" width="20" height="16" rx="2" fill="#ece5da"/><rect x="86" y="38" width="20" height="34" rx="4" fill="#f7f1e6"/><rect x="90" y="30" width="12" height="9" rx="2" fill="#dfd6c8"/><rect x="88" y="50" width="16" height="10" rx="2" fill="#e7dfd0"/><path d="M108 72c0-10 5-16 11-16s11 6 11 16Z" fill="#8fae7a"/></symbol>
+</defs></svg>
+
+<div class="phone">
+
+  <!-- ══ 待回队列 ══════════════════════════════════════════ -->
+  <section class="screen screen--queue" aria-label="待回队列">
+    <header class="topbar">
+      <h1>待回</h1>
+      <span class="grow"></span>
+      <button class="iconbtn" type="button" aria-label="搜索会话"><svg class="ic"><use href="#i-search"/></svg></button>
+      <button class="iconbtn" type="button" aria-label="设置"><svg class="ic"><use href="#i-gear"/></svg></button>
+    </header>
+
+    <dl class="pulse" id="pulse">
+      <div><dt>待回</dt><dd class="num"><span id="stat-open">5</span></dd></div>
+      <div><dt>今日已回</dt><dd class="num"><span id="stat-done">14</span></dd></div>
+      <div class="is-hot"><dt>最久等待</dt><dd class="num"><span id="stat-worst">96</span> <small>分</small></dd></div>
+    </dl>
+
+    <div class="chips" role="tablist" aria-label="队列筛选">
+      <button class="chip" type="button" role="tab" data-filter="open"   aria-selected="true">待回复 <b class="num" data-count="open">5</b></button>
+      <button class="chip" type="button" role="tab" data-filter="follow" aria-selected="false">跟进中 <b class="num" data-count="follow">1</b></button>
+      <button class="chip" type="button" role="tab" data-filter="done"   aria-selected="false">已完成 <b class="num" data-count="done">1</b></button>
+      <button class="chip" type="button" role="tab" data-filter="all"    aria-selected="false">全部 <b class="num" data-count="all">7</b></button>
+    </div>
+
+    <ul class="qlist" id="qlist"></ul>
+
+    <div class="dock">
+      <button class="primary" id="startQueue" type="button">
+        <svg class="ic ic--sm"><use href="#i-bolt"/></svg>
+        <span>开始清队列</span><span class="n" id="queueN">· 5 条</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ══ 会话 + 回复台 ═════════════════════════════════════ -->
+  <section class="screen screen--chat" id="chat" aria-label="会话">
+    <div class="qbar" id="qbar" hidden>
+      <span class="num" id="qbarText">1 / 5</span>
+      <span class="track"><span class="fill" id="qbarFill" style="width:0%"></span></span>
+      <button type="button" id="qbarSkip">跳过</button>
+      <button type="button" id="qbarExit">退出</button>
+    </div>
+
+    <header class="chathead">
+      <button class="back" type="button" id="back" aria-label="返回队列"><svg class="ic ic--lg"><use href="#i-chevron"/></svg></button>
+      <span class="ava" id="chatAva"></span>
+      <div class="chatwho">
+        <h2 id="chatName">—</h2>
+        <p id="chatSub">—</p>
+      </div>
+      <button class="iconbtn" type="button" id="more" aria-label="更多操作"><svg class="ic"><use href="#i-more"/></svg></button>
+    </header>
+
+    <details class="ctx" id="ctx">
+      <summary>
+        <svg class="ic ic--sm"><use href="#i-info"/></svg>
+        <span class="grow" id="ctxLine">客户资料</span>
+        <svg class="ic ic--sm chev"><use href="#i-chevron"/></svg>
+      </summary>
+      <dl class="ctxgrid" id="ctxGrid"></dl>
+    </details>
+
+    <div class="stream" id="stream"></div>
+
+    <div class="acts">
+      <button class="act" type="button" id="actSnooze"><svg class="ic"><use href="#i-clock"/></svg>稍后跟进</button>
+      <button class="act" type="button" id="actDone"><svg class="ic"><use href="#i-check2"/></svg>标记完成</button>
+      <button class="act" type="button" id="actTag"><svg class="ic"><use href="#i-tag"/></svg>加标签</button>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <button class="iconbtn" type="button" id="openDesk" aria-label="打开回复台" aria-expanded="false">
+        <svg class="ic"><use href="#i-asterisk"/></svg>
+      </button>
+      <span class="inputwrap">
+        <label class="sr" for="input">回复内容</label>
+        <textarea id="input" rows="1" placeholder="写回复，或点 ✳ 用草稿"></textarea>
+      </span>
+      <button class="iconbtn" type="button" id="voice" aria-label="语音转文字"><svg class="ic"><use href="#i-mic"/></svg></button>
+      <button class="send" type="submit" id="send" aria-label="发送" disabled><svg class="ic"><use href="#i-send"/></svg></button>
+    </form>
+
+    <div class="scrim" id="scrim"></div>
+
+    <!-- 回复台 -->
+    <div class="desk" id="desk" role="dialog" aria-label="回复台" aria-modal="false">
+      <span class="grab"></span>
+      <div class="deskhead">
+        <h3>回复台</h3>
+        <span class="grow"></span>
+        <div class="langsw" role="group" aria-label="回复语言">
+          <button type="button" data-lang="zh" aria-pressed="true">中</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+          <button type="button" data-lang="bm" aria-pressed="false">BM</button>
+        </div>
+      </div>
+      <div class="desktabs" role="tablist" aria-label="回复台分区">
+        <button class="desktab" type="button" role="tab" data-tab="drafts" aria-selected="true">AI 草稿</button>
+        <button class="desktab" type="button" role="tab" data-tab="tmpls"  aria-selected="false">快捷话术</button>
+        <button class="desktab" type="button" role="tab" data-tab="assets" aria-selected="false">素材</button>
+      </div>
+      <div class="deskbody" id="deskBody"></div>
+    </div>
+
+    <!-- 稍后跟进 -->
+    <div class="sheet" id="snoozeSheet" role="dialog" aria-label="稍后跟进">
+      <h3>什么时候提醒我回他？</h3>
+      <button type="button" data-snooze="30"><svg class="ic"><use href="#i-clock"/></svg>30 分钟后</button>
+      <button type="button" data-snooze="120"><svg class="ic"><use href="#i-clock"/></svg>2 小时后</button>
+      <button type="button" data-snooze="tomorrow"><svg class="ic"><use href="#i-clock"/></svg>明早 9:00</button>
+      <button type="button" data-snooze="cancel">取消</button>
+    </div>
+
+    <!-- 更多 -->
+    <div class="sheet" id="moreSheet" role="dialog" aria-label="更多操作">
+      <h3 id="moreTitle">更多操作</h3>
+      <button type="button" data-more="call"><svg class="ic"><use href="#i-quick"/></svg>转打电话</button>
+      <button type="button" data-more="assign"><svg class="ic"><use href="#i-tag"/></svg>转给同事</button>
+      <button type="button" data-more="mute"><svg class="ic"><use href="#i-info"/></svg>标记为无效线索</button>
+      <button type="button" data-more="cancel">取消</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <svg class="ic"><use href="#i-check2"/></svg><span id="toastText">已发送</span>
+  </div>
+</div>
+
+<!-- APP:BODY:END -->
+<script src="app.js?v=1"></script>
+</body>
+</html>
