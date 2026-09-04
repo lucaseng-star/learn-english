@@ -11,3 +11,4 @@ GEMINI-FIX.md
 # 设计画布的构建产物（可由 design/bot-console/*.dc.html 重新生成）
 design/bot-console/bot-console.html
 design/crm-console/crm-console.html
+__pycache__/
