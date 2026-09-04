@@ -10,8 +10,11 @@
   --uk-ink-2:      #3c444e;   /* 次级文字、图标 */
   --uk-muted:      #7b838e;   /* 描述、摘要 */
   --uk-time:       #9aa1ab;   /* 时间戳、最弱一级 */
-  --uk-line:       #e9eaec;   /* 结构分隔线 */
-  --uk-line-soft:  #f0f1f3;   /* 列表行内分隔线 */
+  --uk-line:        #e9eaec;  /* 结构分隔线 */
+  --uk-line-soft:   #f0f1f3;  /* 列表行内分隔线 */
+  --uk-line-strong: #c2c8d0;  /* 流程连线、箭头 */
+  --uk-line-dash:   #d7dbe0;  /* 虚线边框、开关关闭态轨道 */
+  --uk-dot:         #e2e5e9;  /* 画布点阵 */
   --uk-surface:    #ffffff;
   --uk-surface-2:  #f5f6f7;   /* 次级按钮 / 输入框底 */
   --uk-canvas:     #fbfbfc;   /* 页面底 */
@@ -21,6 +24,7 @@
   --uk-brand-soft: #edf7f0;   /* 主色 8% 底：选中行 */
   --uk-accent:     #dcf8c6;   /* 己方消息气泡 */
   --uk-link:       #1a73e8;
+  --uk-link-hover: #1557b0;
   --uk-tick:       #4fa8ec;   /* 已读双勾 */
   --uk-warm:       #f4f0e9;   /* 会话流暖底 */
 
@@ -30,19 +34,25 @@
   --uk-tag-green-bg:  #e6f6ec;  --uk-tag-green-fg:  #1e7a45;
   --uk-tag-gray-bg:   #eef0f2;  --uk-tag-gray-fg:   #545c66;
 
-  /* —— 字号阶（只有 6 级，不再加）—— */
-  --uk-fs-xs:  10.5px;  /* 时间戳 */
-  --uk-fs-sm:  12.5px;  /* 标签、辅助 */
-  --uk-fs-md:  13.5px;  /* 正文、气泡 */
-  --uk-fs-base:14px;    /* 列表标题、菜单项 */
-  --uk-fs-lg:  18px;    /* 面板标题 */
+  /* —— 字号阶：8 级 —— */
+  /* 早期版本声称只有 6 级，实际画面用到 12 级。这里按真实需要重新定阶：
+     数据密集的后台需要 10.5–24 这个跨度，硬压成 6 级只会让人绕开变量写死数值。 */
+  --uk-fs-2xs: 10.5px;  /* 时间戳 */
+  --uk-fs-xs:  11.5px;  /* 元信息、表头、图表刻度 */
+  --uk-fs-sm:  12.5px;  /* 标签、次级说明 */
+  --uk-fs-md:  13.5px;  /* 正文、气泡、表格单元 */
+  --uk-fs-base: 14px;   /* 列表标题、菜单项 */
+  --uk-fs-lg:  16px;    /* 面板标题 */
   --uk-fs-xl:  20px;    /* 页面标题 */
+  --uk-fs-2xl: 24px;    /* 指标数字 */
 
-  /* —— 圆角 —— */
-  --uk-r-sm: 7px;    /* 标签 */
-  --uk-r-md: 10px;   /* 按钮、输入 */
-  --uk-r-lg: 14px;   /* 图标砖 */
-  --uk-r-xl: 22px;   /* 外壳 */
+  /* —— 圆角：6 级 —— */
+  --uk-r-tail: 2px;    /* 气泡指向发送方的那个尖角 */
+  --uk-r-xs: 7px;      /* 标签 */
+  --uk-r-sm: 10px;     /* 按钮、输入 */
+  --uk-r-md: 12px;     /* 卡片、图标砖 */
+  --uk-r-lg: 14px;     /* 大卡片、分区 */
+  --uk-r-shell: 22px;  /* 应用外壳 */
   --uk-r-pill: 999px;
 
   /* —— 间距（4 的倍数）—— */
@@ -52,13 +62,17 @@
   /* —— 阴影 —— */
   --uk-shadow-card: 0 1px 1px rgba(16,24,40,.09);
   --uk-shadow-tile: 0 1px 2px rgba(16,24,40,.04);
+  --uk-shadow-raised: 0 1px 2px rgba(16,24,40,.06);   /* 分段控件的选中片 */
+  --uk-shadow-knob:  0 1px 3px rgba(16,24,40,.18);    /* 开关、滑块的圆钮 */
   --uk-shadow-app:  0 1px 2px rgba(16,24,40,.05), 0 24px 60px rgba(16,24,40,.13);
 
   /* —— 骨架尺寸 —— */
   --uk-rail-w:  72px;   /* 深色图标导航栏 */
   --uk-list-w: 292px;   /* 列表栏 */
   --uk-side-w: 212px;   /* 右侧工具栏 */
-  --uk-row-h:   77px;   /* 列表行（单行摘要）*/
+  --uk-row-lg:  94px;   /* 会话行：头像 + 标题 + 摘要 + 标签 */
+  --uk-row-md:  56px;   /* 表格行 */
+  --uk-row-sm:  40px;   /* 紧凑行、漏斗阶段 */
 }
 
 /* ── 基础 ─────────────────────────────────────── */
@@ -90,7 +104,7 @@
   display: grid;
   grid-template-columns: var(--uk-rail-w) var(--uk-list-w) minmax(0, 1fr) var(--uk-side-w);
   background: var(--uk-surface);
-  border-radius: var(--uk-r-xl);
+  border-radius: var(--uk-r-shell);
   box-shadow: var(--uk-shadow-app);
   overflow: hidden;
 }
@@ -104,7 +118,7 @@
   align-items: center;
   padding: var(--uk-sp-2) 0 27px;
   background: var(--uk-ink);
-  border-radius: var(--uk-r-xl) 0 0 var(--uk-r-xl);
+  border-radius: var(--uk-r-shell) 0 0 var(--uk-r-shell);
 }
 .uk-rail-group { display: flex; flex-direction: column; gap: var(--uk-sp-3); }
 .uk-rail-foot  { margin-top: auto; }
@@ -112,7 +126,7 @@
   width: 40px; height: 40px;
   display: grid; place-items: center;
   padding: 0; border: 0;
-  border-radius: var(--uk-r-md);
+  border-radius: var(--uk-r-sm);
   background: transparent;
   color: #9aa1ab;
   cursor: pointer;
@@ -150,6 +164,7 @@
 .uk-list { flex: 1; min-height: 0; margin: 0; padding: 0; list-style: none; overflow-y: auto; }
 .uk-row {
   display: flex; align-items: flex-start; gap: 11px;
+  min-height: var(--uk-row-lg);
   padding: var(--uk-sp-5) var(--uk-sp-4) var(--uk-sp-5) var(--uk-sp-5);
   border-bottom: 1px solid var(--uk-line-soft);
   cursor: pointer;
@@ -173,7 +188,9 @@
   background: var(--uk-brand); color: #fff;
   font-size: 11.5px; font-weight: 700;
 }
-.uk-tag { padding: 5px 11px; border-radius: var(--uk-r-sm); font-size: var(--uk-fs-sm); font-weight: 500; }
+.uk-tag { padding: 5px 11px; border-radius: var(--uk-r-xs); font-size: var(--uk-fs-sm); font-weight: 500; white-space: nowrap; }
+/* 紧凑变体：给 94px 会话行、表格单元这类塞不下标准标签的地方，不要临时改数值 */
+.uk-tag--sm { padding: 3px 9px; font-size: var(--uk-fs-xs); }
 .uk-tag--blue   { background: var(--uk-tag-blue-bg);   color: var(--uk-tag-blue-fg); }
 .uk-tag--yellow { background: var(--uk-tag-yellow-bg); color: var(--uk-tag-yellow-fg); }
 .uk-tag--green  { background: var(--uk-tag-green-bg);  color: var(--uk-tag-green-fg); }
@@ -197,7 +214,7 @@
 .uk-btn-ghost {
   width: 32px; height: 32px;
   display: grid; place-items: center;
-  padding: 0; border: 0; border-radius: var(--uk-sp-2);
+  padding: 0; border: 0; border-radius: var(--uk-r-xs);
   background: transparent; color: #545c66; cursor: pointer;
   transition: background .15s ease;
 }
@@ -205,7 +222,7 @@
 .uk-btn-soft {
   width: 100%; height: 42px;
   display: flex; align-items: center; justify-content: center; gap: 7px;
-  border: 0; border-radius: var(--uk-r-md);
+  border: 0; border-radius: var(--uk-r-sm);
   background: var(--uk-surface-2);
   font: inherit; font-size: var(--uk-fs-base); font-weight: 600; color: var(--uk-ink-2);
   cursor: pointer; transition: background .15s ease;
@@ -214,12 +231,21 @@
 .uk-btn-primary {
   height: 42px; padding: 0 var(--uk-sp-5);
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  border: 0; border-radius: var(--uk-r-md);
+  border: 0; border-radius: var(--uk-r-sm);
   background: var(--uk-brand); color: #fff;
   font: inherit; font-size: var(--uk-fs-base); font-weight: 600;
   cursor: pointer; transition: filter .15s ease;
 }
 .uk-btn-primary:hover { filter: brightness(.95); }
+/* 工具栏里的按钮：42px 太高，压到 34px。这是唯一允许的第二个尺寸 */
+.uk-btn-primary--sm, .uk-btn-ghost--sm {
+  height: 34px; padding: 0 14px; font-size: var(--uk-fs-md);
+}
+.uk-btn-ghost--sm {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  width: auto; border: 1px solid var(--uk-line); border-radius: var(--uk-r-sm);
+  background: none; font-weight: 500; color: var(--uk-ink-2);
+}
 
 .uk-field {
   width: 100%; height: 40px; padding: 0 var(--uk-sp-4);
@@ -260,7 +286,7 @@
   width: 54px; height: 54px;
   display: grid; place-items: center;
   border: 1px solid var(--uk-line);
-  border-radius: var(--uk-r-lg);
+  border-radius: var(--uk-r-md);
   background: #fff;
   box-shadow: var(--uk-shadow-tile);
 }

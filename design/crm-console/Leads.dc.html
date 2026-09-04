@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1a73e8; text-decoration: none; }
+    a:hover { color: #1557b0; text-decoration: underline; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.4 19.4h15.2M7.4 19.4v-6.2M12 19.4V6.6M16.6 19.4v-8.6"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/></symbol>
+<symbol id="i-contacts" viewBox="0 0 24 24"><circle cx="10.4" cy="9.2" r="3.3"/><path d="M4.6 19.4c0-2.8 2.6-4.7 5.8-4.7s5.8 1.9 5.8 4.7M17.6 8.6h3.2M17.6 12.2h3.2"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
+<symbol id="i-nodes" viewBox="0 0 24 24"><circle cx="6.2" cy="6.6" r="2.6"/><circle cx="17.8" cy="6.6" r="2.6"/><circle cx="12" cy="17.6" r="2.6"/><path d="M8.4 8.4 10.4 15.4M15.6 8.4 13.6 15.4M8.8 6.6h6.4"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4.2 9.8h3l7.6-3.9v12.2l-7.6-3.9h-3a1.4 1.4 0 0 1-1.4-1.4v-1.6a1.4 1.4 0 0 1 1.4-1.4ZM7.2 14.2v4.1a1.4 1.4 0 0 0 1.4 1.4h.9a1.4 1.4 0 0 0 1.4-1.4v-2.6M18.4 9.1a4 4 0 0 1 0 5.8"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M14.6 3.6c-.4-.4-1-.6-1.6-.5l-.9.3a3 3 0 0 0-1.5-.9c-1.8-.4-3.2 1.2-3.9 3.4l-1.6.5c-.5.2-.5.2-.6.7L3 20.3l9.6 1.8 5.7-1.4S14.9 4.3 14.8 4c0-.2-.1-.3-.2-.4Zm-3.1 1-1.3.4C10.6 3.7 11.2 3.3 11.7 3c.2.4.3 1 .3 1.6l-.5-.1Zm-1.6-1.5c-.5.4-1 1.3-1.2 2.6l-1.1.3c.4-1.3 1.2-2.6 2.3-2.9Z"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.8 5.4h16.4l-6.4 7.3v5.4l-3.6 2v-7.4Z"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+<symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 19.6c0-3.1 3-5.2 6.6-5.2s6.6 2.1 6.6 5.2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
+<symbol id="i-emoji" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><circle cx="9.2" cy="9.8" r="1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="9.8" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.8h2.1l1.7 4.1-2 1.4a11.4 11.4 0 0 0 5.2 5.2l1.4-2 4.1 1.7v2.1a2.4 2.4 0 0 1-2.6 2.4A14.3 14.3 0 0 1 3.9 6.4a2.4 2.4 0 0 1 2.4-2.6Z"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 3.4v2.3M7.6 5.7h8.8a2.4 2.4 0 0 1 2.4 2.4v6.5a2.4 2.4 0 0 1-2.4 2.4H7.6a2.4 2.4 0 0 1-2.4-2.4V8.1a2.4 2.4 0 0 1 2.4-2.4ZM8.4 20.6h7.2M4.2 10.6H3M21 10.6h-1.2"/><circle cx="9.6" cy="11.2" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="11.2" r="1.15" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-team" viewBox="0 0 24 24"><circle cx="9.2" cy="7.6" r="3.4"/><path d="M2.6 19.6v-1.4a4.2 4.2 0 0 1 4.2-4.2h4.8a4.2 4.2 0 0 1 4.2 4.2v1.4M16.6 4.4a3.5 3.5 0 0 1 0 6.6M18.2 14.3a4.2 4.2 0 0 1 3.2 4v1.3"/></symbol>
+</defs></svg>
+
+<div style="width:1440px;height:900px;padding:24px;background:#fbfbfc">
+  <div style="display:grid;grid-template-columns:72px 292px minmax(0,1fr) 212px;width:1392px;height:852px;background:#ffffff;border-radius:22px;box-shadow:0 1px 2px rgba(16,24,40,.05), 0 24px 60px rgba(16,24,40,.13);overflow:hidden">
+
+    <nav style="display:flex;flex-direction:column;align-items:center;padding:14px 0 22px;background:#14181d">
+      <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#ffffff;margin-bottom:26px"><svg viewBox="0 0 24 24" width="24" height="24" class="ic" style="stroke-width:1.9"><use href="#i-bot"></use></svg></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chart"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chat"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-contacts"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#2ec06a;color:#ffffff"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-tag"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-nodes"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-megaphone"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-bag"></use></svg></div>
+      </div>
+      <div style="margin-top:auto;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-gear"></use></svg></div>
+    </nav>
+
+    <section style="display:flex;flex-direction:column;border-right:1px solid #e9eaec;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;padding:23px 18px 12px">
+        <div style="min-width:0"><h1 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;color:#14181d">线索</h1></div>
+        <div style="margin-left:auto;display:flex;gap:2px;color:#545c66"><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-search"></use></svg></span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;padding:4px 0 10px;border-bottom:1px solid #e9eaec">
+        <div style="display:flex;align-items:center;height:44px;padding:0 18px;font-weight:500;font-size:13.5px;color:#14181d"><span style="flex:1">全部</span><span style="font-size:12.5px;color:#9aa1ab">2,340</span></div>
+        <div style="display:flex;align-items:center;height:44px;padding:0 18px;font-weight:500;font-size:13.5px;color:#14181d"><span style="flex:1">未分配</span><span style="font-size:12.5px;color:#9aa1ab">7</span></div>
+        <div style="display:flex;align-items:center;height:44px;padding:0 18px;background:#edf7f0;font-weight:600;font-size:13.5px;color:#14181d"><span style="flex:1">跟进中</span><span style="font-size:12.5px;color:#9aa1ab">412</span></div>
+        <div style="display:flex;align-items:center;height:44px;padding:0 18px;font-weight:500;font-size:13.5px;color:#14181d"><span style="flex:1">已转商机</span><span style="font-size:12.5px;color:#9aa1ab">720</span></div>
+        <div style="display:flex;align-items:center;height:44px;padding:0 18px;font-weight:500;font-size:13.5px;color:#14181d"><span style="flex:1">已流失</span><span style="font-size:12.5px;color:#9aa1ab">1,201</span></div>
+      </div>
+      <div style="padding:18px 18px 10px"><span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">按来源</span></div>
+      <div style="display:flex;flex-direction:column;gap:2px;padding:0 6px">
+        <div style="display:flex;align-items:center;height:36px;padding:0 12px;font-size:13.5px;color:#14181d"><span style="flex:1">付费搜索</span><span style="font-size:12.5px;color:#9aa1ab">1,024</span></div>
+        <div style="display:flex;align-items:center;height:36px;padding:0 12px;font-size:13.5px;color:#14181d"><span style="flex:1">社媒广告</span><span style="font-size:12.5px;color:#9aa1ab">712</span></div>
+        <div style="display:flex;align-items:center;height:36px;padding:0 12px;font-size:13.5px;color:#14181d"><span style="flex:1">EDM 邮件</span><span style="font-size:12.5px;color:#9aa1ab">286</span></div>
+        <div style="display:flex;align-items:center;height:36px;padding:0 12px;font-size:13.5px;color:#14181d"><span style="flex:1">自然搜索</span><span style="font-size:12.5px;color:#9aa1ab">241</span></div>
+        <div style="display:flex;align-items:center;height:36px;padding:0 12px;font-size:13.5px;color:#14181d"><span style="flex:1">KOL 合作</span><span style="font-size:12.5px;color:#9aa1ab">77</span></div>
+      </div>
+    </section>
+
+    <main style="display:flex;flex-direction:column;gap:18px;padding:26px 28px;min-width:0;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:12px;height:34px">
+        <h2 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;color:#14181d">跟进中</h2>
+        <span style="font-size:12.5px;color:#7b838e">412 条 · 按评分排序</span>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:8px"><span style="display:flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 14px;border:1px solid #e9eaec;border-radius:10px;font-size:13.5px;font-weight:500;color:#3c444e;white-space:nowrap"><svg viewBox="0 0 24 24" width="16" height="16" class="ic"><use href="#i-filter"></use></svg> 筛选</span><span style="display:flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 14px;border-radius:10px;background:#2ec06a;color:#ffffff;font-size:13.5px;font-weight:600;white-space:nowrap"><svg viewBox="0 0 24 24" width="15" height="15" class="ic" style="stroke-width:2.2"><use href="#i-plus"></use></svg> 新建线索</span></div>
+      </div>
+      <div style="flex:none;border:1px solid #e9eaec;border-radius:14px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:42px;padding:0 14px;background:#f5f6f7;border-bottom:1px solid #e9eaec;font-size:11.5px;color:#9aa1ab">
+          <span>线索</span><span>来源 / 活动</span><span>评分</span><span>首次接触</span><span>状态</span><span>负责人</span>
+        </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;background:#edf7f0;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">陈</span><span style="font-size:13.5px;font-weight:600;color:#14181d">陈晓琳</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">付费搜索</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">春季护肤</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:92%;height:6px;border-radius:999px;background:#1e9e55"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">92</span></span>
+            <span style="font-size:12.5px;color:#7b838e">3/14 09:22</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">已转商机</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Kelvin</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">李</span><span style="font-size:13.5px;font-weight:600;color:#14181d">李佩珊</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">社媒广告</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">短视频种草</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:81%;height:6px;border-radius:999px;background:#1e9e55"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">81</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/07 21:40</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">跟进中</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Kelvin</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">张</span><span style="font-size:13.5px;font-weight:600;color:#14181d">张美玲</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">自然搜索</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:44%;height:6px;border-radius:999px;background:#c9911c"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">44</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/08 13:51</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">跟进中</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Sam</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">林</span><span style="font-size:13.5px;font-weight:600;color:#14181d">林卓豪</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">付费搜索</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">敏感肌关键词</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:77%;height:6px;border-radius:999px;background:#1e9e55"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">77</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/06 10:15</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">已转商机</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Kelvin</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">郑</span><span style="font-size:13.5px;font-weight:600;color:#14181d">郑伟强</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">KOL 合作</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">美妆博主合作</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:38%;height:6px;border-radius:999px;background:#b42318"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">38</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/08 13:38</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">未分配</span></span>
+            <span style="font-size:13.5px;color:#3c444e">—</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">吴</span><span style="font-size:13.5px;font-weight:600;color:#14181d">吴凯文</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">EDM 邮件</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">新客培育</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:66%;height:6px;border-radius:999px;background:#c9911c"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">66</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/05 18:02</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">跟进中</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Sam</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">周</span><span style="font-size:13.5px;font-weight:600;color:#14181d">周雅婷</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">社媒广告</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">图文轮播</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:59%;height:6px;border-radius:999px;background:#c9911c"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">59</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/07 15:26</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">跟进中</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Ivy</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">梁</span><span style="font-size:13.5px;font-weight:600;color:#14181d">梁俊杰</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">付费搜索</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">品牌词</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:71%;height:6px;border-radius:999px;background:#1e9e55"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">71</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/04 11:09</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">跟进中</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Ivy</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">徐</span><span style="font-size:13.5px;font-weight:600;color:#14181d">徐婉婷</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">自然搜索</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:29%;height:6px;border-radius:999px;background:#b42318"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">29</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/08 09:47</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">未分配</span></span>
+            <span style="font-size:13.5px;color:#3c444e">—</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;border-bottom:1px solid #f0f1f3;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">罗</span><span style="font-size:13.5px;font-weight:600;color:#14181d">罗志豪</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">KOL 合作</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">美妆博主合作</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:24%;height:6px;border-radius:999px;background:#b42318"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">24</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/03 20:33</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#fdf3c9;color:#7a5f18;font-size:11.5px;font-weight:500;white-space:nowrap">已流失</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Sam</span>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 168px 96px 108px 96px 84px;gap:12px;align-items:center;height:56px;padding:0 14px;">
+            <span style="display:flex;align-items:center;gap:10px;min-width:0"><span style="width:30px;height:30px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600">许</span><span style="font-size:13.5px;font-weight:600;color:#14181d">许嘉敏</span></span>
+            <span style="min-width:0"><span style="display:block;font-size:13.5px;color:#14181d">EDM 邮件</span><span style="display:block;font-size:11.5px;color:#9aa1ab;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">老客召回</span></span>
+            <span style="display:flex;align-items:center;gap:8px"><span style="position:relative;width:44px;height:6px;border-radius:999px;background:#eef0f2"><span style="position:absolute;left:0;top:0;width:84%;height:6px;border-radius:999px;background:#1e9e55"></span></span><span style="font-size:12.5px;font-weight:600;color:#3c444e">84</span></span>
+            <span style="font-size:12.5px;color:#7b838e">4/02 20:11</span>
+            <span><span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">已转商机</span></span>
+            <span style="font-size:13.5px;color:#3c444e">Kelvin</span>
+          </div>
+      </div>
+    </main>
+
+    <aside style="border-left:1px solid #e9eaec;display:flex;flex-direction:column;min-width:0;overflow:hidden">
+      <div style="padding:31px 18px 27px;border-bottom:1px solid #e9eaec">
+        <h2 style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em;color:#14181d">陈晓琳</h2><p style="margin:4px 0 0;font-size:12.5px;color:#7b838e">线索 L-20481 · 已转商机</p>
+      </div>
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:baseline"><span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">评分构成</span><span style="margin-left:auto;font-size:16px;font-weight:700;color:#14181d">92</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font-size:12.5px;color:#3c444e">表单填写</span><span style="font-size:12.5px;font-weight:600;color:#1e7a45">+20</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font-size:12.5px;color:#3c444e">多次进站 ≥ 3</span><span style="font-size:12.5px;font-weight:600;color:#1e7a45">+15</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font-size:12.5px;color:#3c444e">打开报价单</span><span style="font-size:12.5px;font-weight:600;color:#1e7a45">+25</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font-size:12.5px;color:#3c444e">落地页停留 > 1 分钟</span><span style="font-size:12.5px;font-weight:600;color:#1e7a45">+12</span></div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font-size:12.5px;color:#3c444e">首触为付费渠道</span><span style="font-size:12.5px;font-weight:600;color:#1e7a45">+20</span></div>
+      </div>
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">来源链路</span>
+        <p style="margin:0;font-size:12.5px;line-height:1.6;color:#3c444e">Google Ads「春季护肤」<br>→ 落地页 /skincare-starter<br>→ 点击「立即咨询」<br>→ 客服 Amy 会话 3 轮<br>→ 线索创建（09:22）</p>
+      </div>
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:9px">
+        <span style="display:flex;align-items:center;justify-content:center;height:38px;border-radius:10px;background:#2ec06a;color:#ffffff;font-size:13.5px;font-weight:600">转为商机</span>
+        <span style="display:flex;align-items:center;justify-content:center;height:38px;border-radius:10px;background:#f5f6f7;color:#3c444e;font-size:13.5px;font-weight:600">改派负责人</span>
+      </div>
+    </aside>
+
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

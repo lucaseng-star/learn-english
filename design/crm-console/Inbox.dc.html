@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: #1a73e8; text-decoration: none; }
+    a:hover { color: #1557b0; text-decoration: underline; }
+    .ic { fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</helmet>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M4.4 19.4h15.2M7.4 19.4v-6.2M12 19.4V6.6M16.6 19.4v-8.6"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/></symbol>
+<symbol id="i-contacts" viewBox="0 0 24 24"><circle cx="10.4" cy="9.2" r="3.3"/><path d="M4.6 19.4c0-2.8 2.6-4.7 5.8-4.7s5.8 1.9 5.8 4.7M17.6 8.6h3.2M17.6 12.2h3.2"/></symbol>
+<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
+<symbol id="i-nodes" viewBox="0 0 24 24"><circle cx="6.2" cy="6.6" r="2.6"/><circle cx="17.8" cy="6.6" r="2.6"/><circle cx="12" cy="17.6" r="2.6"/><path d="M8.4 8.4 10.4 15.4M15.6 8.4 13.6 15.4M8.8 6.6h6.4"/></symbol>
+<symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M4.2 9.8h3l7.6-3.9v12.2l-7.6-3.9h-3a1.4 1.4 0 0 1-1.4-1.4v-1.6a1.4 1.4 0 0 1 1.4-1.4ZM7.2 14.2v4.1a1.4 1.4 0 0 0 1.4 1.4h.9a1.4 1.4 0 0 0 1.4-1.4v-2.6M18.4 9.1a4 4 0 0 1 0 5.8"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M14.6 3.6c-.4-.4-1-.6-1.6-.5l-.9.3a3 3 0 0 0-1.5-.9c-1.8-.4-3.2 1.2-3.9 3.4l-1.6.5c-.5.2-.5.2-.6.7L3 20.3l9.6 1.8 5.7-1.4S14.9 4.3 14.8 4c0-.2-.1-.3-.2-.4Zm-3.1 1-1.3.4C10.6 3.7 11.2 3.3 11.7 3c.2.4.3 1 .3 1.6l-.5-.1Zm-1.6-1.5c-.5.4-1 1.3-1.2 2.6l-1.1.3c.4-1.3 1.2-2.6 2.3-2.9Z"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><path d="M3.8 5.4h16.4l-6.4 7.3v5.4l-3.6 2v-7.4Z"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
+<symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 19.6c0-3.1 3-5.2 6.6-5.2s6.6 2.1 6.6 5.2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
+<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
+<symbol id="i-emoji" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M8.6 14.2a4.2 4.2 0 0 0 6.8 0"/><circle cx="9.2" cy="9.8" r="1" fill="currentColor" stroke="none"/><circle cx="14.8" cy="9.8" r="1" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
+<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.8h2.1l1.7 4.1-2 1.4a11.4 11.4 0 0 0 5.2 5.2l1.4-2 4.1 1.7v2.1a2.4 2.4 0 0 1-2.6 2.4A14.3 14.3 0 0 1 3.9 6.4a2.4 2.4 0 0 1 2.4-2.6Z"/></symbol>
+<symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 3.4v2.3M7.6 5.7h8.8a2.4 2.4 0 0 1 2.4 2.4v6.5a2.4 2.4 0 0 1-2.4 2.4H7.6a2.4 2.4 0 0 1-2.4-2.4V8.1a2.4 2.4 0 0 1 2.4-2.4ZM8.4 20.6h7.2M4.2 10.6H3M21 10.6h-1.2"/><circle cx="9.6" cy="11.2" r="1.15" fill="currentColor" stroke="none"/><circle cx="14.4" cy="11.2" r="1.15" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-team" viewBox="0 0 24 24"><circle cx="9.2" cy="7.6" r="3.4"/><path d="M2.6 19.6v-1.4a4.2 4.2 0 0 1 4.2-4.2h4.8a4.2 4.2 0 0 1 4.2 4.2v1.4M16.6 4.4a3.5 3.5 0 0 1 0 6.6M18.2 14.3a4.2 4.2 0 0 1 3.2 4v1.3"/></symbol>
+</defs></svg>
+
+<div style="width:1440px;height:900px;padding:24px;background:#fbfbfc">
+  <div style="display:grid;grid-template-columns:72px 292px minmax(0,1fr) 212px;width:1392px;height:852px;background:#ffffff;border-radius:22px;box-shadow:0 1px 2px rgba(16,24,40,.05), 0 24px 60px rgba(16,24,40,.13);overflow:hidden">
+
+    <nav style="display:flex;flex-direction:column;align-items:center;padding:14px 0 22px;background:#14181d">
+      <div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;color:#ffffff;margin-bottom:26px"><svg viewBox="0 0 24 24" width="24" height="24" class="ic" style="stroke-width:1.9"><use href="#i-bot"></use></svg></div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chart"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#2ec06a;color:#ffffff"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-chat"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-contacts"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-tag"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-nodes"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-megaphone"></use></svg></div>
+        <div style="width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-bag"></use></svg></div>
+      </div>
+      <div style="margin-top:auto;width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#9aa1ab"><svg viewBox="0 0 24 24" width="21" height="21" class="ic"><use href="#i-gear"></use></svg></div>
+    </nav>
+
+    <section style="display:flex;flex-direction:column;border-right:1px solid #e9eaec;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px;padding:23px 18px 12px">
+        <div style="min-width:0"><h1 style="margin:0;font-size:20px;font-weight:700;letter-spacing:-.01em;color:#14181d">会话</h1></div>
+        <div style="margin-left:auto;display:flex;gap:2px;color:#545c66"><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-search"></use></svg></span><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-filter"></use></svg></span></div>
+      </div>
+      <div style="display:flex;gap:20px;padding:0 18px;border-bottom:1px solid #e9eaec">
+        <span style="padding:6px 0 8px;font-size:13.5px;font-weight:600;color:#14181d;box-shadow:inset 0 -2.5px 0 #2ec06a">全部 <span style="color:#2ec06a">34</span></span>
+        <span style="padding:6px 0 8px;font-size:13.5px;font-weight:600;color:#7b838e">我的 <span style="color:#9aa1ab">12</span></span>
+        <span style="padding:6px 0 8px;font-size:13.5px;font-weight:600;color:#7b838e">未分配 <span style="color:#9aa1ab">7</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;background:#edf7f0;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">陈</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">陈晓琳</span><span style="font-size:11.5px;color:#9aa1ab">14:04</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">好，帮我下单</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">付费搜索</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">黄</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">黄志明</span><span style="font-size:11.5px;color:#9aa1ab">14:01</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">订单什么时候发货</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">EDM 邮件</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">李</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">李佩珊</span><span style="font-size:11.5px;color:#9aa1ab">13:58</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">有没有优惠券可以用</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">社媒广告</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">王</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">王家俊</span><span style="font-size:11.5px;color:#9aa1ab">13:55</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">买错了想退货</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">自然搜索</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">张</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">张美玲</span><span style="font-size:11.5px;color:#9aa1ab">13:51</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">门店几点关门</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">自然搜索</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">林</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">林卓豪</span><span style="font-size:11.5px;color:#9aa1ab">13:47</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">改一下收货地址</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#e9effd;color:#3757c8;font-size:11.5px;font-weight:500;white-space:nowrap">付费搜索</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;border-bottom:1px solid #f0f1f3;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">何</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">何嘉怡</span><span style="font-size:11.5px;color:#9aa1ab">13:42</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">发票抬头写错了</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#eef0f2;color:#545c66;font-size:11.5px;font-weight:500;white-space:nowrap">EDM 邮件</span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;padding:14px 16px;height:94px;">
+          <span style="width:40px;height:40px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:600">郑</span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:14px;font-weight:600;color:#14181d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">郑伟强</span><span style="font-size:11.5px;color:#9aa1ab">13:38</span></div>
+            <p style="margin:0;font-size:13.5px;line-height:1.36;color:#7b838e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">支持货到付款吗</p>
+            <span style="align-self:flex-start"><span style="padding:3px 9px;border-radius:7px;background:#fdf3c9;color:#7a5f18;font-size:11.5px;font-weight:500;white-space:nowrap">KOL 合作</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="display:flex;flex-direction:column;min-width:0">
+      <div style="display:flex;align-items:center;gap:11px;padding:19px 18px;border-bottom:1px solid #e9eaec">
+        <span style="width:42px;height:42px;flex:none;border-radius:50%;background:#eef0f2;color:#545c66;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600">陈</span>
+        <div style="min-width:0">
+          <p style="margin:0;display:flex;align-items:center;gap:7px;font-size:16px;font-weight:700;letter-spacing:-.01em;color:#14181d">陈晓琳 <span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">老客</span></p>
+          <p style="margin:1px 0 0;font-size:12.5px;color:#7b838e">+852 9123 4567 · 网页组件 · 会话 c-31184</p>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:2px;color:#545c66"><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-search"></use></svg></span><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-info"></use></svg></span><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:7px"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-more"></use></svg></span></div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:17px;padding:20px 26px 9px;background:#f4f0e9;min-height:0;overflow:hidden">
+<span style="align-self:center;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.75);font-size:11.5px;color:#7b838e">今天 14:00</span>
+        <div style="display:flex">
+          <div style="position:relative;max-width:330px;padding:9px 11px 8px;border-radius:10px;border-top-left-radius:2px;background:#ffffff;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:52px">上次买的修护精华用完了，<br>想再入一套</p>
+            <span style="position:absolute;right:10px;bottom:6px;font-size:10.5px;color:#9aa1ab">14:00</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <div style="position:relative;max-width:350px;padding:9px 11px 8px;border-radius:10px;border-top-right-radius:2px;background:#dcf8c6;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:60px">陈小姐你好！看到你 3 月买的是敏感肌<br>修护套装。这次要不要试试强化版？</p>
+            <span style="position:absolute;right:10px;bottom:6px;display:flex;align-items:center;gap:3px;font-size:10.5px;color:#9aa1ab">14:00<svg viewBox="0 0 24 24" width="14" height="14" class="ic" style="stroke-width:2.2;color:#4fa8ec"><use href="#i-check2"></use></svg></span>
+          </div>
+        </div>
+        <div style="display:flex">
+          <div style="position:relative;max-width:330px;padding:9px 11px 8px;border-radius:10px;border-top-left-radius:2px;background:#ffffff;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:52px">有什么不一样吗</p>
+            <span style="position:absolute;right:10px;bottom:6px;font-size:10.5px;color:#9aa1ab">14:02</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <div style="width:342px;padding:12px 14px;border-radius:10px;border-top-right-radius:2px;background:#ffffff;box-shadow:0 1px 1px rgba(16,24,40,.09)">
+            <div style="display:flex;align-items:baseline;gap:8px">
+              <span style="font-size:14px;font-weight:600;color:#14181d">敏感肌修护套装 · 强化版</span>
+            </div>
+            <p style="margin:6px 0 0;font-size:13.5px;color:#3c444e">精华 / 面霜 / 洁面 共 3 件 · 无酒精无香精</p>
+            <div style="display:flex;align-items:baseline;gap:9px;margin-top:6px">
+              <span style="font-size:14px;font-weight:700;color:#14181d">HK$1,280</span>
+              <span style="font-size:12.5px;color:#9aa1ab;text-decoration:line-through">HK$1,480</span>
+              <span><span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">老客价</span></span>
+            </div>
+            <div style="height:1px;background:#e9eaec;margin:11px 0 9px"></div>
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="flex:1;font-size:12.5px;font-weight:600;color:#1e7a45">已按老客身份自动应用 9 折</span>
+              <span style="font-size:10.5px;color:#9aa1ab">14:03</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex">
+          <div style="position:relative;max-width:330px;padding:9px 11px 8px;border-radius:10px;border-top-left-radius:2px;background:#ffffff;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:52px">会员价是怎么算的</p>
+            <span style="position:absolute;right:10px;bottom:6px;font-size:10.5px;color:#9aa1ab">14:04</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <div style="position:relative;max-width:350px;padding:9px 11px 8px;border-radius:10px;border-top-right-radius:2px;background:#dcf8c6;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:60px">你是第二次购买，自动 9 折；<br>另外还有一张 HK$100 老客券可叠加。</p>
+            <span style="position:absolute;right:10px;bottom:6px;display:flex;align-items:center;gap:3px;font-size:10.5px;color:#9aa1ab">14:04<svg viewBox="0 0 24 24" width="14" height="14" class="ic" style="stroke-width:2.2;color:#4fa8ec"><use href="#i-check2"></use></svg></span>
+          </div>
+        </div>
+        <div style="display:flex">
+          <div style="position:relative;max-width:330px;padding:9px 11px 8px;border-radius:10px;border-top-left-radius:2px;background:#ffffff;box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.45;color:#14181d">
+            <p style="margin:0;padding-right:52px">好，帮我下单</p>
+            <span style="position:absolute;right:10px;bottom:6px;font-size:10.5px;color:#9aa1ab">14:05</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:4px;padding:10px 16px;border-top:1px solid #e9eaec;background:#ffffff">
+        <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;color:#545c66"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-emoji"></use></svg></span>
+        <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;color:#545c66"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-clip"></use></svg></span>
+        <span style="flex:1;min-width:0;height:40px;margin:0 6px;padding:0 16px;display:flex;align-items:center;border-radius:999px;background:#f4f5f6;font-size:13.5px;color:#a3aab3">回复 陈晓琳…</span>
+        <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;color:#14181d"><svg viewBox="0 0 24 24" width="20" height="20" class="ic"><use href="#i-mic"></use></svg></span>
+      </div>
+    </section>
+
+    <aside style="border-left:1px solid #e9eaec;display:flex;flex-direction:column;min-width:0;overflow:hidden">
+      <div style="padding:22px 18px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <h2 style="margin:0;font-size:16px;font-weight:700;letter-spacing:-.01em;color:#14181d">客户档案</h2>
+          <span style="margin-left:auto"><span style="padding:3px 9px;border-radius:7px;background:#e6f6ec;color:#1e7a45;font-size:11.5px;font-weight:500;white-space:nowrap">老客</span></span>
+        </div>
+        <span style="font-size:12.5px;color:#7b838e">首次接触 3 月 14 日 · 第 25 天</span>
+      </div>
+
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">来源归因</span>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">首触</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">付费搜索<br><span style='font-size:11.5px;color:#7b838e'>春季护肤 · 3/14</span></span></div>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">末触</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">EDM 邮件<br><span style='font-size:11.5px;color:#7b838e'>老客召回 · 4/2</span></span></div>
+      </div>
+
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">交易</span>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">历史订单</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">2 单</span></div>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">累计消费</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">HK$1,860</span></div>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">客单价</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">HK$930</span></div>
+      </div>
+
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">当前商机</span>
+        <div style="padding:10px 12px;border-radius:10px;background:#edf7f0;display:flex;flex-direction:column;gap:5px">
+          <span style="font-size:13.5px;font-weight:600;color:#14181d">强化版套装 HK$1,280</span>
+          <span style="font-size:11.5px;color:#1e7a45">报价中 · 负责人 Kelvin</span>
+        </div>
+      </div>
+
+      <div style="padding:16px 18px;border-bottom:1px solid #e9eaec;display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:#9aa1ab">行为足迹</span>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">进站</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">9 次</span></div>
+        <div style="display:flex;align-items:baseline;gap:10px"><span style="font-size:12.5px;color:#7b838e">点击</span><span style="margin-left:auto;font-size:13.5px;font-weight:500;color:#14181d;text-align:right">24 次</span></div>
+      </div>
+
+      <div style="padding:16px 18px;display:flex;flex-direction:column;gap:9px">
+        <span style="display:flex;align-items:center;justify-content:center;gap:7px;height:38px;border-radius:10px;background:#2ec06a;color:#ffffff;font-size:13.5px;font-weight:600">查看 360 全链路</span>
+      </div>
+    </aside>
+
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>
