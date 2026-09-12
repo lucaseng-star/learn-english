@@ -1,0 +1,113 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "1 · 待回队列"
+    },
+    {
+      "file": "Chat.dc.html",
+      "x": 470,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "2 · 会话 · 接管"
+    },
+    {
+      "file": "Reply.dc.html",
+      "x": 940,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "3 · 回复台 · AI 草稿"
+    },
+    {
+      "file": "Quick.dc.html",
+      "x": 1410,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "4 · 回复台 · 快捷话术"
+    },
+    {
+      "file": "Sent.dc.html",
+      "x": 1880,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "5 · 发完之后"
+    },
+    {
+      "file": "Handoff.dc.html",
+      "x": 2350,
+      "y": 0,
+      "w": 390,
+      "h": 844,
+      "title": "6 · IG/FB 号码交接"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "scope",
+      "x": 0,
+      "y": -330,
+      "w": 640,
+      "text": "范围：只做「回复」这一件事的手机壳，不碰 dashboard 其它功能。\n数据与流程全部取自 jwc-bot：\n· 队列 = /api/escalations/active（SOS 等真人，最久没回的排最上，API 已这样排）\n· 会话 = /conversation/:chatId（含 Bot 下一步 nextHook、9-22 点唤醒时段）\n· 发送 = /api/reply（原文照发不过审、5 秒去重、4000 字、外部收款账号拦截）\n· 话术 = /api/quick-replies（ChatDaddy 导入的资料夹、置顶、用过次数、多步带图）\n· 接管 = /api/takeover 与「🔴 我接管 / 停 bot」「🟢 让 Bot 接管」同一套\n· IG/FB 号码 = /api/igfb-handoffs + contacted\n视觉沿用收件箱复刻的 ui-kit token（Inter、绿 #2ec06a、22px 圆角），不是现有 dashboard 的深色风格；要换一句话。\n人名、消息、价格皆为示例；价格真值只来自 Google Sheet 目录。"
+    },
+    {
+      "id": "backend",
+      "x": 720,
+      "y": -330,
+      "w": 600,
+      "text": "你确认设计之前不动任何代码。届时需要后端新增的只有三处：\n① AI 草稿 —— 现在没有。后端按「客户最后一句 + Sheet 目录 + 客户语言」生成 3 条，只准用目录里的事实（同 bot 的白名单闸），前端结构不变。\n② 手机上「认领」—— 现有认领是 email / Telegram 里的签名链接（GET /escalation/claim，先点先得）。app 需要一个带登录态的 POST，语义不变：认领即关闭 open、其他人看到「已被 X 认领」。\n③ 主号（真人线）「谁还没被回」—— 主号 10,756 位客人，/leads 一次 400 行，现在没有「未回」端点。第 1 屏的「🏢 主号 5」要靠它。\n其它全部是现有接口，改的是壳。"
+    },
+    {
+      "id": "sla",
+      "x": 0,
+      "y": 900,
+      "w": 390,
+      "text": "等待色阶取自 bot 自己的承诺：Emily / Cindy / Coco 在 SOS 时会告诉客户「5-10 分钟真人回你」。\n<5 分绿 · 5-10 分黄 · >10 分红。\n第一行 Sharon 等了 14 分，已经食言。"
+    },
+    {
+      "id": "takeover",
+      "x": 470,
+      "y": 900,
+      "w": 390,
+      "text": "WhatsApp 线的既有规矩：同事回一句，bot 会继续跟（刻意的）。所以回之前先「🔴 我接管 / 停 bot」，和 dashboard 同一个按钮、同一个含义。\nIG/FB 线：同事一开口 bot 自动让位，这条横幅不出现。\n上下文条只放回复时用得上的：来源、课程、阶段、语言、酒精资格、Bot 下一步。"
+    },
+    {
+      "id": "drafts",
+      "x": 940,
+      "y": 900,
+      "w": 390,
+      "text": "AI 草稿的每条都带策略标签（答疑 / 先问 / 约通话）和「目录 ✓」—— 表示价格日期来自 Sheet，没有编。\n这是 6/13 RM500 编价事故之后最该有的一道锁。草稿只填进输入框，发送永远是人按。"
+    },
+    {
+      "id": "quick",
+      "x": 1410,
+      "y": 900,
+      "w": 390,
+      "text": "资料夹和名字照 ChatDaddy 导入的原样（WNSM KL CN- PRICE 这种），置顶优先、用过次数排序，和 lib/quick-replies.js 的 list() 一致。\n素材四格对应 dashboard 现有动作：报名 form、给账号、54d 社群、课程图。"
+    },
+    {
+      "id": "after",
+      "x": 1880,
+      "y": 900,
+      "w": 390,
+      "text": "每次回完都要做同一个决定：交还 Bot 还是继续人手。\n暂停有期限：PAUSE_TTL_HOURS=12，12 小时没动静自动放回（PAUSE_AUTO_RESUME=1 才真放回，否则只报名单）。\n清队列模式在这里接「下一条」。"
+    },
+    {
+      "id": "handoff",
+      "x": 2350,
+      "y": 900,
+      "w": 390,
+      "text": "IG/FB 客户给了 WhatsApp 号码，等人打。行内直接「打开 WhatsApp」（wa.me），点「已联系」写 waHandoff.contactedAt，名单才会变短，同事不会打两次。"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}
