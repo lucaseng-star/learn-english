@@ -104,19 +104,19 @@ AINA_STREAM = [daysep('今天'),
 reply_inner = (header4('Aina', '☕', 'Coco 线', 'Bot 已停')
     + ctx4(['1-Day Junior Barista', 'BM', '好奇'], '⚠ 不提酒精')
     + stream2(AINA_STREAM)
-    + f'<div style="background:{WARM};padding:0 0 10px">{task4("周末有场吗？多少钱？", "等了 3 分", "cool")}</div>'
-    + drafts4([draft4('有周末场 · 下一场 20/9 · 报价', 'Ada! Sesi hujung minggu seterusnya 20 Sept (Sabtu), 10 pagi–2 petang. Harga RM ___ termasuk bahan &amp; sijil kehadiran. Nak saya simpan tempat?', '中文：有！下一场周末 9 月 20 日周六 10–2 点，RM ___ 含材料和出席证明，要留位吗？'),
+    + f'<div style="background:{WARM};padding:0 0 10px">{task4("周末有场吗？多少钱？", "等了 4 分", "cool")}</div>'
+    + drafts4([draft4('有周末场 · 下一场 20/9 · 报价', 'Ada! Sesi hujung minggu seterusnya 19 Sept (Sabtu), 10 pagi–2 petang. Harga RM ___ termasuk bahan &amp; sijil kehadiran. Nak saya simpan tempat?', '中文：有！下一场周末 9 月 19 日周六 10–2 点，RM ___ 含材料和出席证明，要留位吗？'),
                draft4('先问：几位一起来', 'Sebelum saya bagi harga, awak datang seorang atau berdua? Harga berdua lain sikit.', '中文：报价前先问，一个人还是两个人来？双人价不同。')])
     + f'<div style="display:flex;align-items:center;gap:8px;margin:10px 8px 0;padding:9px 12px;border-radius:10px;background:{BRAND_SOFT};font-size:12.5px;line-height:1.4;color:#1e7a45">'
-    f'<span style="font-weight:700;white-space:nowrap">发出时翻成 BM ✓</span><span style="flex:1;min-width:0;color:#3c7a55;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ada! Sesi hujung minggu seterusnya 20 Sept, 10 pagi…</span><span style="font-weight:700;white-space:nowrap;color:{MUTED}">发中文</span></div>'
-    + composer4('有的！下一场周末班 9 月 20 日周六早上 10 点，要帮你留位吗？', '', focused=True))
+    f'<span style="font-weight:700;white-space:nowrap">发出时翻成 BM ✓</span><span style="flex:1;min-width:0;color:#3c7a55;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Ada! Sesi hujung minggu seterusnya 19 Sept, 10 pagi…</span><span style="font-weight:700;white-space:nowrap;color:{MUTED}">发中文</span></div>'
+    + composer4('有的！下一场周末班 9 月 19 日周六早上 10 点，要帮你留位吗？', '', focused=True))
 (OUT/'Reply.dc.html').write_text(phone(reply_inner))
 
 # ══ 3 先停 bot（从队列点进 Aina）══
 gate_inner = (header4('Aina', '☕', 'Coco 线', 'Bot 在回', 'yellow')
     + ctx4(['1-Day Junior Barista', 'BM', '好奇'], '⚠ 不提酒精')
     + stream2(AINA_STREAM)
-    + f'<div style="background:{WARM};padding:0 0 10px">{task4("周末有场吗？多少钱？", "等了 3 分", "cool")}</div>'
+    + f'<div style="background:{WARM};padding:0 0 10px">{task4("周末有场吗？多少钱？", "等了 4 分", "cool")}</div>'
     + composer4('', '以 Coco 的身份回复…', gate='Bot 还在回，先停它'))
 (OUT/'Gate.dc.html').write_text(phone(gate_inner))
 
@@ -177,8 +177,8 @@ queue_inner = (f'<div style="display:flex;align-items:center;gap:8px;padding:16p
     f'<div style="padding:0 16px 8px;font-size:12.5px;color:{MUTED}">值班：<b style="color:{INK2}">你、佳佳</b></div>'
     f'<div style="display:flex;gap:8px;padding:2px 16px 10px;overflow:hidden">{chip("全部", True, 2)}{chip("🍷 Emily", False, 0)}{chip("☕ Cindy", False, 1)}{chip("☕ Coco", False, 1)}</div>'
     + section('🆘 等真人', 2)
-    + row6('W','☕','Wei Jie','等 7 分','warm','BMART diploma 是不是 PTPK 可以全额？我 SPM 只有 3 credit 够吗', tag('BMART Diploma','blue')+stage_tag('considering'), state='other', who='佳佳')
-    + row6('A','☕','Aina','等 3 分','cool', AINA_Q, tag('1-Day Junior Barista','blue')+stage_tag('curious'))
+    + row6('W','☕','Wei Jie','等 8 分','warm','BMART diploma 是不是 PTPK 可以全额？我 SPM 只有 3 credit 够吗', tag('BMART Diploma','blue')+stage_tag('considering'), state='other', who='佳佳')
+    + row6('A','☕','Aina','等 4 分','cool', AINA_Q, tag('1-Day Junior Barista','blue')+stage_tag('curious'))
     + section('已回 · 等客户', 1)
     + row6('S','🍷','Sharon','已回 11:19','cool', SHARON_Q, tag('WNSM 调酒半工读','blue')+stage_tag('hot'), state='mine')
     + link_row('folder', '待确认收款', 1) + link_row('phone', 'IG/FB 给了号码', 2)
@@ -241,6 +241,9 @@ main_en = (header4('Sharon', '🍷', 'Emily line', 'Bot paused')
                draft4('Ask first: job-hunting or full-time study', 'Sharon 你好，想先了解一下：你是想边找工作边学，还是先专心学完 9 个月？两种情况推荐的班不一样。', 'EN: Job-hunting while studying, or full-time? Different class fits.')], 'DRAFTS', 'More')
     + composer4('', 'Reply as Emily… (sent in 中文)', focused=True))
 (OUT/'MainEn.dc.html').write_text(phone(main_en))
+sm = OUT / 'SentMeta.dc.html'; t = sm.read_text()
+t = t.replace('已发 ✓✓ · SOS 已解决</span><span style="color:#7b838e"> · 12 小时没动静 Bot 接回</span>', '已发 ✓✓</span><span style="color:#7b838e"> · 12 小时后 Bot 接回</span>')
+sm.write_text(t)
 
 # ══ canvas：两页 ══
 W,H,G = 390,844,80
