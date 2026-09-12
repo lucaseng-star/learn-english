@@ -114,16 +114,16 @@ main_inner = f'''
   {iconbtn('search')}{iconbtn('gear')}
 </div>
 <div style="display:flex;gap:8px;padding:2px 16px 10px;overflow:hidden">
-  {chip('全部线', True, 4)}{chip('🍷 Emily', False, 2)}{chip('☕ Cindy', False, 1)}{chip('☕ Coco', False, 1)}{chip('🏢 主号', False, 5)}
+  {chip('全部线', True, 8)}{chip('🍷 Emily', False, 1)}{chip('☕ Cindy', False, 1)}{chip('☕ Coco', False, 1)}{chip('🏢 主号', False, 5)}
 </div>
 <dl style="display:flex;gap:1px;margin:0 16px 10px;border-radius:10px;background:{SURF2};overflow:hidden">
-  <div style="flex:1;padding:9px 10px 10px"><dt style="font-size:11.5px;font-weight:600;color:{MUTED};letter-spacing:.04em">等真人</dt><dd class="num" style="margin:1px 0 0;font-size:17px;font-weight:700;letter-spacing:-.02em">3</dd></div>
+  <div style="flex:1;padding:9px 10px 10px"><dt style="font-size:11.5px;font-weight:600;color:{MUTED};letter-spacing:.04em">待回</dt><dd class="num" style="margin:1px 0 0;font-size:17px;font-weight:700;letter-spacing:-.02em">8 <span style="font-size:11.5px;font-weight:600;color:#7b838e">= 3 SOS + 5 主号</span></dd></div>
   <div style="flex:1;padding:9px 10px 10px"><dt style="font-size:11.5px;font-weight:600;color:{MUTED};letter-spacing:.04em">最久等</dt><dd class="num" style="margin:1px 0 0;font-size:17px;font-weight:700;letter-spacing:-.02em;color:#c0392b">14 <span style="font-size:12.5px;font-weight:600;color:{MUTED}">分</span></dd></div>
   <div style="flex:1;padding:9px 10px 10px"><dt style="font-size:11.5px;font-weight:600;color:{MUTED};letter-spacing:.04em">今日回了</dt><dd class="num" style="margin:1px 0 0;font-size:17px;font-weight:700;letter-spacing:-.02em">11</dd></div>
 </dl>
 <div style="flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column">
   {section('🆘 等真人', 3, 'Bot 已承诺「5-10 分钟真人回你」')}
-  {sos_row('S','🍷','Sharon','等 14 分','hot','调酒半工读 9 个月，如果中途找到全职工作，可以转周末班吗？学费怎么算？', tag('WNSM 调酒半工读','blue')+stage_tag('hot')+tag('Meta 广告','gray'))}
+  {sos_row('S','🍷','Sharon','等 14 分','hot','刚毕业。如果中途找到全职工作可以转周末班吗？学费怎么算？', tag('WNSM 调酒半工读','blue')+stage_tag('hot')+tag('Meta 广告','gray'))}
   {sos_row('W','☕','Wei Jie','等 7 分','warm','BMART diploma 是不是 PTPK 可以全额？我 SPM 只有 3 credit 够吗', tag('BMART Diploma','blue')+stage_tag('considering')+tag('FB 广告','gray'))}
   {sos_row('A','☕','Aina','等 3 分','cool','Boleh dapat sijil untuk kelas Barista 1 hari tak? Nak guna untuk apply kerja', tag('1-Day Junior Barista (BM/EN)','blue')+stage_tag('curious')+tag('IG 帖子','gray'))}
   {section('📞 IG/FB 给了号码', 2, '等你打 WhatsApp')}
@@ -208,7 +208,7 @@ def composer(text='', placeholder='写回复 · 原文照发，不过审'):
 MSGS = [
     daysep('今天'),
     bubble_in('你好 我看到调酒半工读的广告', '11:02'),
-    bubble_out('哈喽 Sharon，我是 Emily 🍸 调酒半工读是 9 个月 36 堂，一周上 1 天课，其余时间在合作酒吧带薪实习。你现在是在工作，还是刚毕业？', '11:02', 'Emily · Bot'),
+    bubble_out('哈喽 Sharon，我是 Emily 🍷 调酒半工读是 9 个月 36 堂，一周上 1 天课，其余时间在合作酒吧带薪实习。你现在是在工作，还是刚毕业？', '11:02', 'Emily · Bot'),
     bubble_in('刚毕业。如果中途找到全职工作可以转周末班吗？学费怎么算？', '11:04'),
     sos_marker('11:04'),
 ]
@@ -227,7 +227,7 @@ def drawer(active, body, height=600):
     return (f'<div style="position:absolute;left:0;right:0;bottom:0;height:{height}px;display:flex;flex-direction:column;border-radius:22px 22px 0 0;background:{SURF};box-shadow:0 -2px 24px rgba(16,24,40,.16)">'
             f'<div style="width:38px;height:4px;margin:8px auto 2px;border-radius:2px;background:{LINE}"></div>'
             f'<div style="display:flex;align-items:center;gap:8px;padding:6px 16px 0"><h3 style="margin:0;font-size:15px;font-weight:700">回复台</h3><span style="flex:1"></span><div style="display:flex;gap:2px;padding:3px;border-radius:999px;background:{SURF2}">{lang}</div></div>'
-            f'<div style="display:flex;gap:20px;padding:10px 16px 0;border-bottom:1px solid {LINE}">{dtab("AI 草稿", active=="drafts")}{dtab("快捷话术", active=="tmpls")}{dtab("素材", active=="assets")}</div>'
+            f'<div style="display:flex;gap:20px;padding:10px 16px 0;border-bottom:1px solid {LINE}">{dtab("AI 草稿", active=="drafts")}{dtab("快捷话术 · 素材", active=="tmpls")}</div>'
             f'<div style="flex:1;min-height:0;overflow:hidden;padding:12px 16px 16px;display:flex;flex-direction:column;gap:8px">{body}</div></div>')
 def scrim():
     return '<div style="position:absolute;inset:0;background:rgba(16,24,40,.34)"></div>'
@@ -243,7 +243,7 @@ drafts_body = (hint('草稿只用 Google Sheet 目录里的事实（价格、日
     + draft('答疑 · 约看课', '可以的 Sharon，半工读转周末班随时可以，学费按剩余堂数折算，不会重复收。\n刚毕业的话建议先来看一堂实操（免费），这周六 2 点有一场，帮你留位？', 70)
     + draft('先问情况', 'Sharon 你好，我是 Boon，Emily 的同事。想先了解一下：你是想边找工作边学，还是先专心学完 9 个月？两种情况我推荐的班不一样。', 62)
     + draft('约通话', '这个问题电话讲 3 分钟更清楚。你现在方便吗？不方便的话晚上 8 点后我打给你。', 40, '无价格'))
-reply_inner = (chat_head('Sharon', '🍷 Emily 线 · 等真人 14 分')
+reply_inner = (chat_head('Sharon', '🍷 Emily 线 · 人手中 · Boon')
     + takeover_bar(True) + ctx_strip(False) + stream(MSGS[:3]) + composer()
     + scrim() + drawer('drafts', drafts_body, 620))
 (OUT/'Reply.dc.html').write_text(phone(reply_inner))
@@ -269,7 +269,7 @@ quick_body = (f'<div style="display:flex;align-items:center;gap:8px;height:38px;
     + ''.join(f'<div style="display:flex;align-items:center;gap:9px;padding:11px 12px;border:1px solid {LINE};border-radius:10px;background:{SURF};font-size:13.5px;font-weight:600">{ic(i,18,"color:#3c444e;")}{l}</div>' for i,l in [('note','✅ 报名 form'),('folder','💳 给账号'),('plus','🤝 54d 社群'),('image','📎 课程图')])
     + '</div>'
     + f'<div style="font-size:11.5px;color:{MUTED};line-height:1.4">💳 只发 JWC 官方账号；非官方收款账号会被拦下并告警。</div>')
-quick_inner = (chat_head('Sharon', '🍷 Emily 线 · 等真人 14 分')
+quick_inner = (chat_head('Sharon', '🍷 Emily 线 · 人手中 · Boon')
     + takeover_bar(True) + ctx_strip(False) + stream(MSGS[:3]) + composer()
     + scrim() + drawer('tmpls', quick_body, 660))
 (OUT/'Quick.dc.html').write_text(phone(quick_inner))
@@ -288,15 +288,16 @@ sent_sheet = (f'<div style="position:absolute;left:12px;right:12px;bottom:20px;b
     + f'<div style="display:flex;align-items:center;gap:10px;margin-top:4px;padding-top:12px;border-top:1px solid {LINE_SOFT}">'
     f'<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:{MUTED}">队列 <span class="num">1 / 3</span> · 下一条</div><div style="font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Wei Jie · ☕ Cindy 线 · <span class="num" style="color:#8a6410">等 9 分</span></div></div>'
     f'<div style="flex:none;height:44px;padding:0 16px;display:flex;align-items:center;gap:6px;border-radius:10px;background:{INK};color:#ffffff;font-size:14px;font-weight:700">下一条 {ic("chevron",16,"","2")}</div></div></div>')
-sent_inner = (chat_head('Sharon', '🍷 Emily 线 · 人手中')
+sent_inner = (chat_head('Sharon', '🍷 Emily 线 · 人手中 · Boon')
     + takeover_bar(True, compact=True) + stream(sent_msgs) + composer() + scrim() + sent_sheet)
 (OUT/'Sent.dc.html').write_text(phone(sent_inner))
 
 # ══════════════════════════ 6. Handoff —— IG/FB 号码交接 ══════════════════════════
 def handoff_row(initial, emoji, name, handle, account, course, lang, stage, said, when, waNumber):
+    handle_html = f' <span style="font-weight:500;color:{MUTED}">{handle}</span>' if handle else ''
     return (f'<div style="padding:13px 16px;border-bottom:1px solid {LINE_SOFT};display:flex;flex-direction:column;gap:8px">'
             f'<div style="display:grid;grid-template-columns:42px minmax(0,1fr);gap:11px;align-items:center">{avatar(initial,emoji)}'
-            f'<div style="min-width:0"><div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{name} <span style="font-weight:500;color:{MUTED}">{handle}</span></span><span class="num" style="flex:none;font-size:11.5px;color:{TIME}">{when}</span></div>'
+            f'<div style="min-width:0"><div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;min-width:0;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{name}{handle_html}</span><span class="num" style="flex:none;font-size:11.5px;color:{TIME}">{when}</span></div>'
             f'<div style="font-size:12.5px;color:{MUTED};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{account}</div></div></div>'
             f'<p style="margin:0;padding:8px 11px;border-radius:9px;border-top-left-radius:2px;background:{SURF};box-shadow:0 1px 1px rgba(16,24,40,.09);font-size:13.5px;line-height:1.4;color:{INK}">{said}</p>'
             f'<div style="display:flex;flex-wrap:wrap;gap:5px">{tag(course,"blue")}{stage_tag(stage)}{tag(lang,"gray")}</div>'
