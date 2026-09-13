@@ -1,6 +1,6 @@
 {
-  "name": "秒回 · 客户消息回复台",
-  "short_name": "秒回",
+  "name": "solowork",
+  "short_name": "solowork",
   "description": "SOS 通知直达、回客户、清队列、话术、收款确认。",
   "start_url": "./",
   "scope": "./",

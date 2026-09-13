@@ -69,7 +69,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 /* 登录 */
 .login{padding:calc(var(--safe-t) + 72px) 24px 0;display:flex;flex-direction:column;gap:18px}
-.login .brand{font-size:var(--fs-xs);font-weight:700;color:var(--uk-brand);letter-spacing:.08em}
+.login .brand{font-size:var(--fs-xs);font-weight:700;color:#e0342c;letter-spacing:.08em}
 .login h1{margin:4px 0 0;font-size:26px;font-weight:700;letter-spacing:-.02em}
 .field{display:flex;flex-direction:column;gap:5px}.field span{font-size:12px;font-weight:600;color:var(--uk-muted);letter-spacing:.03em}
 .field input{height:46px;padding:0 14px;border:0;border-radius:var(--uk-r-md);background:var(--uk-surface-2);color:var(--uk-ink);font:inherit;font-size:var(--fs-base)}
