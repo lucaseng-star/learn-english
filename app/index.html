@@ -10,6 +10,8 @@
 <meta name="description" content="秒回 v4 可用原型：SOS 通知直达、回客户、清队列、话术、收款确认。示例数据。">
 <title>秒回 · 手机回复台</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="app.css?v=4">
 </head>
@@ -131,5 +133,6 @@
 </div>
 <!-- APP:BODY:END -->
 <script src="app.js?v=4"></script>
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js");</script>
 </body>
 </html>
