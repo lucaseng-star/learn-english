@@ -99,6 +99,7 @@
   const conv = id => CONVS.find(c => c.id === id);
   const waitMin = at => Math.max(0, Math.round((Date.now() - at) / 60000));
   const level = m => m >= 10 ? 'hot' : m >= 5 ? 'warm' : 'cool';
+  const urgent = m => m >= 30;   // 超过 30 分：脱队，要看得出来
   const isOpenSOS = c => c.sos && !c.sos.repliedAt;
   const mine = c => c.sos && c.sos.claimedBy === ME;
   const avatar = (c, sm) => `<span class="ava${sm ? ' ava--sm' : ''}"><span>${esc(c.name[0])}</span><i>${LINES[c.line].emoji}</i></span>`;
@@ -138,9 +139,9 @@
     const replied = CONVS.filter(c => c.sos && c.sos.repliedAt && (state.filter === 'all' || c.line === state.filter));
     const row = c => {
       const m = waitMin(c.sos.askedAt); const other = c.sos.claimedBy && c.sos.claimedBy !== ME;
-      const pill = c.sos.repliedAt ? `<span class="wait wait--cool">已回 ${hm(c.sos.repliedAt)}</span>` : `<span class="wait wait--${level(m)}">等 ${m} 分</span>`;
+      const pill = c.sos.repliedAt ? `<span class="wait wait--cool">已回 ${hm(c.sos.repliedAt)}</span>` : `<span class="wait wait--${level(m)}${urgent(m) ? ' wait--over' : ''}">${urgent(m) ? '⚠ ' : ''}等 ${m} 分</span>`;
       const right = c.sos.repliedAt ? `<span class="who ${c.sos.claimedBy === ME ? 'who--me' : 'who--other'}">${c.sos.claimedBy === ME ? '你' : esc(c.sos.claimedBy)}回的</span>` : mine(c) ? `<span class="who who--me">你在回</span>` : other ? `<span class="who who--other">${esc(c.sos.claimedBy)} 在回</span>` : `<button class="zap" type="button" data-zap="${c.id}" aria-label="接手回复">${ic('i-bolt')}</button>`;
-      return `<li class="qrow ${other ? 'is-other' : (!c.sos.claimedBy ? 'is-open' : '')}">${avatar(c)}<button class="qmain" type="button" data-open="${c.id}"><div class="qtop"><span class="qname">${esc(c.name)}</span>${pill}</div><p class="qsnip">${esc(c.sos.question)}</p><div class="qmeta"><span class="tag tag--blue">${esc(c.course)}</span>${stageTag(c.stage)}</div></button>${right}</li>`;
+      return `<li class="qrow ${other ? 'is-other' : (!c.sos.claimedBy ? 'is-open' : '')}">${avatar(c)}<button class="qmain" type="button" data-open="${c.id}"><div class="qtop"><span class="qname">${esc(c.name)}</span>${pill}</div><p class="qsnip">${esc(c.sos.question)}</p><div class="qmeta"><span class="tag tag--blue">${esc(c.course)}</span>${stageTag(c.stage)}${c.sos.snoozed ? '<span class="tag tag--yellow">明早 9:00 跟进</span>' : ''}</div></button>${right}</li>`;
     };
     const receipts = CONVS.filter(c => c.receipt && !c.receipt.done).length;
     const handoffs = HANDOFFS.filter(h => !h.done).length;
@@ -211,6 +212,7 @@
   /* ── 会话 ── */
   function openChat(id, via) {
     const c = conv(id); if (!c) return;
+    $('#install').hidden = true; document.querySelector('.phone').classList.remove('has-install');
     if (c.sos && !c.sos.repliedAt && !c.sos.claimedBy && (via === 'notif' || via === 'zap')) { c.sos.claimedBy = ME; c.sos.claimedAt = Date.now(); c.botActive = false; }
     state.current = id; state.sentline[id] = state.sentline[id] || null;
     $('#notif').classList.remove('is-on'); clearTimeout(notifT);
@@ -223,10 +225,11 @@
   function bubble(m) {
     const t = hm(m.at);
     if (m.image && m.dir === 'in') return `<div class="msg in"><div class="bubble img"><div class="pic">${ic('i-image', 'ic ic--lg')}<span>银行转账截图</span><b class="num">${esc(m.amount)} · ${t}</b></div><div class="cap">${esc(m.text)}</div><span class="meta num">${t}</span></div></div>`;
-    if (m.image || m.doc) return `<div class="msg out"><div class="bubble img"><span class="by">${esc(m.by)}</span><div class="pic${m.doc ? ' pic--doc' : ''}">${m.doc ? '📎' : ic('i-image', 'ic ic--lg')}<b>${esc(m.file)}</b></div>${m.text ? `<div class="cap">${esc(m.text)}</div>` : ''}<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span></div></div>`;
+    const by = m.by && m.by !== ME_NAME ? `<span class="by">${esc(m.by)}</span>` : '';
+    if (m.image || m.doc) return `<div class="msg out"><div class="bubble img">${by}<div class="pic${m.doc ? ' pic--doc' : ''}">${m.doc ? '📎' : ic('i-image', 'ic ic--lg')}<b>${esc(m.file)}</b></div>${m.text ? `<div class="cap">${esc(m.text)}</div>` : ''}<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span></div></div>`;
     if (m.dir === 'in') return `<div class="msg in"><div class="bubble${m.tr ? ' has-tr' : ''}"><p>${esc(m.text)}</p>${m.tr ? `<p class="tr"><b>译</b> ${esc(m.tr)}</p>` : ''}<span class="meta num">${t}</span></div></div>`;
     const meta = m.state === 'failed' ? `<span class="meta fail">❌ 未送达</span>` : m.state === 'pending' ? `<span class="meta num">发送中 ${ic('i-clock', 'ic tick')}</span>` : `<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span>`;
-    return `<div class="msg out"><div class="bubble"><span class="by">${esc(m.by)}</span><p>${esc(m.text)}</p>${meta}</div></div>`;
+    return `<div class="msg out"><div class="bubble">${by}<p>${esc(m.text)}</p>${meta}</div></div>`;
   }
   function failCard(c) {
     if (c.windowClosed === 'ig') return `<div class="failcard"><h4>❌ IG 窗口已关，发不出去</h4><p>她留了 WhatsApp 号码，改用：</p><div class="acts"><button class="big" type="button" data-fail="wa">${ic('i-wa', 'ic ic--sm')}&nbsp;WhatsApp 她 · ${esc(c.waNumber)}</button><div class="two"><button class="soft" type="button" data-fail="call">${ic('i-phone', 'ic ic--sm')}打电话</button><button class="soft" type="button" data-fail="wait">等她再发来</button></div></div></div>`;
@@ -281,12 +284,12 @@
   function send(text, opts = {}) {
     const c = conv(state.current); if (!c || !text.trim()) return;
     const by = ME_NAME; const now = Date.now();
-    if (c.windowClosed) { c.messages.push({ dir: 'out', at: now, by, text, state: 'failed' }); $('#input').value = ''; autosize(); renderChat(); return; }
+    if (c.windowClosed) { c.messages.push({ dir: 'out', at: now, by, text, state: 'failed' }); renderChat(); return; }   // 输入框不清，字还在，改完可以再发
     let out = text;
     if (c.lang !== 'zh' && hasCJK(text) && !opts.zh) { const d = c.drafts.find(x => x.zh === text.trim()); if (d) out = d.text; }
     const m = { dir: 'out', at: now, by, text: out, state: 'pending' };
     c.messages.push(m); c.botActive = false;
-    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = ME; }
+    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = c.sos.claimedBy || ME; }
     state.sentline[c.id] = now;
     $('#input').value = ''; autosize(); renderChat();
     setTimeout(() => { m.state = 'read'; if (state.current === c.id) renderChat(); }, 1200);
@@ -302,7 +305,12 @@
   $('#back').addEventListener('click', () => { state.queue = null; closeChat(); });
   $('#above').addEventListener('click', e => {
     const c = conv(state.current); if (!c) return;
-    if (e.target.closest('#gate')) { c.botActive = false; c.sos && (c.sos.claimedBy = ME, c.sos.claimedAt = Date.now()); renderChat(); toast('Bot 已停，你来回'); setTimeout(() => $('#input').focus(), 100); return; }
+    if (e.target.closest('#gate')) {
+      const taken = c.sos && c.sos.claimedBy && c.sos.claimedBy !== ME && !c.sos.repliedAt;
+      if (taken && !confirm(`${c.sos.claimedBy} 已经在回这个客户了。\n还是要你来接手吗？`)) return;
+      c.botActive = false; c.sos && (c.sos.claimedBy = ME, c.sos.claimedAt = Date.now()); renderChat();
+      toast(taken ? '你接手了，记得告诉同事' : 'Bot 已停，你来回'); setTimeout(() => $('#input').focus(), 100); return;
+    }
     const d = e.target.closest('[data-draft]'); if (d) { const dr = c.drafts[+d.dataset.draft]; return insert(dr.zh || dr.text); }
     if (e.target.closest('#moreDrafts')) { state.draftOffset[c.id] = ((state.draftOffset[c.id] || 0) + 2) % Math.max(1, c.drafts.length); return renderChat(); }
     if (e.target.closest('#sendZh')) return send($('#input').value, { zh: true });
@@ -335,7 +343,7 @@
     const b = e.target.closest('[data-more]'); if (!b) return; setSheet($('#moreSheet'), false);
     const c = conv(state.current); if (!c) return;
     if (b.dataset.more === 'handback') { c.botActive = true; state.sentline[c.id] = null; renderChat(); toast(`已交还 ${LINES[c.line].persona}`); }
-    if (b.dataset.more === 'snooze') { if (c.sos) { c.sos.repliedAt = c.sos.repliedAt || Date.now(); } toast('明早 9:00 提醒你'); closeChat(); }
+    if (b.dataset.more === 'snooze') { if (c.sos) c.sos.snoozed = true; toast('明早 9:00 提醒你 · 客户还在等，没从队列移走'); closeChat(); }   // 不写 repliedAt：客户没收到东西，不能算已回
     if (b.dataset.more === 'assign') { if (c.sos) { c.sos.claimedBy = COLLEAGUE; c.sos.claimedAt = Date.now(); } toast('已转给佳佳'); closeChat(); }
   });
 
@@ -391,7 +399,7 @@
       if (pending) c.messages.push({ dir: 'out', at: now + n++, by: ME_NAME, text: pending, state: 'read' });
     }
     t.uses++; c.botActive = false;
-    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = ME; }
+    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = c.sos.claimedBy || ME; }
     state.sentline[c.id] = now; renderChat(); toast(`模版「${t.name}」已发 · ${n} 条`);
   }
   $('#pvSend').addEventListener('click', () => { const t = pvTpl; closeOverlays(); sendTemplate(t); });
@@ -406,7 +414,7 @@
   $('#backHandoff').addEventListener('click', () => $('#handoff').classList.remove('is-open'));
 
   /* ── 启动 ── */
-  setInterval(() => { if (!$('#queue').hidden && !$('#chat').classList.contains('is-open')) renderQueue(); }, 30000);
+  setInterval(() => { if ($('#queue').hidden || $('#chat').classList.contains('is-open')) return; if ($('#qsearch').hidden) renderQueue(); else renderSearch(); }, 30000);
   if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
   /* ── 手势：右滑返回（会话 / 号码交接），下滑关抽屉 ── */
   function swipeBack(el, done) {

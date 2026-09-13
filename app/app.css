@@ -61,7 +61,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tag--green{background:var(--uk-tag-green-bg);color:var(--uk-tag-green-fg)}.tag--yellow{background:var(--uk-tag-yellow-bg);color:var(--uk-tag-yellow-fg)}
 .stg{display:inline-flex;align-items:center;gap:5px}.stg i{width:7px;height:7px;border-radius:50%;display:inline-block}
 .wait{flex:none;padding:2px 7px;border-radius:var(--uk-r-sm);font-size:var(--fs-xs);font-weight:700;font-variant-numeric:tabular-nums}
-.wait--hot{background:var(--hot-bg);color:var(--hot-fg)}.wait--warm{background:var(--warm-bg);color:var(--warm-fg)}.wait--cool{background:var(--cool-bg);color:var(--cool-fg)}
+.wait--hot{background:var(--hot-bg);color:var(--hot-fg)}.wait--over{background:var(--hot-fg);color:#fff}.wait--warm{background:var(--warm-bg);color:var(--warm-fg)}.wait--cool{background:var(--cool-bg);color:var(--cool-fg)}
 .ava{position:relative;flex:none;width:42px;height:42px}.ava--sm{width:36px;height:36px}
 .ava>span{width:100%;height:100%;border-radius:50%;background:var(--uk-tag-gray-bg);color:var(--uk-tag-gray-fg);display:grid;place-items:center;font-size:var(--fs-base);font-weight:700}
 .ava--sm>span{font-size:13px}
@@ -147,7 +147,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .draft{flex:none;width:286px;padding:10px 12px;border:1px solid var(--uk-line);border-radius:var(--uk-r-md);background:var(--uk-surface);text-align:left}
 .draft:active{border-color:var(--uk-brand);background:var(--uk-brand-soft)}
 .draft b{display:block;font-size:14px;font-weight:700;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.draft p{margin:0;font-size:13px;line-height:1.42;color:var(--uk-ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.draft p{margin:0;font-size:13px;line-height:1.42;color:var(--uk-ink-2);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .draft small{display:block;margin-top:5px;font-size:var(--fs-xs);color:var(--uk-time);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .trstrip{display:flex;align-items:center;gap:8px;margin:10px 8px 0;padding:9px 12px;border-radius:var(--uk-r-md);background:var(--uk-brand-soft);font-size:var(--fs-sm);line-height:1.4;color:var(--uk-tag-green-fg)}
 .trstrip b{white-space:nowrap}.trstrip span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.85}
@@ -200,7 +200,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .preview{position:absolute;left:12px;right:12px;bottom:calc(20px + var(--safe-b));z-index:5;padding:12px;border-radius:var(--uk-r-lg);background:var(--uk-surface);border:1px solid var(--uk-line);box-shadow:0 8px 28px rgba(16,24,40,.18);transform:translateY(calc(100% + 40px));transition:transform .24s cubic-bezier(.32,.72,0,1)}
 .preview.is-open{transform:none}.preview h4{margin:0 0 8px;font-size:var(--fs-md);font-weight:700}
 .preview .pv{display:flex;gap:8px;align-items:flex-start}.preview .thumb{width:64px;height:64px;flex:none;border-radius:8px;background:#efe7dd;border:1px solid var(--uk-line);display:grid;place-items:center;color:#c79a63}
-.preview p{margin:0;flex:1;min-width:0;padding:8px 10px;border-radius:9px;background:var(--uk-accent);color:var(--uk-accent-ink);font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.preview p{margin:0;flex:1;min-width:0;padding:8px 10px;border-radius:9px;background:var(--uk-accent);color:var(--uk-accent-ink);font-size:13px;line-height:1.4;max-height:40vh;overflow-y:auto;overscroll-behavior:contain;white-space:pre-wrap}
 .preview .two{margin-top:10px}
 .sheet{position:absolute;left:12px;right:12px;bottom:calc(12px + var(--safe-b));z-index:5;border-radius:var(--uk-r-lg);background:var(--uk-surface);box-shadow:var(--sheet-shadow);overflow:hidden;transform:translateY(calc(100% + 24px));transition:transform .24s cubic-bezier(.32,.72,0,1)}
 .sheet.is-open{transform:none}.sheet h3{margin:0;padding:14px 16px 8px;font-size:var(--fs-md);color:var(--uk-muted);font-weight:600}
