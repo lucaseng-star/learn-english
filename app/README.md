@@ -2,7 +2,8 @@
 
 一个只做一件事的手机页面：**客户在等真人，值班的人 60 秒内回掉。**
 
-- 在线试用：<https://claude.ai/code/artifact/1d0b8666-ff40-4b49-9ab9-50972a5e99de>（手机打开即可）
+- 装到手机（公开网址，Vercel jwc 团队，静态托管）：<https://miaohui-jwcacademy.vercel.app> → iPhone 分享「添加到主屏幕」，Android Chrome「安装应用」。发布脚本从本分支 `app/` 拉，改了代码要重新部署。
+- 在线试用（要 Claude 账号）：<https://claude.ai/code/artifact/1d0b8666-ff40-4b49-9ab9-50972a5e99de>
 - 本地：打开 `app/index.html`；iPhone Safari「添加到主屏幕」可当 app 用（有 manifest，全屏）。
 
 ## 它是什么、不是什么
