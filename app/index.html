@@ -53,8 +53,13 @@
     <header class="topbar">
       <h1>待回</h1><span class="grow"></span>
       <button class="duty" id="duty" type="button" aria-pressed="true"><i></i><span>值班中</span></button>
+      <button class="iconbtn" id="searchBtn" type="button" aria-label="搜客户"><svg class="ic"><use href="#i-search"/></svg></button>
       <button class="iconbtn" id="settings" type="button" aria-label="设置"><svg class="ic"><use href="#i-gear"/></svg></button>
     </header>
+    <div class="qsearch" id="qsearch" hidden>
+      <span class="search"><svg class="ic"><use href="#i-search"/></svg><input id="qq" placeholder="搜客户名、问题、课程、号码" autocapitalize="off" autocomplete="off"></span>
+      <button type="button" id="qCancel">取消</button>
+    </div>
     <div class="dutyline" id="dutyline">值班：<b>你、佳佳</b></div>
     <div class="chips" id="chips" role="tablist"></div>
     <ul class="qlist" id="qlist"></ul>

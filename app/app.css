@@ -229,3 +229,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .desk:not(.is-open),.preview:not(.is-open),.sheet:not(.is-open),.notif:not(.is-on){visibility:hidden}
 .desk,.preview,.sheet{transition:transform .24s cubic-bezier(.32,.72,0,1),visibility 0s linear .24s}
 .desk.is-open,.preview.is-open,.sheet.is-open{visibility:visible;transition-delay:0s,0s}
+/* 搜客户 */
+.qsearch{display:flex;align-items:center;gap:6px;padding:2px 12px 10px}
+.qsearch .search{flex:1;min-width:0}
+.qsearch>button{flex:none;border:0;background:none;padding:8px 6px;font-size:var(--fs-md);font-weight:600;color:var(--uk-link)}
+.qrow--s .qmain{grid-column:2}.qrow--s{grid-template-columns:42px minmax(0,1fr)}
+/* 右滑返回时跟手 */
+.screen--push.is-drag{transition:none}

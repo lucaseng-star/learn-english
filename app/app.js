@@ -95,7 +95,7 @@
   const qrFill = (text, c) => String(text || '').replace(/\{\{\s*name\s*\}\}/gi, c ? c.name : '');
 
   /* ── 状态 ── */
-  const state = { duty: true, filter: 'all', current: null, queue: null, draftOffset: {}, tplFolder: '', sentline: {}, lastNotif: 'sharon' };
+  const state = { duty: true, filter: 'all', current: null, queue: null, draftOffset: {}, tplFolder: '', sentline: {}, lastNotif: 'sharon', q: '' };
   const conv = id => CONVS.find(c => c.id === id);
   const waitMin = at => Math.max(0, Math.round((Date.now() - at) / 60000));
   const level = m => m >= 10 ? 'hot' : m >= 5 ? 'warm' : 'cool';
@@ -155,6 +155,34 @@
     $('#dutyline').innerHTML = state.duty ? '值班：<b>你、佳佳</b>' : '值班：<b>佳佳</b> · 你已下班，不收通知';
     $('#dutyLabel').textContent = state.duty ? '下班（不收通知）' : '上班（收通知）';
   }
+  // 🔍 搜客户：名字 / 问题 / 课程 / 聊天内容 / 号码，全部客户都搜（不只在等的那几个）
+  const lastText = c => { const m = [...c.messages].reverse().find(x => x.text); return m ? m.text : ''; };
+  function matchConv(c, q) {
+    const has = v => String(v || '').toLowerCase().includes(q);
+    return has(c.name) || has(c.course) || has(c.sos && c.sos.question) || has(c.phone) || has(c.waNumber)
+      || c.messages.some(m => has(m.text) || has(m.tr));
+  }
+  function renderSearch() {
+    const q = qrNormalizeQuery(state.q);
+    const list = q ? CONVS.filter(c => matchConv(c, q)) : [];
+    $('#qlist').innerHTML = !q
+      ? '<li class="empty">打字搜客户<br><small>名字、问过什么、课程、号码都能搜</small></li>'
+      : (list.map(c => {
+          const st = c.sos && !c.sos.repliedAt ? `<span class="wait wait--${level(waitMin(c.sos.askedAt))}">等 ${waitMin(c.sos.askedAt)} 分</span>`
+            : c.sos && c.sos.repliedAt ? `<span class="wait wait--cool">已回 ${hm(c.sos.repliedAt)}</span>`
+            : c.receipt && !c.receipt.done ? '<span class="wait wait--warm">待确认收款</span>'
+            : c.windowClosed ? '<span class="wait wait--hot">窗口已关</span>' : '';
+          return `<li class="qrow qrow--s">${avatar(c)}<button class="qmain" type="button" data-open="${c.id}"><div class="qtop"><span class="qname">${esc(c.name)}</span>${st}</div><p class="qsnip">${esc((c.sos && c.sos.question) || lastText(c))}</p><div class="qmeta"><span class="tag tag--blue">${esc(c.course)}</span>${stageTag(c.stage)}<span class="tag tag--gray">${LINES[c.line].emoji} ${esc(LINES[c.line].persona)}</span></div></button></li>`;
+        }).join('') || `<li class="empty">没搜到「${esc(q)}」</li>`);
+  }
+  function setSearch(on) {
+    $('#qsearch').hidden = !on; $('#dutyline').hidden = on; $('#chips').hidden = on; $('.dock').hidden = on;
+    if (on) { $('#qq').focus(); renderSearch(); } else { state.q = ''; $('#qq').value = ''; renderQueue(); }
+  }
+  $('#searchBtn').addEventListener('click', () => setSearch($('#qsearch').hidden));
+  $('#qCancel').addEventListener('click', () => setSearch(false));
+  $('#qq').addEventListener('input', e => { state.q = e.target.value; renderSearch(); });
+
   $('#chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { state.filter = b.dataset.f; renderQueue(); } });
   $('#qlist').addEventListener('click', e => {
     const z = e.target.closest('[data-zap]'); if (z) return openChat(z.dataset.zap, 'zap');
@@ -191,7 +219,7 @@
     $('#chat').classList.add('is-open');
     if (via === 'notif') setTimeout(() => $('#input').focus(), 300);
   }
-  function closeChat() { $('#chat').classList.remove('is-open'); closeOverlays(); state.current = null; renderQueue(); }
+  function closeChat() { $('#chat').classList.remove('is-open'); closeOverlays(); state.current = null; if ($('#qsearch').hidden) renderQueue(); else renderSearch(); }
   function bubble(m) {
     const t = hm(m.at);
     if (m.image && m.dir === 'in') return `<div class="msg in"><div class="bubble img"><div class="pic">${ic('i-image', 'ic ic--lg')}<span>银行转账截图</span><b class="num">${esc(m.amount)} · ${t}</b></div><div class="cap">${esc(m.text)}</div><span class="meta num">${t}</span></div></div>`;
@@ -380,6 +408,55 @@
   /* ── 启动 ── */
   setInterval(() => { if (!$('#queue').hidden && !$('#chat').classList.contains('is-open')) renderQueue(); }, 30000);
   if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
+  /* ── 手势：右滑返回（会话 / 号码交接），下滑关抽屉 ── */
+  function swipeBack(el, done) {
+    let x0 = 0, y0 = 0, dx = 0, dy = 0, on = false, lock = null, t0 = 0;
+    el.addEventListener('touchstart', e => {
+      on = false;
+      if (e.touches.length !== 1 || !el.classList.contains('is-open')) return;
+      if (el.querySelector('.desk.is-open, .sheet.is-open, .preview.is-open')) return;   // 有浮层时不抢手势
+      if (e.target.closest('.drow, .chips, .rchips, input, textarea')) return;            // 横滚区域 / 输入框让开
+      const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; dx = dy = 0; on = true; lock = null; t0 = Date.now();
+    }, { passive: true });
+    el.addEventListener('touchmove', e => {
+      if (!on) return;
+      const t = e.touches[0]; dx = t.clientX - x0; dy = t.clientY - y0;
+      if (lock === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) lock = (dx > 0 && Math.abs(dx) > Math.abs(dy) * 1.3) ? 'x' : 'no';
+      if (lock !== 'x') return;
+      e.preventDefault();
+      el.classList.add('is-drag'); el.style.transform = `translateX(${Math.max(0, dx)}px)`;
+    }, { passive: false });
+    const end = () => {
+      if (!on) return; on = false;
+      el.classList.remove('is-drag'); el.style.transform = '';
+      if (lock === 'x' && (dx > 90 || (dx > 45 && Date.now() - t0 < 320))) done();
+    };
+    el.addEventListener('touchend', end); el.addEventListener('touchcancel', end);
+  }
+  swipeBack($('#chat'), () => { state.queue = null; closeChat(); });
+  swipeBack($('#handoff'), () => $('#handoff').classList.remove('is-open'));
+
+  function swipeDown(el, done, scroller) {
+    let y0 = 0, dy = 0, on = false, t0 = 0;
+    el.addEventListener('touchstart', e => {
+      on = false; if (e.touches.length !== 1 || !el.classList.contains('is-open')) return;
+      const sc = scroller && el.querySelector(scroller);
+      if (sc && sc.scrollTop > 2) return;                 // 列表没到顶就先让它滚
+      y0 = e.touches[0].clientY; dy = 0; on = true; t0 = Date.now();
+    }, { passive: true });
+    el.addEventListener('touchmove', e => {
+      if (!on) return; dy = e.touches[0].clientY - y0;
+      if (dy <= 0) return;
+      e.preventDefault(); el.style.transition = 'none'; el.style.transform = `translateY(${dy}px)`;
+    }, { passive: false });
+    const end = () => { if (!on) return; on = false; el.style.transition = ''; el.style.transform = ''; if (dy > 70 || (dy > 35 && Date.now() - t0 < 320)) done(); };
+    el.addEventListener('touchend', end); el.addEventListener('touchcancel', end);
+  }
+  swipeDown($('#desk'), () => { closeSlash(true); closeOverlays(); }, '.deskbody');
+  swipeDown($('#moreSheet'), () => setSheet($('#moreSheet'), false));
+  swipeDown($('#settingsSheet'), () => setGlobal(false));
+  swipeDown($('#preview'), () => { $('#preview').classList.remove('is-open'); $('#scrim').classList.remove('is-open'); });
+
   /* ── 键盘：iPhone 装成 app 后，输入时把整个壳缩到键盘上面（fixed 元素不会自动让位） ── */
   if (window.visualViewport) {
     const vv = window.visualViewport;
