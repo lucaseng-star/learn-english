@@ -22,7 +22,8 @@
 | 草稿 2 条 + 换一批 | Claude 按客户最后一句起草，只填输入框，发送必须你点 |
 | BM 客户：中文写，发出时翻成 BM | `/api/translate`（示例先按草稿自带的 BM 发） |
 | 已发 ✓✓ · 12 小时后 Bot 接回 · 交还 | 人工回复后 pause 12h，IG/FB 则永久转人手 |
-| ✱ 话术：最近 / 搜 / 文件夹 / 预览再发 | `/api/quick-replies`，文件夹名沿用 ChatDaddy |
+| ✱ 话术：置顶 / 搜 / 文件夹 / 预览再发；输入框打 `/fcc` 直接弹 | `/api/quick-replies`（ChatDaddy 1,001 个 flow 原名原文）；搜索规则照 dashboard 的 `qrNormalizeQuery` / `qrMatches`：开头的 `/` 不算，名字、资料夹、每一步内文都搜 |
+| 话术多步、带图、带 PDF、`{{name}}` | 发送顺序照 bot：每步先图（第一张带文字）→ 文件 → 剩下文字；`{{name}}` 填客户名 |
 | 💳 客户付了？ 确认收款 / 不是付款 | `/verify` `/reject`，确认后 bot 自动发报名表 |
 | IG/FB 给了号码 → 打开 WhatsApp / 已联系 | `/api/igfb-handoffs` |
 | ❌ IG 窗口已关 / WhatsApp 窗口已关 | 24h 窗口；IG 改走 WhatsApp，WA 发唤醒模板 |
@@ -35,6 +36,7 @@ app/
 ├── index.html            外壳：登录 / 待回 / 会话 / 号码交接 + 话术抽屉、预览、操作单、通知、toast
 ├── app.css               样式（--uk-* token → 组件；含深色）
 ├── app.js                示例数据、状态、渲染、交互
+├── quick-reply-search.test.js  话术搜索守卫，用例跟 jwc-bot tests/quick-reply-search.test.js 一样（node app/quick-reply-search.test.js）
 ├── manifest.webmanifest  加到主屏幕
 └── README.md
 ```

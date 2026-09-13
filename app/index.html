@@ -83,8 +83,9 @@
     <div class="desk" id="desk" role="dialog" aria-label="话术">
       <span class="grab"></span>
       <div class="deskbody">
-        <div class="search"><svg class="ic"><use href="#i-search"/></svg><input id="tplSearch" placeholder="搜话术（名字或内容）"><small id="tplCount"></small></div>
-        <div class="rchips" id="tplRecent"></div>
+        <div class="slashbar"><svg class="ic ic--sm"><use href="#i-asterisk"/></svg>话术 <b class="num" id="slashCount"></b><span>输入框里继续打字就会筛选</span><button type="button" id="slashClose">关闭</button></div>
+        <div class="search"><svg class="ic"><use href="#i-search"/></svg><input id="tplSearch" placeholder="搜话术，或像 ChatDaddy 一样打 /fcc" autocapitalize="off" autocomplete="off"><small id="tplCount"></small></div>
+        <div class="rchips" id="tplRecent" aria-label="置顶和常用"></div>
         <div id="tplList"></div>
         <div class="rchips" id="tplFolders"></div>
       </div>

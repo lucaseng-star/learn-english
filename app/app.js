@@ -56,26 +56,43 @@
       messages: [
         { dir: 'in', at: ago(60 * 40), text: 'my number 012-345 6789, boleh call petang. Nak tanya pasal kelas roti weekend tu', tr: '我的号码 012-345 6789，下午可以打。想问周末面包课的事' } ],
       drafts: [ { answer: '下一场 27/9 · 转 WhatsApp', zh: '可以！下一场周末面包班 9 月 27 日，我等下 WhatsApp 你 🙂', text: 'Hai Nurul, boleh! Kelas Bakery Weekend seterusnya 27 Sept. Saya WhatsApp awak sekejap lagi ya 🙂' } ] },
-    { id: 'kelvin', name: 'Kelvin Tan', line: 'cindy', channel: 'wa', lang: 'zh', course: 'FCC 4 日咖啡速成', stage: 'hot', warn: '⚠ WhatsApp 窗口已关',
+    { id: 'kelvin', name: 'Kelvin Tan', line: 'cindy', channel: 'wa', lang: 'zh', course: '4-Day Barista Express', stage: 'hot', warn: '⚠ WhatsApp 窗口已关',
       botActive: false, windowClosed: 'wa', phone: '017-654 3210',
       messages: [ { dir: 'in', at: ago(60 * 50), text: '下个月的 4 日班几号开？我要先请假' } ],
       drafts: [ { answer: '10 月班 13 号开，留位到明天', text: 'Kelvin 你好，10 月班 13 号开，连续 4 天。名额我先帮你留着，明天前回我就行 👍' } ] },
   ];
   const HANDOFFS = [
     { id: 'nurul', name: 'Nurul', handle: '@nurul.bakes', account: 'Instagram · JWC Bakery', course: 'BWC Bakery Weekend', said: 'my number 012-345 6789, boleh call petang. Nak tanya pasal kelas roti weekend tu', number: '012-345 6789', at: ago(18), done: false },
-    { id: 'farah', name: 'Farah', handle: '@farah.k', account: 'Facebook · JWC Academy 专页', course: 'FCC 4 日咖啡速成', said: '0176 543 210 这个是我的 WhatsApp，你 WhatsApp 我', number: '017-654 3210', at: ago(65), done: false },
+    { id: 'farah', name: 'Farah', handle: '@farah.k', account: 'Facebook · JWC Academy 专页', course: 'FCC 周末咖啡班', said: '0176 543 210 这个是我的 WhatsApp，你 WhatsApp 我', number: '017-654 3210', at: ago(65), done: false },
   ];
+  // 话术库：结构照 jwc-bot lib/quick-replies.js（ChatDaddy 1,001 个 flow 原名原文搬进来，全公司共用）。
+  // 每条 = { name, folder, pinned, steps:[{ text, images, docs }], uses, cdFireCount }；{{name}} = 客户名。
+  const T = (id, folder, name, text, o = {}) => ({ id, folder, name, pinned: !!o.pinned, uses: o.uses || 0, cdFireCount: o.fire || 0,
+    steps: o.steps || [{ text, images: (o.images || []).map(f => ({ filename: f })), docs: (o.docs || []).map(f => ({ filename: f })) }] });
   const TEMPLATES = [
-    { id: 't1', folder: 'WNSM KL CN', name: 'WNSM KL CN- PRICE', pinned: true, uses: 132, images: 1, text: '调酒半工读 WNSM 学费 RM ___ ，可分期 / PTPK。9 月班 16/9 开课，一周 1 天。图是课程表 👆' },
-    { id: 't2', folder: 'WNSM KL CN', name: 'WNSM KL CN- SCHEDULE 2026', uses: 87, images: 2, text: '2026 年 WNSM 开课时间表在图里 👆 每期 9 个月，一周 1 天上课。' },
-    { id: 't3', folder: 'WNSM KL CN', name: 'WNSM KL CN- INTERN BAR LIST', uses: 41, images: 0, text: '半工读合作酒吧名单：KL 6 家、JB 2 家，按你住的地方安排。' },
-    { id: 't4', folder: 'FMC WEEKEND KL CN', name: 'FMC WEEKEND KL CN- PRICE', uses: 64, images: 1, text: '调酒周末班 FMC 学费 RM ___，2 个月 8 堂，每周 3 小时。' },
-    { id: 't5', folder: 'WINE KL CN', name: 'WINE KL CN- FOONG 613', uses: 26, images: 1, text: '红酒初级课 · Foong 老师 · 5 款新世界红酒 · 2.5 小时。' },
-    { id: 't6', folder: '我的模版', name: 'KL 地址 + 停车', uses: 58, images: 0, text: '校区在 Bukit Jalil，停车免费 3 小时。定位：（示例）' },
-    { id: 't7', folder: '我的模版', name: 'PTPK 三样文件', uses: 39, images: 0, text: 'PTPK 需要：身份证、最高学历证书、两张照片。我们帮你办。' },
-    { id: 't8', folder: '我的模版', name: '周六试听', uses: 22, images: 0, text: '欢迎来看一堂实操（免费），周六 2 点有一场，要帮你留位吗？' },
+    T('t1', 'WNSM KL CN', 'WNSM KL CN- PRICE', '调酒半工读 WNSM 学费 RM ___ ，可分期 / PTPK。9 月班 16/9 开课，一周 1 天。图是课程表 👆', { pinned: true, uses: 132, images: ['WNSM-price.jpg'] }),
+    T('t2', 'WNSM KL CN', 'WNSM KL CN- SCHEDULE 2026', '2026 年 WNSM 开课时间表在图里 👆 每期 9 个月，一周 1 天上课。', { uses: 87, images: ['WNSM-2026-1.jpg', 'WNSM-2026-2.jpg'] }),
+    T('t3', 'WNSM KL CN', 'WNSM KL CN- INTERN BAR LIST', '半工读合作酒吧名单：KL 6 家、JB 2 家，按你住的地方安排。', { uses: 41 }),
+    T('t4', 'WNSM KL CN', 'WNSM KL CN- BROCHURE', '完整课程简介在 PDF 里 👇 有问题直接问我。', { uses: 18, docs: ['WNSM 2026 Brochure.pdf'] }),
+    T('t5', 'FCC Flow', 'FCC Flow 1_Intro', '', { fire: 310, steps: [
+      { text: '嗨 {{name}} ☕ 周末咖啡班对吧？8 个周六，学完你能拉花 + 出一杯咖啡馆水准的咖啡。', images: [], docs: [] },
+      { text: '想看「日期 / 真实学员评价 / 价格」哪个？我发你 😊', images: [], docs: [] } ] }),
+    T('t6', 'FCC Flow', 'FCC Flow 3_Schedule', '10 月周末咖啡班：KL 周六 10/10 开，JB 周日 11/10 开。时间表在图里 👆', { fire: 96, images: ['FCC-schedule.jpg'] }),
+    T('t7', 'FCC Flow', 'FCC Flow 5_Promotion', '☕ 周末咖啡基础班 RM1,299（原价 RM ___）到这个月底。含所有材料 + 证书。要帮你留位吗？', { pinned: true, fire: 205, images: ['FCC-promo.jpg'] }),
+    T('t8', 'FMC WEEKEND KL CN', 'FMC WEEKEND KL CN- PRICE', '调酒周末班 FMC 学费 RM ___，2 个月 8 堂，每周 3 小时。', { uses: 64, images: ['FMC-price.jpg'] }),
+    T('t9', 'BWC KL CN', 'BWC KL CN- PRICE', '🥯 周末烘焙班 RM ___，8 天，材料全包。', { uses: 22, images: ['BWC-price.jpg'] }),
+    T('t10', 'BWC KL CN', 'BWC KL CN- S1 CONTENTS', '🥯 周末烘焙课程！第一堂：欧包基础 + 酵母。', { fire: 40 }),
+    T('t11', 'WINE', 'WINE - 6450 (Emily)', '红酒初级课 · 5 款新世界红酒 · 2.5 小时 · RM ___。', { fire: 58, images: ['WINE-6450.jpg'] }),
+    T('t12', '我的模版', 'KL 地址 + 停车', '校区在 The Earth, 22 Jln Jalil 1, Bukit Jalil，停车免费 3 小时。\nhttps://maps.app.goo.gl/FPwpepeCyvikiSUj6', { uses: 58 }),
+    T('t13', '我的模版', 'PTPK 三样文件', 'PTPK 需要：身份证、最高学历证书、两张照片。我们帮你办。', { uses: 39 }),
+    T('t14', 'Boon 常用', '周六试听', '{{name}} 欢迎来看一堂实操（免费），周六 2 点有一场，要帮你留位吗？', { uses: 22 }),
   ];
-  const RECENT = ['t1', 't6', 't7', 't8'];
+  const TPL_TOTAL = TEMPLATES.length;
+  const tplStats = t => ({ images: t.steps.reduce((n, st) => n + st.images.length, 0), docs: t.steps.reduce((n, st) => n + st.docs.length, 0), steps: t.steps.length, uses: t.uses + t.cdFireCount });
+  // 搜索规则照 jwc-bot dashboard.html 的 qrNormalizeQuery / qrMatches 原样：开头的 / 不算搜索字（ChatDaddy 习惯打 /fcc），名字 / 资料夹 / 每一步内文都搜，不分大小写
+  function qrNormalizeQuery(raw) { return String(raw || '').trim().replace(/^\/+/, '').trim().toLowerCase(); }
+  function qrMatches(x, q) { if (!q) return true; const has = (v) => String(v || '').toLowerCase().includes(q); return has(x.name) || has(x.folder) || (x.steps || []).some(st => has(st.text)); }
+  const qrFill = (text, c) => String(text || '').replace(/\{\{\s*name\s*\}\}/gi, c ? c.name : '');
 
   /* ── 状态 ── */
   const state = { duty: true, filter: 'all', current: null, queue: null, draftOffset: {}, tplFolder: '', sentline: {}, lastNotif: 'sharon' };
@@ -177,7 +194,8 @@
   function closeChat() { $('#chat').classList.remove('is-open'); closeOverlays(); state.current = null; renderQueue(); }
   function bubble(m) {
     const t = hm(m.at);
-    if (m.image) return `<div class="msg in"><div class="bubble img"><div class="pic">${ic('i-image', 'ic ic--lg')}<span>银行转账截图</span><b class="num">${esc(m.amount)} · ${t}</b></div><div class="cap">${esc(m.text)}</div><span class="meta num">${t}</span></div></div>`;
+    if (m.image && m.dir === 'in') return `<div class="msg in"><div class="bubble img"><div class="pic">${ic('i-image', 'ic ic--lg')}<span>银行转账截图</span><b class="num">${esc(m.amount)} · ${t}</b></div><div class="cap">${esc(m.text)}</div><span class="meta num">${t}</span></div></div>`;
+    if (m.image || m.doc) return `<div class="msg out"><div class="bubble img"><span class="by">${esc(m.by)}</span><div class="pic${m.doc ? ' pic--doc' : ''}">${m.doc ? '📎' : ic('i-image', 'ic ic--lg')}<b>${esc(m.file)}</b></div>${m.text ? `<div class="cap">${esc(m.text)}</div>` : ''}<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span></div></div>`;
     if (m.dir === 'in') return `<div class="msg in"><div class="bubble${m.tr ? ' has-tr' : ''}"><p>${esc(m.text)}</p>${m.tr ? `<p class="tr"><b>译</b> ${esc(m.tr)}</p>` : ''}<span class="meta num">${t}</span></div></div>`;
     const meta = m.state === 'failed' ? `<span class="meta fail">❌ 未送达</span>` : m.state === 'pending' ? `<span class="meta num">发送中 ${ic('i-clock', 'ic tick')}</span>` : `<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span>`;
     return `<div class="msg out"><div class="bubble"><span class="by">${esc(m.by)}</span><p>${esc(m.text)}</p>${meta}</div></div>`;
@@ -244,9 +262,13 @@
     state.sentline[c.id] = now;
     $('#input').value = ''; autosize(); renderChat();
     setTimeout(() => { m.state = 'read'; if (state.current === c.id) renderChat(); }, 1200);
-    if (opts.image) c.messages.push({ dir: 'out', at: now, by, text: '📷 课程表.png', state: 'read' });
   }
-  $('#input').addEventListener('input', () => { autosize(); $('#send').disabled = !$('#input').value.trim(); const c = conv(state.current); if (c && c.lang !== 'zh') renderChat(); });
+  $('#input').addEventListener('input', () => {
+    autosize(); const v = $('#input').value; $('#send').disabled = !v.trim();
+    if (v.startsWith('/')) return openDesk(v, true);   // ChatDaddy 习惯：打 /fcc 直接弹话术
+    closeSlash(false);
+    const c = conv(state.current); if (c && c.lang !== 'zh') renderChat();
+  });
   $('#composer').addEventListener('submit', e => { e.preventDefault(); send($('#input').value); });
   $('#voice').addEventListener('click', () => toast('语音转文字：接入后按住说话'));
   $('#back').addEventListener('click', () => { state.queue = null; closeChat(); });
@@ -291,31 +313,61 @@
 
   /* ── 话术 ── */
   let pvTpl = null;
-  function closeOverlays() { $('#desk').classList.remove('is-open'); $('#preview').classList.remove('is-open'); $('#moreSheet').classList.remove('is-open'); $('#scrim').classList.remove('is-open'); }
+  function closeOverlays() { const d = $('#desk'); d.classList.remove('is-open', 'is-slash'); d.style.bottom = ''; $('#preview').classList.remove('is-open'); $('#moreSheet').classList.remove('is-open'); $('#scrim').classList.remove('is-open'); }
   function renderTpls() {
-    const q = $('#tplSearch').value.trim().toLowerCase();
-    let list = TEMPLATES.filter(t => !state.tplFolder || t.folder === state.tplFolder);
-    if (q) list = list.filter(t => (t.name + ' ' + t.text + ' ' + t.folder).toLowerCase().includes(q) || (q === '价格' && /PRICE/.test(t.name)));
-    list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.uses - a.uses);
-    $('#tplCount').textContent = q ? `${list.length} 条` : '';
-    $('#tplRecent').innerHTML = RECENT.map(id => TEMPLATES.find(t => t.id === id)).map((t, i) => `<button class="rchip" type="button" data-tpl="${t.id}">${i === 0 ? '最近：' : ''}${esc(t.name.replace(/^[A-Z ]+CN- /, '').replace('PRICE', '价格'))}</button>`).join('');
-    $('#tplList').innerHTML = list.map(t => `<button class="trow" type="button" data-tpl="${t.id}"><div><b>${esc(t.name)}</b><small>${t.pinned ? '📌 置顶 · ' : ''}${t.images ? `${t.images} 图` : '文字'} · 用过 ${t.uses} 次</small></div>${ic('i-chevron', 'ic ic--sm')}</button>`).join('') || '<div class="empty">没搜到</div>';
-    const folders = [...new Set(TEMPLATES.map(t => t.folder))];
+    const q = qrNormalizeQuery($('#tplSearch').value);
+    let list = TEMPLATES.filter(t => (!state.tplFolder || t.folder === state.tplFolder) && qrMatches(t, q));
+    list.sort((a, b) => (b.pinned - a.pinned) || (tplStats(b).uses - tplStats(a).uses) || a.name.localeCompare(b.name));
+    $('#tplCount').textContent = q || state.tplFolder ? `${list.length} 条` : `${TPL_TOTAL} 条`; $('#slashCount').textContent = `${list.length} 条`;
+    const top = TEMPLATES.filter(t => t.pinned).concat(TEMPLATES.filter(t => !t.pinned).sort((a, b) => tplStats(b).uses - tplStats(a).uses)).slice(0, 6);
+    $('#tplRecent').innerHTML = top.map(t => `<button class="rchip" type="button" data-tpl="${t.id}">${t.pinned ? '📌 ' : ''}${esc(t.name.slice(0, 22))}</button>`).join('');
+    $('#tplList').innerHTML = list.map(t => { const st = tplStats(t); const first = t.steps[0] || { text: '' };
+      return `<button class="trow" type="button" data-tpl="${t.id}"><span class="th${st.images ? ' th--img' : ''}">${st.images ? ic('i-image', 'ic ic--sm') : 'Aa'}</span><div><b>${t.pinned ? '📌 ' : ''}${esc(t.name)}</b><small>${esc(t.folder)}${st.steps > 1 ? ` · ${st.steps} 步` : ''}${st.images ? ` · 🖼 ${st.images}` : ''}${st.docs ? ` · 📎 ${st.docs}` : ''} · 用过 ${st.uses} 次</small><small class="tx">${esc(first.text.split('\n')[0].slice(0, 60))}</small></div>${ic('i-chevron', 'ic ic--sm')}</button>`; }).join('')
+      || `<div class="empty">没搜到「${esc(q)}」<br><small>名字、资料夹、内文都搜过了</small></div>`;
+    const folders = [...new Set(TEMPLATES.map(t => t.folder))].sort();
     $('#tplFolders').innerHTML = folders.map(f => `<button class="rchip" type="button" data-folder="${esc(f)}" aria-selected="${state.tplFolder === f}">${esc(f)}</button>`).join('');
   }
-  $('#openDesk').addEventListener('click', () => { renderTpls(); setSheet($('#desk'), true); setTimeout(() => $('#tplSearch').focus(), 250); });
-  $('#scrim').addEventListener('click', closeOverlays);
+  // 两种开法：✱ 按钮 = 抽屉自带搜索框；输入框打 / = 抽屉坐在输入框上面，你继续在输入框打字，焦点不动（手机键盘不跳）
+  function openDesk(query, slash) {
+    const d = $('#desk'); $('#tplSearch').value = query || ''; renderTpls();
+    d.classList.toggle('is-slash', !!slash);
+    if (slash) { d.style.bottom = ($('#composer').offsetHeight + $('#belowComposer').offsetHeight) + 'px'; d.classList.add('is-open'); return; }
+    d.style.bottom = ''; setSheet(d, true);
+    setTimeout(() => { const i = $('#tplSearch'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 320);
+  }
+  function closeSlash(clear) { const d = $('#desk'); if (!d.classList.contains('is-slash')) return; d.classList.remove('is-open', 'is-slash'); d.style.bottom = ''; if (clear && $('#input').value.startsWith('/')) { $('#input').value = ''; autosize(); $('#send').disabled = true; } }
+  $('#openDesk').addEventListener('click', () => openDesk(''));
+  $('#scrim').addEventListener('click', () => { closeOverlays(); if ($('#input').value.startsWith('/')) { $('#input').value = ''; autosize(); $('#send').disabled = true; } });
   $('#tplSearch').addEventListener('input', renderTpls);
   $('#desk').addEventListener('click', e => {
     const f = e.target.closest('[data-folder]'); if (f) { state.tplFolder = state.tplFolder === f.dataset.folder ? '' : f.dataset.folder; return renderTpls(); }
     const t = e.target.closest('[data-tpl]'); if (!t) return;
-    pvTpl = TEMPLATES.find(x => x.id === t.dataset.tpl); pvTpl.uses++;
-    $('#pvName').textContent = (pvTpl.pinned ? '📌 ' : '') + pvTpl.name; $('#pvText').textContent = pvTpl.text; $('#pvThumb').hidden = !pvTpl.images;
-    $('#pvSend').textContent = pvTpl.images ? `发送 · ${pvTpl.images} 图 + 文字` : '发送';
-    $('#desk').classList.remove('is-open'); $('#preview').classList.add('is-open');
+    pvTpl = TEMPLATES.find(x => x.id === t.dataset.tpl); const c = conv(state.current); const st = tplStats(pvTpl);
+    $('#pvName').textContent = (pvTpl.pinned ? '📌 ' : '') + pvTpl.name + (st.steps > 1 ? ` · ${st.steps} 步` : '');
+    $('#pvText').textContent = qrFill(pvTpl.steps.map(x => x.text).filter(Boolean).join('\n\n'), c);
+    $('#pvThumb').hidden = !(st.images || st.docs); $('#pvThumb').innerHTML = st.docs && !st.images ? '📎' : ic('i-image', 'ic ic--lg');
+    $('#pvSend').textContent = st.images || st.docs ? `发送 · ${[st.images ? `${st.images} 图` : '', st.docs ? `${st.docs} 文件` : ''].filter(Boolean).join(' + ')} + 文字` : '发送';
+    $('#desk').classList.remove('is-open'); $('#preview').classList.add('is-open'); $('#scrim').classList.add('is-open');
   });
-  $('#pvSend').addEventListener('click', () => { const t = pvTpl; closeOverlays(); send(t.text, { image: !!t.images }); });
-  $('#pvFill').addEventListener('click', () => { const t = pvTpl; closeOverlays(); insert(t.text); });
+  $('#slashClose').addEventListener('click', () => { closeSlash(true); $('#input').focus(); });
+  function sendTemplate(t) {
+    const c = conv(state.current); if (!c) return;
+    if ($('#input').value.startsWith('/')) { $('#input').value = ''; autosize(); }
+    if (c.windowClosed) return send(qrFill(t.steps[0].text, c));
+    // 发送顺序照 jwc-bot：每一步先图（第一张带文字当 caption）→ 文件 → 剩下的文字
+    const now = Date.now(); let n = 0;
+    for (const st of t.steps) {
+      let pending = qrFill(st.text, c).trim();
+      st.images.forEach((im, i) => { const cap = i === 0 && pending && pending.length <= 1000 ? pending : ''; c.messages.push({ dir: 'out', at: now + n++, by: ME_NAME, image: true, file: im.filename, text: cap, state: 'read' }); if (cap) pending = ''; });
+      st.docs.forEach(d => c.messages.push({ dir: 'out', at: now + n++, by: ME_NAME, doc: true, file: d.filename, text: '', state: 'read' }));
+      if (pending) c.messages.push({ dir: 'out', at: now + n++, by: ME_NAME, text: pending, state: 'read' });
+    }
+    t.uses++; c.botActive = false;
+    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = ME; }
+    state.sentline[c.id] = now; renderChat(); toast(`模版「${t.name}」已发 · ${n} 条`);
+  }
+  $('#pvSend').addEventListener('click', () => { const t = pvTpl; closeOverlays(); sendTemplate(t); });
+  $('#pvFill').addEventListener('click', () => { const t = pvTpl; closeOverlays(); insert(qrFill(t.steps.map(x => x.text).filter(Boolean).join('\n\n'), conv(state.current))); });
 
   /* ── IG/FB 号码 ── */
   function openHandoff() { renderHandoff(); $('#handoff').classList.add('is-open'); }
