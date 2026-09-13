@@ -199,13 +199,16 @@
   });
 
   /* ── 设置 ── */
-  const setGlobal = open => { $('#settingsSheet').classList.toggle('is-open', open); $('#scrimGlobal').classList.toggle('is-open', open); };
-  $('#settings').addEventListener('click', () => setGlobal(true));
+  const setGlobal = open => { $('#settingsSheet').classList.toggle('is-open', open); $('#scrimGlobal').classList.toggle('is-open', open); if (open) { $('#install').hidden = true; document.querySelector('.phone').classList.remove('has-install'); } };
+  $('#settings').addEventListener('click', () => { setGlobal(true); push.refresh(); });
   $('#scrimGlobal').addEventListener('click', () => setGlobal(false));
   $('#settingsSheet').addEventListener('click', e => {
     const b = e.target.closest('[data-set]'); if (!b) return; setGlobal(false);
     if (b.dataset.set === 'duty') $('#duty').click();
     if (b.dataset.set === 'replay') { const c = CONVS.find(x => isOpenSOS(x) && !x.sos.claimedBy); c ? showNotif(c.id) : toast('没有待认领的 SOS'); }
+    if (b.dataset.set === 'push') push.enable();
+    if (b.dataset.set === 'test0') push.test(0);
+    if (b.dataset.set === 'test30') push.test(30);
     if (b.dataset.set === 'logout') { try { localStorage.removeItem('mh_user'); sessionStorage.removeItem('mh_user'); } catch {} show('login'); }
   });
 
@@ -416,6 +419,50 @@
   /* ── 启动 ── */
   setInterval(() => { if ($('#queue').hidden || $('#chat').classList.contains('is-open')) return; if ($('#qsearch').hidden) renderQueue(); else renderSearch(); }, 30000);
   if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
+  /* ── 🔔 推送：这是整个 app 的命脉，先在真机验证它到底到不到 ── */
+  const push = {
+    sub: null,
+    ok: () => 'serviceWorker' in navigator && 'PushManager' in window,
+    async refresh() {
+      const lbl = $('#pushLabel'); const tests = $$('[data-set^="test"]');
+      if (!push.ok()) { lbl.textContent = '这台机不支持推送'; tests.forEach(b => b.hidden = true); return; }
+      const reg = await navigator.serviceWorker.ready.catch(() => null);
+      push.sub = reg ? await reg.pushManager.getSubscription() : null;
+      const on = Notification.permission === 'granted' && !!push.sub;
+      lbl.textContent = on ? '推送已开 ✓' : Notification.permission === 'denied' ? '推送被拒 · 去手机设置里开' : '开启手机推送';
+      tests.forEach(b => b.hidden = !on);
+    },
+    async enable() {
+      if (!push.ok()) return toast('这台机不支持推送');
+      const standalone = (matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+      if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !standalone) return toast('iPhone 要先「添加到主屏幕」，从图标打开才能开推送');
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { await push.refresh(); return toast(perm === 'denied' ? '你拒绝了 · 手机设置里才能改回来' : '没开成'); }
+      const reg = await navigator.serviceWorker.ready;
+      const key = await fetch('/api/push?a=key').then(r => r.json()).catch(() => null);
+      if (!key || !key.key) { await push.refresh(); return toast('拿不到推送密钥'); }
+      const raw = atob(key.key.replace(/-/g, '+').replace(/_/g, '/'));
+      push.sub = await reg.pushManager.getSubscription()
+        || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: Uint8Array.from(raw, c => c.charCodeAt(0)) });
+      await push.refresh(); toast('推送开了 · 用下面两条测一测');
+    },
+    async test(delay) {
+      if (!push.sub) return toast('先开推送');
+      const c = CONVS.find(isOpenSOS) || CONVS[0];
+      const r = await fetch('/api/push?a=send', { method: 'POST', headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ sub: push.sub, delay, cid: c.id, title: `🆘 ${c.name} 等了 ${c.sos ? waitMin(c.sos.askedAt) : 0} 分`,
+          body: `${LINES[c.line].emoji} ${LINES[c.line].label} · ${(c.sos && c.sos.question) || ''}`, sticky: true }) }).then(r => r.json()).catch(e => ({ error: String(e) }));
+      toast(r && r.ok ? (delay ? `${delay} 秒后推给你 · 现在锁屏` : '推出去了 · 看通知') : '推失败：' + ((r && r.error) || '?'));
+    },
+  };
+  // 通知点开 → 直接进那个客户，并量出「推出去」到「你点开」用了几秒
+  function openFromPush(cid, sentAt) {
+    if (sentAt) toast(`收到通知 → 点开用了 ${Math.round((Date.now() - Number(sentAt)) / 1000)} 秒`);
+    if (cid && conv(cid)) openChat(cid, 'notif');
+  }
+  navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', e => { if (e.data && e.data.type === 'open') openFromPush(e.data.cid, e.data.sentAt); });
+  { const u = new URL(location.href); const cid = u.searchParams.get('c'); if (cid) { history.replaceState({}, '', u.pathname); setTimeout(() => openFromPush(cid, 0), 400); } }
+
   /* ── 手势：右滑返回（会话 / 号码交接），下滑关抽屉 ── */
   function swipeBack(el, done) {
     let x0 = 0, y0 = 0, dx = 0, dy = 0, on = false, lock = null, t0 = 0;

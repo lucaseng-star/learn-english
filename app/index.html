@@ -124,7 +124,10 @@
   <div class="sheet" id="settingsSheet" role="dialog" aria-label="设置">
     <h3>设置</h3>
     <button type="button" data-set="duty"><svg class="ic"><use href="#i-clock"/></svg><span id="dutyLabel">下班（不收通知）</span></button>
-    <button type="button" data-set="replay"><svg class="ic"><use href="#i-bolt"/></svg>重放一条通知</button>
+    <button type="button" data-set="push"><svg class="ic"><use href="#i-bolt"/></svg><span id="pushLabel">开启手机推送</span></button>
+    <button type="button" data-set="test0" class="sub" hidden>现在推一条给我</button>
+    <button type="button" data-set="test30" class="sub" hidden>30 秒后推 · 锁屏等它</button>
+    <button type="button" data-set="replay"><svg class="ic"><use href="#i-bolt"/></svg>重放一条通知（app 内）</button>
     <button type="button" data-set="logout" class="danger">退出登录</button>
     <button type="button" data-set="cancel">取消</button>
   </div>
