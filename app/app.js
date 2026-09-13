@@ -387,7 +387,7 @@
     if (standalone || dismissed) return;
     const box = $('#install'), go = $('#installGo'), how = $('#installHow');
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    if (ios) { how.textContent = /crios|fxios/i.test(navigator.userAgent) ? '用 Safari 打开这个网址，再点「分享」→「添加到主屏幕」' : '点 Safari 底部「分享」→「添加到主屏幕」'; box.hidden = false; }
+    if (ios) { how.textContent = /crios|fxios/i.test(navigator.userAgent) ? '用 Safari 打开这个网址，右下「•••」→「分享」→「添加到主屏幕」' : 'Safari 右下「•••」→「分享」→「添加到主屏幕」'; box.hidden = false; }
     else { how.textContent = 'Chrome 右上 ⋮ →「安装应用」'; box.hidden = false; }
     let deferred = null;
     addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; go.hidden = false; how.textContent = '点右边「安装」，主屏幕就有图标'; });
