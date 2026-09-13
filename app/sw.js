@@ -1,5 +1,5 @@
 // 秒回 v4 原型：离线缓存壳，页面走网络优先（有新版就换），静态文件缓存优先。
-const CACHE = 'solowork-3';
+const CACHE = 'solowork-5';
 const SHELL = ['./', './index.html', './app.css?v=4', './app.js?v=4', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

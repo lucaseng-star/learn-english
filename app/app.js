@@ -380,6 +380,13 @@
   /* ── 启动 ── */
   setInterval(() => { if (!$('#queue').hidden && !$('#chat').classList.contains('is-open')) renderQueue(); }, 30000);
   if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
+  /* ── 键盘：iPhone 装成 app 后，输入时把整个壳缩到键盘上面（fixed 元素不会自动让位） ── */
+  if (window.visualViewport) {
+    const vv = window.visualViewport;
+    const fit = () => document.documentElement.style.setProperty('--kb', Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) + 'px');
+    vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); fit();
+  }
+
   /* ── 装成 app 提示：浏览器里开才出现；Android 直接弹安装，iPhone 教两步 ── */
   (() => {
     const standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
@@ -387,13 +394,14 @@
     if (standalone || dismissed) return;
     const box = $('#install'), go = $('#installGo'), how = $('#installHow');
     const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    if (ios) { how.textContent = /crios|fxios/i.test(navigator.userAgent) ? '用 Safari 打开这个网址，右下「•••」→「分享」→「添加到主屏幕」' : 'Safari 右下「•••」→「分享」→「添加到主屏幕」'; box.hidden = false; }
-    else { how.textContent = 'Chrome 右上 ⋮ →「安装应用」'; box.hidden = false; }
+    how.textContent = ios ? (/crios|fxios/i.test(navigator.userAgent) ? '用 Safari 打开这个网址，右下「•••」→「分享」→「添加到主屏幕」' : 'Safari 右下「•••」→「分享」→「添加到主屏幕」') : 'Chrome 右上 ⋮ →「安装应用」';
+    const setBox = on => { box.hidden = !on; document.querySelector('.phone').classList.toggle('has-install', on); };
+    setBox(true);
     let deferred = null;
     addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; go.hidden = false; how.textContent = '点右边「安装」，主屏幕就有图标'; });
-    go.addEventListener('click', async () => { if (!deferred) return; deferred.prompt(); const r = await deferred.userChoice; if (r && r.outcome === 'accepted') box.hidden = true; deferred = null; });
-    addEventListener('appinstalled', () => { box.hidden = true; });
-    $('#installX').addEventListener('click', () => { box.hidden = true; try { sessionStorage.setItem('sw_install_x', '1'); } catch {} });
+    go.addEventListener('click', async () => { if (!deferred) return; deferred.prompt(); const r = await deferred.userChoice; if (r && r.outcome === 'accepted') setBox(false); deferred = null; });
+    addEventListener('appinstalled', () => setBox(false));
+    $('#installX').addEventListener('click', () => { setBox(false); try { sessionStorage.setItem('sw_install_x', '1'); } catch {} });
   })();
   window.MiaoHui = { state, CONVS, TEMPLATES };
 })();
