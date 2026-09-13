@@ -200,13 +200,14 @@
 
   /* ── 设置 ── */
   const setGlobal = open => { $('#settingsSheet').classList.toggle('is-open', open); $('#scrimGlobal').classList.toggle('is-open', open); if (open) { $('#install').hidden = true; document.querySelector('.phone').classList.remove('has-install'); } };
-  $('#settings').addEventListener('click', () => { setGlobal(true); push.refresh(); });
+  $('#settings').addEventListener('click', () => { setGlobal(true); push.refresh(); logDrain().then(renderLog); });
   $('#scrimGlobal').addEventListener('click', () => setGlobal(false));
   $('#settingsSheet').addEventListener('click', e => {
     const b = e.target.closest('[data-set]'); if (!b) return; setGlobal(false);
     if (b.dataset.set === 'duty') $('#duty').click();
     if (b.dataset.set === 'replay') { const c = CONVS.find(x => isOpenSOS(x) && !x.sos.claimedBy); c ? showNotif(c.id) : toast('没有待认领的 SOS'); }
     if (b.dataset.set === 'push') push.enable();
+    if (b.dataset.set === 'log') { $('#notif').classList.remove('is-on'); renderLog(); $('#log').classList.add('is-open'); }
     if (b.dataset.set === 'test0') push.test(0);
     if (b.dataset.set === 'test30') push.test(30);
     if (b.dataset.set === 'logout') { try { localStorage.removeItem('mh_user'); sessionStorage.removeItem('mh_user'); } catch {} show('login'); }
@@ -418,6 +419,8 @@
 
   /* ── 启动 ── */
   setInterval(() => { if ($('#queue').hidden || $('#chat').classList.contains('is-open')) return; if ($('#qsearch').hidden) renderQueue(); else renderSearch(); }, 30000);
+  logDrain().then(renderLog);
+  addEventListener('visibilitychange', () => { if (!document.hidden) logDrain().then(renderLog); });
   if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
   /* ── 🔔 推送：这是整个 app 的命脉，先在真机验证它到底到不到 ── */
   const push = {
@@ -449,12 +452,53 @@
     async test(delay) {
       if (!push.sub) return toast('先开推送');
       const c = CONVS.find(isOpenSOS) || CONVS[0];
+      const kind = delay ? `锁屏 ${delay} 秒` : '前台';
       const r = await fetch('/api/push?a=send', { method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ sub: push.sub, delay, cid: c.id, title: `🆘 ${c.name} 等了 ${c.sos ? waitMin(c.sos.askedAt) : 0} 分`,
+        body: JSON.stringify({ sub: push.sub, delay, cid: c.id, kind, title: `🆘 ${c.name} 等了 ${c.sos ? waitMin(c.sos.askedAt) : 0} 分`,
           body: `${LINES[c.line].emoji} ${LINES[c.line].label} · ${(c.sos && c.sos.question) || ''}`, sticky: true }) }).then(r => r.json()).catch(e => ({ error: String(e) }));
+      if (r && r.ok) { logAdd({ sentAt: r.sentAt || Date.now(), at: 0, kind, got: false }); renderLog(); }
       toast(r && r.ok ? (delay ? `${delay} 秒后推给你 · 现在锁屏` : '推出去了 · 看通知') : '推失败：' + ((r && r.error) || '?'));
     },
   };
+  /* ── 推送测试记录：每一次推送都记一笔，app 自己算通过没通过 ── */
+  const LOGK = 'sw_pushlog';
+  const logLoad = () => { try { return JSON.parse(localStorage.getItem(LOGK) || '[]'); } catch { return []; } };
+  const logSave = a => { try { localStorage.setItem(LOGK, JSON.stringify(a.slice(-100))); } catch {} };
+  function logAdd(rec) { const a = logLoad(); const i = a.findIndex(x => Math.abs(x.sentAt - rec.sentAt) < 2000); if (i >= 0) { if (rec.got) a[i] = { ...a[i], ...rec }; } else a.push(rec); logSave(a); }
+  // 把 service worker 存下的到达记录读进来（你没点通知也算数）
+  async function logDrain() {
+    if (!('caches' in window)) return;
+    try {
+      const c = await caches.open('solowork-pushlog');
+      for (const req of await c.keys()) { const r = await c.match(req); if (r) { const d = await r.json(); logAdd({ sentAt: d.sentAt, at: d.at, kind: d.kind || '', got: true }); } await c.delete(req); }
+    } catch {}
+  }
+  function logStats() {
+    const a = logLoad();
+    const got = a.filter(x => x.got);
+    const lags = got.map(x => (x.at - x.sentAt) / 1000).sort((p, q) => p - q);
+    const miss = a.filter(x => !x.got).length;
+    const p90 = lags.length ? lags[Math.min(lags.length - 1, Math.floor(lags.length * 0.9))] : null;
+    return { total: a.length, got: got.length, miss, p90, worst: lags.length ? lags[lags.length - 1] : null, rate: a.length ? got.length / a.length : 0 };
+  }
+  function renderLog() {
+    const a = logLoad().slice().reverse(); const st = logStats();
+    $('#logSub').textContent = st.total ? `${st.got}/${st.total} 到达` : '还没测过';
+    $('#logLabel').textContent = st.total ? `推送测试记录 · ${st.got}/${st.total} 到` : '推送测试记录';
+    const v = $('#logVerdict');
+    if (st.total < 10) { v.className = 'verdict warn'; v.innerHTML = `<b>还不够判断</b><span>测满 20 次才算数，现在 ${st.total} 次。要包含：前台、锁屏 30 秒、开专注模式、隔夜没开 app。</span>`; }
+    else if (st.rate >= 0.95 && st.p90 <= 10) { v.className = 'verdict pass'; v.innerHTML = `<b>✅ 通过</b><span>到达 ${Math.round(st.rate * 100)}%，九成在 ${st.p90.toFixed(1)} 秒内到。推送可以当主力，Telegram 只做保险。</span>`; }
+    else if (st.rate >= 0.8) { v.className = 'verdict warn'; v.innerHTML = `<b>⚠ 不够稳</b><span>到达 ${Math.round(st.rate * 100)}%${st.p90 > 10 ? `，九成要 ${st.p90.toFixed(1)} 秒` : ''}。推送不能单独扛，要加 Telegram 双通道。</span>`; }
+    else { v.className = 'verdict fail'; v.innerHTML = `<b>❌ 不通过</b><span>到达只有 ${Math.round(st.rate * 100)}%。推送这条路不能当报警，改用 Telegram 主通道。</span>`; }
+    $('#logList').innerHTML = a.map(x => {
+      const lag = x.got ? (x.at - x.sentAt) / 1000 : null;
+      const cls = !x.got ? 'hot' : lag <= 10 ? 'cool' : lag <= 30 ? 'warm' : 'hot';
+      return `<div class="lrow"><span class="wait wait--${cls}">${x.got ? lag.toFixed(1) + ' 秒' : '没到'}</span><b>${esc(x.kind || '测试')}</b><i>${hm(x.sentAt)}</i></div>`;
+    }).join('') || '<div class="empty">还没有记录<br><small>设置 →「现在推一条给我」</small></div>';
+  }
+  $('#backLog').addEventListener('click', () => $('#log').classList.remove('is-open'));
+  $('#logClear').addEventListener('click', () => { if (confirm('清空推送测试记录？')) { logSave([]); renderLog(); } });
+
   // 通知点开 → 直接进那个客户，并量出「推出去」到「你点开」用了几秒
   function openFromPush(cid, sentAt) {
     if (sentAt) toast(`收到通知 → 点开用了 ${Math.round((Date.now() - Number(sentAt)) / 1000)} 秒`);
@@ -490,6 +534,7 @@
   }
   swipeBack($('#chat'), () => { state.queue = null; closeChat(); });
   swipeBack($('#handoff'), () => $('#handoff').classList.remove('is-open'));
+  swipeBack($('#log'), () => $('#log').classList.remove('is-open'));
 
   function swipeDown(el, done, scroller) {
     let y0 = 0, dy = 0, on = false, t0 = 0;

@@ -1,5 +1,6 @@
 // solowork 原型：离线缓存壳 + 推送。页面走网络优先（有新版就换），静态文件缓存优先。
-const CACHE = 'solowork-8';
+const CACHE = 'solowork-9';
+const LOG = 'solowork-pushlog';
 const SHELL = ['./', './index.html', './app.css?v=4', './app.js?v=4', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
@@ -15,13 +16,17 @@ self.addEventListener('fetch', e => {
 self.addEventListener('push', e => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch { d = { body: e.data && e.data.text() }; }
+  const now = Date.now();
+  const lag = d.sentAt ? (now - d.sentAt) / 1000 : null;                       // 服务器推出去 → 你手机收到，用了几秒
   const title = d.title || '🆘 有客户在等';
-  e.waitUntil(self.registration.showNotification(title, {
-    body: d.body || '',
-    icon: './icon-192.png', badge: './icon-192.png',
-    tag: d.tag || 'sos', renotify: true, requireInteraction: !!d.sticky,
-    data: { cid: d.cid || '', sentAt: d.sentAt || Date.now() },
-  }));
+  const body = (d.body || '') + (lag !== null ? `\n⏱ ${lag.toFixed(1)} 秒到${d.kind ? ' · ' + d.kind : ''}` : '');
+  e.waitUntil(Promise.all([
+    self.registration.showNotification(title, { body, icon: './icon-192.png', badge: './icon-192.png',
+      tag: 'sos-' + now, renotify: true, requireInteraction: !!d.sticky,
+      data: { cid: d.cid || '', sentAt: d.sentAt || now, at: now, kind: d.kind || '' } }),
+    // 存一笔，app 下次打开会读走 —— 你不点它也算数
+    caches.open(LOG).then(c => c.put('/__push/' + now, new Response(JSON.stringify({ sentAt: d.sentAt || now, at: now, kind: d.kind || '' }), { headers: { 'content-type': 'application/json' } }))),
+  ]));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();
