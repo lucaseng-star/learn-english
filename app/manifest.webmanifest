@@ -1,13 +1,13 @@
 {
   "name": "秒回 · 客户消息回复台",
   "short_name": "秒回",
-  "description": "按等待时长排队，AI 起草，你改一句就发。",
+  "description": "SOS 通知直达、回客户、清队列、话术、收款确认。",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
-  "theme_color": "#2ec06a",
+  "theme_color": "#ffffff",
   "lang": "zh",
   "icons": [
     { "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='44' fill='%232ec06a'/%3E%3Cpath d='M107 30 52 106h40l-8 56 56-78H99z' fill='%23fff'/%3E%3C/svg%3E", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" }

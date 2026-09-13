@@ -1,50 +1,51 @@
-# 秒回 —— 客户消息回复台（手机端）
+# 秒回 v4 —— 手机回复台（可点原型）
 
-一个只做一件事的手机 app：**把待回复的客户消息清零。**
+一个只做一件事的手机页面：**客户在等真人，值班的人 60 秒内回掉。**
 
-打开 `app/index.html`（GitHub Pages 合并到 main 后是 `/app/`），
-iPhone Safari「添加到主屏幕」即可当 app 用（有 manifest，standalone 全屏）。
+- 在线试用：<https://claude.ai/code/artifact/1d0b8666-ff40-4b49-9ab9-50972a5e99de>（手机打开即可）
+- 本地：打开 `app/index.html`；iPhone Safari「添加到主屏幕」可当 app 用（有 manifest，全屏）。
 
 ## 它是什么、不是什么
 
-- **是**：可点的完整原型。队列 → 会话 → 回复台 → 自动下一条，状态流转全是真的。
-- **不是**：还没接任何真实渠道。消息、客户、草稿都是**示例数据**（`app.js` 顶部 `SAMPLE`）。
+- **是**：v4 设计稿的完整可点版本。登录 → 待回 → SOS 通知 → 会话 → 草稿/话术 → 发送 → 清队列 → 收款确认 → IG/FB 号码交接 → 发送失败处理，状态流转都是真的。
+- **不是**：没接任何真实渠道。客户、消息、草稿、话术都是**示例数据**（`app.js` 顶部 `CONVS` / `HANDOFFS` / `TEMPLATES`）。
+  接真数据 = 按 `design/miaohui-mobile/BUILD-PLAN.md` 搬进 jwc-bot，等设计确认后才动。
+
+## 界面对应 bot 的哪些东西
+
+| 界面 | bot 里的事实 |
+| --- | --- |
+| 🆘 等真人 列表，按等了多久排 | `/api/escalations/active`，最老的在最上 |
+| 通知 → 点开就是那个客户，Bot 已停 | `/escalation/claim` 先点先得；接手即停 bot |
+| 从列表点进去先看到「Bot 还在回，先停它」 | 只看不接手时 bot 仍在回；`🔴 停 bot 并回复` = takeover |
+| 以 Emily / Cindy / Coco 的身份回复 | 客户只认识这个人设；员工名字只在后台 |
+| 草稿 2 条 + 换一批 | Claude 按客户最后一句起草，只填输入框，发送必须你点 |
+| BM 客户：中文写，发出时翻成 BM | `/api/translate`（示例先按草稿自带的 BM 发） |
+| 已发 ✓✓ · 12 小时后 Bot 接回 · 交还 | 人工回复后 pause 12h，IG/FB 则永久转人手 |
+| ✱ 话术：最近 / 搜 / 文件夹 / 预览再发 | `/api/quick-replies`，文件夹名沿用 ChatDaddy |
+| 💳 客户付了？ 确认收款 / 不是付款 | `/verify` `/reject`，确认后 bot 自动发报名表 |
+| IG/FB 给了号码 → 打开 WhatsApp / 已联系 | `/api/igfb-handoffs` |
+| ❌ IG 窗口已关 / WhatsApp 窗口已关 | 24h 窗口；IG 改走 WhatsApp，WA 发唤醒模板 |
+| 值班中 / 下班 | 下班不收通知；SOS 任何值班的人都能接 |
+
+## 结构
+
+```
+app/
+├── index.html            外壳：登录 / 待回 / 会话 / 号码交接 + 话术抽屉、预览、操作单、通知、toast
+├── app.css               样式（--uk-* token → 组件；含深色）
+├── app.js                示例数据、状态、渲染、交互
+├── manifest.webmanifest  加到主屏幕
+└── README.md
+```
 
 ## 设计语言
 
 沿用 `claude/ui-design-replication` 分支从收件箱 UI 复刻出来的 `assets/ui-kit.css`（`--uk-*` 变量）。
 `app.css` 顶部 `[SYNC]` 段是那些 token 的副本，两条分支都进 main 后删掉、改 `@import` 即可。
 
-手机端在此之上只加三样：触屏尺寸、等待时长语义色（红 ≥60 分 / 黄 ≥15 分 / 绿）、深色主题。
+等待时长颜色跟 bot 对客户的承诺走（"5-10 分钟真人回你"）：< 5 分绿，5–10 分黄，> 10 分红。
 
-## 结构
+## 设计稿
 
-```
-app/
-├── index.html            外壳：两屏（待回队列 / 会话）+ 回复台抽屉 + 两个操作单
-├── app.css               样式（token → 组件，无写死数值）
-├── app.js                状态、渲染、交互、示例数据、ChannelAdapter 契约
-├── manifest.webmanifest  加到主屏幕
-└── README.md
-```
-
-## 核心流程
-
-1. **待回队列**：按「等了多久」排序，不是按「谁最新」。顶部三个数字：待回 / 今日已回 / 最久等待。
-2. **⚡ 快速回**：列表里直接点，跳进会话并展开回复台，少一步。
-3. **回复台**：AI 草稿（3 条，各带策略标签）/ 快捷话术（带 `{name}` `{course}` `{price}` 变量）/ 素材。
-   语言 中 / EN / BM 跟客户走。**草稿只填进输入框，发送必须你点。**
-4. **发送后**：会话自动移到「跟进中」；清队列模式下 0.9 秒后自动跳下一条。
-5. **稍后跟进 / 标记完成 / 加标签**：一排三键，都会把会话带出待回队列。
-
-## 接真实渠道
-
-实现 `ChannelAdapter` 四个方法（见 `app.js` 顶部注释），替换 `const adapter = MockAdapter`：
-
-| 渠道 | 方式 | 备注 |
-| --- | --- | --- |
-| WhatsApp | WhatsApp Business Cloud API | 官方，能收能发，模板消息需审核 |
-| Instagram / Facebook | Meta Messenger Platform | 官方，客户发消息后 24 小时内可自由回复 |
-| 小红书 | 无私信 API | 只能人工看；app 里已把「导到 WhatsApp」做成一条草稿 |
-
-AI 草稿：`drafts` 字段现在是写死的。接入时由后端按「客户最后一句 + 课程资料 + 语言」生成，前端结构不变。
+`design/miaohui-mobile/`（Claude Design 画布），在线：<https://claude.ai/code/artifact/859aa1f3-ab17-47a3-aeed-45604a222923>

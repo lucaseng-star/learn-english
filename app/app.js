@@ -1,592 +1,332 @@
-/* ============================================================
-   秒回 —— 客户消息回复台（手机端）
-   ------------------------------------------------------------
-   这是可点的原型：界面、交互、状态流转都是真的，数据是示例。
-   接真实渠道时只替换下面的 adapter（见 ChannelAdapter 契约），
-   界面层一行不用改。
-
-   ChannelAdapter 契约：
-     list()                 → Promise<Conversation[]>   拉全部会话
-     send(convId, message)  → Promise<Message>          发出一条，回来带服务端时间/状态
-     setStatus(convId, s)   → Promise<void>             open | follow | done
-     onMessage(cb)          → () => void                新消息推送，返回取消订阅
-
-   可接的渠道（按可行性排）：
-     WhatsApp  —— WhatsApp Business Cloud API（官方，能收能发）
-     IG / FB   —— Meta Messenger Platform（官方，24 小时回复窗口）
-     小红书    —— 没有私信 API。只能人工看、这里手动记；把客户导到 WhatsApp
-   ============================================================ */
+/* 秒回 v4 —— 可用原型。示例数据；接真渠道时换下面的 adapter 层（见 README）。 */
 (() => {
   'use strict';
-
-  /* ── 示例数据（JWC Academy 课程咨询）──────────────────────── */
-  const COURSES = {
-    barista: { name: '咖啡师速成班',  price: 'RM 2,880',      ptpk: true,  days: '5 天',  time: '10:00–17:00' },
-    latte:   { name: '拉花进阶班',    price: 'RM 980',        ptpk: false, days: '2 天',  time: '10:00–17:00' },
-    cupping: { name: '杯测与感官课',  price: 'RM 1,280',      ptpk: false, days: '2 天',  time: '10:00–17:00' },
-    wine:    { name: '企业红酒品鉴',  price: 'RM 168 / 人',   ptpk: false, days: '2 小时', time: '上门' },
-  };
-  const CHANNELS = {
-    wa:  { label: 'WhatsApp',  mark: 'W',  cls: 'ch--wa',  links: true  },
-    ig:  { label: 'Instagram', mark: 'I',  cls: 'ch--ig',  links: true  },
-    fb:  { label: 'Facebook',  mark: 'F',  cls: 'ch--fb',  links: true  },
-    xhs: { label: '小红书',    mark: '小', cls: 'ch--xhs', links: false }, // 私信发不了链接
-  };
-  const LANG_NAME = { zh: '中文', en: 'English', bm: 'Bahasa Melayu' };
-
-  // 会话：status open=待回复 / follow=跟进中（我已回，等客户）/ done=已完成
-  const SAMPLE = [
-    {
-      id: 'c1', name: '陈美琪', channel: 'wa', course: 'barista', lang: 'zh',
-      status: 'open', waitMin: 96, budget: 'RM 3,000 以内',
-      source: 'Meta 广告 · 咖啡师速成班 CTA-B', firstAt: '今天 12:26', stage: '新线索',
-      messages: [
-        { dir: 'in',  t: '12:26', text: 'Hi 我在 FB 看到咖啡师课程的广告' },
-        { dir: 'out', t: '12:26', by: 'Bot', read: true, text: '您好！感谢关注 JWC 咖啡师速成班。请问您是想转行做咖啡师，还是想自己开店呢？' },
-        { dir: 'in',  t: '12:27', text: '想开店，小型的那种' },
-        { dir: 'out', t: '12:27', by: 'Bot', read: true, type: 'card', course: 'barista' },
-        { dir: 'in',  t: '12:31', text: '请问 PTPK 可以用吗？我没有工作证明' },
-        { dir: 'in',  t: '12:34', text: '在吗' },
-      ],
-      drafts: [
-        { why: '答疑 · 约看班',
-          zh: '美琪你好，PTPK 不需要工作证明，需要的是：身份证、最高学历证书、两张照片。\n开店方向的话我建议先来校区看一次实操课（免费），周六 10 点有一场，要帮你留位吗？',
-          en: "Hi Mei Qi, PTPK doesn't need proof of employment — just your IC, highest education certificate and two passport photos.\nSince you're planning to open a café, come see a live practical session first (free). There's one this Saturday at 10am — shall I reserve a spot for you?",
-          bm: 'Hai Mei Qi, PTPK tidak memerlukan surat pengesahan kerja — cukup IC, sijil pendidikan tertinggi dan dua keping gambar.\nMemandangkan awak nak buka kafe, datang tengok kelas praktikal dulu (percuma). Ada sesi Sabtu ini 10 pagi — nak saya simpan tempat?' },
-        { why: '先要资料',
-          zh: '美琪，可以的，PTPK 看的是身份证和学历，不看工作证明。\n方便把身份证正面和最高学历证书拍给我吗？我今天帮你先预审，通过就锁 9 月班的名额。',
-          en: "Mei Qi, yes you can — PTPK looks at your IC and education, not employment.\nCould you send me a photo of your IC (front) and highest certificate? I'll pre-check today and lock a September seat once it clears.",
-          bm: 'Mei Qi, boleh — PTPK tengok IC dan pendidikan, bukan pekerjaan.\nBoleh hantar gambar IC (depan) dan sijil tertinggi? Saya semak dulu hari ini, lepas lulus terus kunci tempat kelas September.' },
-        { why: '推名额',
-          zh: '可以用 PTPK，全额 RM 2,880 都能贷，每月还款大约 RM 100。\n9 月 16 日开的班还剩 2 个位，要我先帮你留一个吗？留位不用付钱。',
-          en: 'Yes, PTPK covers the full RM 2,880 — repayment is around RM 100 a month.\nThe 16 Sept intake has 2 seats left. Want me to hold one for you? No payment needed to hold.',
-          bm: 'Boleh guna PTPK, penuh RM 2,880 — bayaran balik lebih kurang RM 100 sebulan.\nKelas 16 Sept tinggal 2 tempat. Nak saya simpan satu untuk awak? Simpan tempat tak perlu bayar.' },
-      ],
-    },
-    {
-      id: 'c2', name: 'Nurul Aisyah', channel: 'ig', course: 'latte', lang: 'bm',
-      status: 'open', waitMin: 41, budget: '未知',
-      source: 'IG 帖子 · 拉花视频', firstAt: '今天 13:21', stage: '新线索',
-      messages: [
-        { dir: 'in', t: '13:21', text: 'Hi, boleh tahu harga untuk latte art class? Weekend ada ke?' },
-      ],
-      drafts: [
-        { why: '报价 · 周末班',
-          bm: 'Hai Nurul! Kelas Latte Art Lanjutan RM 980, 2 hari (Sabtu & Ahad, 10 pagi–5 petang).\nSesi 13–14 Sept masih ada 3 tempat. Nak saya simpan satu untuk awak?',
-          zh: 'Nurul 你好！拉花进阶班 RM 980，两天（周六日 10:00–17:00）。\n9 月 13–14 日这期还剩 3 个位，要帮你留一个吗？',
-          en: 'Hi Nurul! Advanced Latte Art is RM 980 for 2 days (Sat & Sun, 10am–5pm).\nThe 13–14 Sept weekend still has 3 seats. Shall I hold one for you?' },
-        { why: '先问基础',
-          bm: 'Hai Nurul! Sebelum saya cadangkan kelas — awak dah pernah buat latte art, atau baru nak mula?\nKami ada kelas asas (RM 680) dan lanjutan (RM 980), supaya tak bayar lebih.',
-          zh: 'Nurul 你好！先问一下：你之前有做过拉花吗，还是零基础？\n我们有基础班（RM 680）和进阶班（RM 980），选对了不多花钱。',
-          en: "Hi Nurul! Quick question first — have you done latte art before, or starting fresh?\nWe run a basics class (RM 680) and an advanced one (RM 980), so you don't overpay." },
-        { why: '约通话',
-          bm: 'Hai Nurul, jadual & harga kelas Latte Art hujung minggu saya hantar dalam kad kursus.\nKalau nak, saya boleh call 5 minit untuk explain — bila masa sesuai?',
-          zh: 'Nurul 你好，周末拉花班的时间和价格我用课程卡发你。\n如果方便，我打 5 分钟电话给你讲一下，什么时间合适？',
-          en: "Hi Nurul, I'll send the weekend Latte Art schedule and price as a course card.\nHappy to explain on a 5-minute call — when suits you?" },
-      ],
-    },
-    {
-      id: 'c3', name: '林伟豪', channel: 'fb', course: 'barista', lang: 'zh',
-      status: 'open', waitMin: 18, budget: '2 人',
-      source: 'FB 广告 · 转行做咖啡师', firstAt: '今天 13:40', stage: '新线索',
-      messages: [
-        { dir: 'in',  t: '13:40', text: '你好 想问咖啡师课程' },
-        { dir: 'out', t: '13:40', by: 'Bot', read: true, type: 'card', course: 'barista' },
-        { dir: 'in',  t: '13:44', text: '两个人一起报名有折扣吗' },
-      ],
-      drafts: [
-        { why: '双人价',
-          zh: '伟豪你好，两人同报每人减 RM 200，即每人 RM 2,680。\n如果两位都用 PTPK，还可以各自申请全额。请问两位想上平日班还是周末班？',
-          en: "Hi Wei Hao, two sign-ups together get RM 200 off each — RM 2,680 per person.\nIf you both use PTPK, each can apply for full coverage. Weekday or weekend class?",
-          bm: 'Hai Wei Hao, daftar berdua dapat potongan RM 200 seorang — RM 2,680 setiap orang.\nKalau berdua guna PTPK, masing-masing boleh mohon penuh. Kelas hari biasa atau hujung minggu?' },
-        { why: '先问需求',
-          zh: '有的，两人同报有优惠。先问一下，两位是想一起开店，还是各自找工作？方向不同我推荐的班次不一样。',
-          en: 'Yes, there is a discount for two. Quick one first — are you two planning to open a café together, or each looking for a job? The class I recommend depends on that.',
-          bm: 'Ada, daftar berdua ada diskaun. Tanya dulu — korang nak buka kafe bersama, atau masing-masing cari kerja? Cadangan kelas berbeza.' },
-        { why: '推试听',
-          zh: '两人同报每人减 RM 200。建议两位周六一起来看一节实操课（免费），看完再决定，要帮你们留两个位吗？',
-          en: 'RM 200 off each for two. I suggest you both come see a live practical session this Saturday (free) before deciding — shall I hold two seats?',
-          bm: 'Potongan RM 200 seorang untuk berdua. Cadangan: datang tengok kelas praktikal Sabtu ini (percuma) sebelum putuskan — nak saya simpan dua tempat?' },
-      ],
-    },
-    {
-      id: 'c4', name: '小红薯6621', channel: 'xhs', course: 'wine', lang: 'zh',
-      status: 'open', waitMin: 7, budget: '20 人',
-      source: '小红书 · 企业品鉴帖', firstAt: '今天 13:55', stage: '企业线索',
-      messages: [
-        { dir: 'in', t: '13:55', text: '看到你们企业品鉴的贴，我们公司 20 人，能来公司办吗' },
-      ],
-      drafts: [
-        { why: '可以 · 报价',
-          zh: '可以的，企业品鉴我们上门办：20 人 RM 168/人，含 5 款酒、品鉴杯、讲师 2 小时。\n请问贵司在哪一区？我发一份报价单给您。',
-          en: "Yes — we run corporate tastings on-site: RM 168 per person for 20 pax, including 5 wines, glassware and a 2-hour sommelier session.\nWhich area is your office in? I'll send a quotation.",
-          bm: 'Boleh — sesi wine tasting korporat kami buat di pejabat anda: RM 168 seorang untuk 20 pax, termasuk 5 jenis wain, gelas dan sommelier 2 jam.\nPejabat di kawasan mana? Saya hantar sebut harga.' },
-        { why: '导到 WhatsApp',
-          zh: '可以上门办的。小红书私信发不了报价单和链接，方便留个 WhatsApp 吗？我把报价单和往期活动照片发过去。',
-          en: "Yes, we can host it at your office. Xiaohongshu DMs don't allow files or links — could you share a WhatsApp number? I'll send the quotation and photos from past sessions.",
-          bm: 'Boleh buat di pejabat anda. DM Xiaohongshu tak boleh hantar fail atau link — boleh kongsi nombor WhatsApp? Saya hantar sebut harga dan gambar sesi lepas.' },
-        { why: '要时间',
-          zh: '可以的！请问大概想安排在哪个月？工作日晚上还是周五下午？确定时间我就能锁讲师和酒。',
-          en: 'Yes! Roughly which month are you thinking, and weekday evening or Friday afternoon? Once we fix a date I can lock the sommelier and wines.',
-          bm: 'Boleh! Lebih kurang bulan bila, dan malam hari biasa atau petang Jumaat? Bila tarikh ditetapkan saya boleh kunci sommelier dan wain.' },
-      ],
-    },
-    {
-      id: 'c5', name: 'Kelvin Tan', channel: 'wa', course: 'cupping', lang: 'zh',
-      status: 'open', waitMin: 3, budget: '老学员',
-      source: '老学员推荐', firstAt: '昨天 16:10', stage: '待成交',
-      messages: [
-        { dir: 'in',  t: '昨天', text: '下期杯测课什么时候' },
-        { dir: 'out', t: '13:40', by: '你', read: true, text: 'Kelvin，杯测课下一期 9 月 20–21 日，RM 1,280，老学员价 RM 1,080。' },
-        { dir: 'in',  t: '13:58', text: 'ok 我看看 时间表发我' },
-      ],
-      drafts: [
-        { why: '发课表',
-          zh: '好的 Kelvin，课表用 PDF 发你。两天都是 10:00–17:00，第二天下午是产地盲测。\n名额还有 4 个，你定了跟我说一声就行。',
-          en: "Sure Kelvin, sending the schedule as a PDF. Both days run 10am–5pm; day two afternoon is the origin blind cupping.\n4 seats left — just tell me when you've decided.",
-          bm: 'Baik Kelvin, jadual saya hantar dalam PDF. Dua-dua hari 10 pagi–5 petang; petang hari kedua ialah blind cupping ikut origin.\nTinggal 4 tempat — bagitahu saja bila dah decide.' },
-        { why: '锁名额',
-          zh: 'Kelvin，课表这就发。老学员价 RM 1,080 只到这周日，我先帮你 hold 一个位到周日晚，可以吗？',
-          en: "Kelvin, schedule coming right up. The alumni price RM 1,080 is valid till this Sunday — I'll hold a seat for you till Sunday night, okay?",
-          bm: 'Kelvin, jadual saya hantar sekarang. Harga alumni RM 1,080 sah sampai Ahad ini — saya simpan satu tempat sampai Ahad malam, ok?' },
-      ],
-    },
-    {
-      id: 'c6', name: '黄雅琳', channel: 'wa', course: 'barista', lang: 'zh',
-      status: 'follow', waitMin: 0, remind: '明早 9:00', budget: 'RM 2,880（已报价）',
-      source: 'Meta 广告 · 咖啡师速成班 CTA-A', firstAt: '昨天 11:02', stage: '已报价',
-      messages: [
-        { dir: 'in',  t: '昨天', text: '学费多少？可以分期吗' },
-        { dir: 'out', t: '昨天', by: '你', read: true, text: '雅琳你好，咖啡师速成班 RM 2,880，可以分 3 期无利息，也可以用 PTPK 全额。' },
-        { dir: 'in',  t: '昨天', text: '我跟老公商量一下' },
-        { dir: 'out', t: '昨天', by: '你', read: true, text: '好的，你先考虑，我明天再跟你确认一次，名额帮你先 hold 到明晚。' },
-      ],
-      drafts: [
-        { why: '跟进',
-          zh: '雅琳早，昨天说帮你 hold 的位还在。今晚前定的话我把开课须知发你，有什么顾虑也可以直接问我。',
-          en: "Morning Ya Lin — the seat I held for you is still yours. If you decide by tonight I'll send the pre-class notes; any concerns, just ask.",
-          bm: 'Selamat pagi Ya Lin — tempat yang saya simpan masih ada. Kalau decide sebelum malam ini saya hantar nota pra-kelas; ada apa-apa keraguan tanya saja.' },
-      ],
-    },
-    {
-      id: 'c7', name: 'Farah', channel: 'ig', course: 'latte', lang: 'bm',
-      status: 'done', waitMin: 0, budget: 'RM 980（已付）',
-      source: 'IG 广告 · 拉花周末班', firstAt: '周一', stage: '已成交',
-      messages: [
-        { dir: 'in',  t: '周一', text: 'Nak daftar kelas latte art weekend' },
-        { dir: 'out', t: '周一', by: '你', read: true, text: 'Baik Farah, ini link pendaftaran. Lepas bayar hantar resit ya.' },
-        { dir: 'in',  t: '周一', text: 'Dah daftar, thank you!' },
-      ],
-      drafts: [],
-    },
-  ];
-
-  // 快捷话术：{name} {course} {price} 在插入时替换
-  const TEMPLATES = [
-    { group: '价格与付款', items: [
-      { k: '报价',   zh: '{name} 你好，{course} 学费 {price}，含教材和考核证书。', en: 'Hi {name}, the {course} is {price}, including materials and the assessment certificate.', bm: 'Hai {name}, yuran {course} ialah {price}, termasuk bahan dan sijil penilaian.' },
-      { k: '分期',   zh: '可以分 3 期，无利息：报名付 50%，开课付 30%，结课付 20%。', en: 'You can pay in 3 interest-free instalments: 50% at sign-up, 30% on day one, 20% at completion.', bm: 'Boleh bayar 3 ansuran tanpa faedah: 50% masa daftar, 30% hari pertama, 20% selepas tamat.' },
-      { k: 'PTPK',   zh: 'PTPK 可申请全额贷款，需要身份证 + 最高学历证书 + 两张照片，我们帮你办。', en: 'PTPK can cover the full fee. You need your IC, highest certificate and two photos — we handle the application.', bm: 'PTPK boleh tanggung yuran penuh. Perlu IC, sijil tertinggi dan dua gambar — kami uruskan permohonan.' },
-      { k: '押金',   zh: '留位押金 RM 300，开课当天抵扣学费，开课前 7 天可全额退。', en: 'A RM 300 deposit holds your seat, deducted from the fee on day one; fully refundable up to 7 days before class.', bm: 'Deposit RM 300 untuk simpan tempat, ditolak dari yuran pada hari pertama; boleh refund penuh sehingga 7 hari sebelum kelas.' },
-    ]},
-    { group: '课程安排', items: [
-      { k: '开课时间', zh: '{course} 下一期开课在 9 月 16 日（周一），平日班 10:00–17:00。', en: 'The next {course} intake starts Monday 16 Sept, weekday class 10am–5pm.', bm: 'Kelas {course} seterusnya bermula Isnin 16 Sept, kelas hari biasa 10 pagi–5 petang.' },
-      { k: '周末班',   zh: '周末班是连续两个周末（周六日），时间一样 10:00–17:00。', en: 'The weekend class runs over two consecutive weekends (Sat & Sun), same hours 10am–5pm.', bm: 'Kelas hujung minggu berjalan dua hujung minggu berturut (Sabtu & Ahad), waktu sama 10 pagi–5 petang.' },
-      { k: '名额',     zh: '这一期还剩 2 个位，报满就要等下一期（10 月）。', en: 'Only 2 seats left this intake — after that it is the October intake.', bm: 'Tinggal 2 tempat sahaja sesi ini — selepas itu sesi Oktober.' },
-    ]},
-    { group: '到访', items: [
-      { k: '校区地址', zh: '校区在 Bukit Jalil，停车免费 3 小时，定位我发你。', en: 'The campus is in Bukit Jalil with 3 hours free parking — sending you the location pin.', bm: 'Kampus di Bukit Jalil, parking percuma 3 jam — saya hantar lokasi.' },
-      { k: '约试听',   zh: '欢迎来看一节实操课（免费），周六 10:00 有一场，要帮你留位吗？', en: "You're welcome to sit in on a live practical session (free). There's one Saturday 10am — shall I hold a spot?", bm: 'Jemput datang tengok kelas praktikal (percuma). Ada sesi Sabtu 10 pagi — nak saya simpan tempat?' },
-    ]},
-    { group: '收尾', items: [
-      { k: '稍后跟进', zh: '好的，你先考虑，我明天再跟你确认一次，名额帮你先 hold 到明晚。', en: "Sure, take your time. I'll check back tomorrow and hold the seat for you till tomorrow night.", bm: 'Baik, fikir dulu. Saya follow up esok dan simpan tempat sampai esok malam.' },
-      { k: '感谢',     zh: '谢谢 {name}！报名确认后我会把课前须知和群链接发给你。', en: "Thanks {name}! Once your registration is confirmed I'll send the pre-class notes and group link.", bm: 'Terima kasih {name}! Selepas pendaftaran disahkan saya hantar nota pra-kelas dan link kumpulan.' },
-      { k: '留 WhatsApp', zh: '这里发不了链接和文件，方便留个 WhatsApp 吗？我把资料发过去。', en: "I can't send links or files here — could you share a WhatsApp number? I'll send the details there.", bm: 'Di sini tak boleh hantar link atau fail — boleh kongsi nombor WhatsApp? Saya hantar butiran di sana.' },
-    ]},
-  ];
-
-  const ASSETS = [
-    { k: 'card',  icon: 'i-doc',  label: '课程报价卡', needsLinks: false },
-    { k: 'pin',   icon: 'i-pin',  label: '校区位置',   needsLinks: true  },
-    { k: 'link',  icon: 'i-link', label: '报名链接',   needsLinks: true  },
-    { k: 'pdf',   icon: 'i-clip', label: '课程表 PDF', needsLinks: true  },
-  ];
-
-  /* ── Adapter（原型：内存版）───────────────────────────────── */
-  const MockAdapter = {
-    _convs: SAMPLE.map(c => ({ ...c, messages: c.messages.slice() })),
-    _subs: [],
-    async list() { return this._convs; },
-    async send(id, msg) {
-      const c = this._convs.find(x => x.id === id);
-      const m = { ...msg, dir: 'out', by: '你', t: nowHM(), read: false };
-      c.messages.push(m);
-      setTimeout(() => { m.read = true; this._subs.forEach(cb => cb({ type: 'read', id })); }, 1400);
-      return m;
-    },
-    async setStatus(id, status, extra = {}) {
-      const c = this._convs.find(x => x.id === id);
-      Object.assign(c, { status }, extra);
-    },
-    onMessage(cb) { this._subs.push(cb); return () => { this._subs = this._subs.filter(f => f !== cb); }; },
-  };
-  const adapter = MockAdapter;
-
-  /* ── 状态 ─────────────────────────────────────────────────── */
-  const state = {
-    convs: [],
-    filter: 'open',
-    lang: 'zh',
-    deskTab: 'drafts',
-    current: null,          // 当前会话 id
-    queue: null,            // { ids: [], i: 0 } 清队列模式
-    doneToday: 14,
-  };
-
+  const NOW = Date.now();
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const el = {
-    qlist: $('#qlist'), statOpen: $('#stat-open'), statDone: $('#stat-done'), statWorst: $('#stat-worst'),
-    pulse: $('#pulse'), queueN: $('#queueN'), startQueue: $('#startQueue'),
-    chat: $('#chat'), back: $('#back'), chatAva: $('#chatAva'), chatName: $('#chatName'), chatSub: $('#chatSub'),
-    ctx: $('#ctx'), ctxLine: $('#ctxLine'), ctxGrid: $('#ctxGrid'), stream: $('#stream'),
-    composer: $('#composer'), input: $('#input'), send: $('#send'), voice: $('#voice'), openDesk: $('#openDesk'),
-    desk: $('#desk'), deskBody: $('#deskBody'), scrim: $('#scrim'),
-    qbar: $('#qbar'), qbarText: $('#qbarText'), qbarFill: $('#qbarFill'), qbarSkip: $('#qbarSkip'), qbarExit: $('#qbarExit'),
-    snoozeSheet: $('#snoozeSheet'), moreSheet: $('#moreSheet'), moreTitle: $('#moreTitle'),
-    actSnooze: $('#actSnooze'), actDone: $('#actDone'), actTag: $('#actTag'), more: $('#more'),
-    toast: $('#toast'), toastText: $('#toastText'),
-  };
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const ic = (id, cls = 'ic') => `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+  const hm = ms => { const d = new Date(ms); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; };
+  const ago = min => NOW - min * 60000;
+  const hasCJK = s => /[一-鿿]/.test(s);
 
-  /* ── 工具 ─────────────────────────────────────────────────── */
-  function nowHM() { const d = new Date(); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
-  function esc(s) { return String(s).replace(/[&<>"']/g, ch => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[ch])); }
-  function icon(id, cls = 'ic') { return `<svg class="${cls}" aria-hidden="true"><use href="#${id}"/></svg>`; }
-  function conv(id) { return state.convs.find(c => c.id === id); }
-  function initial(name) { return /^[A-Za-z]/.test(name) ? name[0].toUpperCase() : name.replace(/^小红薯/, '薯')[0]; }
-  function waitLabel(c) {
-    if (c.status === 'done') return { cls: 'wait--cool', text: '已完成' };
-    if (c.status === 'follow') return { cls: 'wait--cool', text: c.remind ? `提醒 ${c.remind}` : '等客户' };
-    const m = c.waitMin;
-    const cls = m >= 60 ? 'wait--hot' : m >= 15 ? 'wait--warm' : 'wait--cool';
-    const text = m >= 60 ? `等 ${Math.floor(m/60)} 小时 ${m%60} 分` : `等 ${m} 分`;
-    return { cls, text };
-  }
-  function fill(tpl, c) {
-    const course = COURSES[c.course];
-    return tpl.replace(/\{name\}/g, c.name).replace(/\{course\}/g, course.name).replace(/\{price\}/g, course.price);
-  }
-  function openConvs() { return state.convs.filter(c => c.status === 'open').sort((a, b) => b.waitMin - a.waitMin); }
-  function lastIn(c) { const m = c.messages.slice().reverse().find(x => x.dir === 'in'); return m ? m.text : ''; }
+  /* ── 示例数据 ── */
+  const ME = '你', ME_NAME = 'Boon', COLLEAGUE = '佳佳';
+  const LINES = { emily: { label: 'Emily 线', emoji: '🍷', persona: 'Emily' }, cindy: { label: 'Cindy 线', emoji: '☕', persona: 'Cindy' }, coco: { label: 'Coco 线', emoji: '☕', persona: 'Coco' } };
+  const STAGE = { hot: ['#dc2626', '热'], considering: ['#f0c040', '考虑中'], curious: ['#7fc6ff', '好奇'] };
+  const SHARON_Q = '刚毕业。如果中途找到全职工作可以转周末班吗？学费怎么算？';
+  const AINA_Q = 'Kelas Barista 1 hari tu hujung minggu ada tak? Berapa harga ya?';
+  const CONVS = [
+    { id: 'sharon', name: 'Sharon', line: 'emily', channel: 'wa', lang: 'zh', course: 'WNSM 调酒半工读', stage: 'hot', warn: '',
+      botActive: true, sos: { question: SHARON_Q, askedAt: ago(14), claimedBy: null },
+      messages: [
+        { dir: 'in', at: ago(16), text: '你好 我看到调酒半工读的广告' },
+        { dir: 'out', at: ago(16), by: 'Emily · Bot', text: '哈喽 Sharon，我是 Emily 🍷 调酒半工读是 9 个月 36 堂，一周上 1 天课，其余时间在合作酒吧带薪实习。你现在是在工作，还是刚毕业？', state: 'read' },
+        { dir: 'in', at: ago(14), text: SHARON_Q } ],
+      drafts: [
+        { answer: '可以转，按剩余堂数折算', text: '可以的 Sharon，半工读转周末班随时可以，学费按剩余堂数折算，不会重复收。刚毕业的话建议先来看一堂实操（免费），这周六 2 点有一场，帮你留位？' },
+        { answer: '先问：边找工作还是专心学', text: 'Sharon 你好，想先了解一下：你是想边找工作边学，还是先专心学完 9 个月？两种情况推荐的班不一样。' },
+        { answer: '约通话 3 分钟', text: '这个问题电话讲 3 分钟更清楚。你现在方便吗？不方便的话晚上 8 点后我打给你。' } ] },
+    { id: 'weijie', name: 'Wei Jie', line: 'cindy', channel: 'wa', lang: 'zh', course: 'BMART Diploma', stage: 'considering', warn: '',
+      botActive: true, sos: { question: 'BMART diploma 是不是 PTPK 可以全额？我 SPM 只有 3 credit 够吗', askedAt: ago(8), claimedBy: COLLEAGUE, claimedAt: ago(6) },
+      messages: [
+        { dir: 'in', at: ago(10), text: '你好 想问 BMART diploma' },
+        { dir: 'out', at: ago(10), by: 'Cindy · Bot', text: '你好 Wei Jie ☕ BMART Diploma 是 12 个月，咖啡 + 调酒 + 烘焙三合一。你是想转行，还是想开店？', state: 'read' },
+        { dir: 'in', at: ago(8), text: 'BMART diploma 是不是 PTPK 可以全额？我 SPM 只有 3 credit 够吗' } ],
+      drafts: [ { answer: 'PTPK 可全额，SPM 3 credit 够', text: 'Wei Jie 你好，BMART 可以申请 PTPK 全额，SPM 3 个 credit 符合门槛。需要身份证 + SPM 成绩单 + 两张照片，我们帮你办。要我先帮你预审吗？' } ] },
+    { id: 'aina', name: 'Aina', line: 'coco', channel: 'wa', lang: 'bm', course: '1-Day Junior Barista', stage: 'curious', warn: '⚠ 不提酒精',
+      botActive: true, sos: { question: '周末有场吗？多少钱？', askedAt: ago(4), claimedBy: null },
+      messages: [
+        { dir: 'in', at: ago(7), text: 'Hai, saya nampak iklan kelas barista. Untuk yang tak ada pengalaman boleh ke?', tr: '你好，我看到咖啡师课程的广告。没有经验的可以吗？' },
+        { dir: 'out', at: ago(7), by: 'Coco · Bot', text: 'Hai Aina ☕ Boleh! Kelas 1 hari ni memang untuk yang baru nak mula.', state: 'read' },
+        { dir: 'in', at: ago(4), text: AINA_Q, tr: '一日咖啡师课周末有场吗？多少钱？' } ],
+      drafts: [
+        { answer: '有周末场 · 下一场 19/9 · 报价', zh: '有！下一场周末 9 月 19 日周六 10–2 点，RM ___ 含材料和出席证明，要留位吗？', text: 'Ada! Sesi hujung minggu seterusnya 19 Sept (Sabtu), 10 pagi–2 petang. Harga RM ___ termasuk bahan & sijil kehadiran. Nak saya simpan tempat?' },
+        { answer: '先问：几位一起来', zh: '报价前先问，一个人还是两个人来？双人价不同。', text: 'Sebelum saya bagi harga, awak datang seorang atau berdua? Harga berdua lain sikit.' },
+        { answer: '约通话', zh: '电话讲 3 分钟更清楚，现在方便吗？', text: 'Senang kalau saya call 3 minit. Sekarang okay tak?' } ] },
+    { id: 'jason', name: 'Jason Lim', line: 'cindy', channel: 'wa', lang: 'zh', course: 'BMART Diploma', stage: 'considering', warn: '⚠ 待核付款',
+      botActive: false, receipt: { amount: 'RM 1,000', due: 'RM ___', askedAt: ago(7), done: false },
+      messages: [
+        { dir: 'in', at: ago(9), text: '好 我先付押金' },
+        { dir: 'in', at: ago(8), image: true, text: '转好了', amount: 'RM 1,000.00' },
+        { dir: 'out', at: ago(8), by: 'Cindy · Bot', text: '收到 Jason 🙏 我让同事核对一下，确认了马上发报名表给你。', state: 'read' } ],
+      drafts: [] },
+    { id: 'nurul', name: 'Nurul', line: 'coco', channel: 'ig', lang: 'bm', course: 'BWC Bakery Weekend', stage: 'considering', warn: '⚠ IG 窗口已关',
+      botActive: false, windowClosed: 'ig', waNumber: '012-345 6789', handoff: { done: false, handle: '@nurul.bakes', account: 'Instagram · JWC Bakery' },
+      messages: [
+        { dir: 'in', at: ago(60 * 40), text: 'my number 012-345 6789, boleh call petang. Nak tanya pasal kelas roti weekend tu', tr: '我的号码 012-345 6789，下午可以打。想问周末面包课的事' } ],
+      drafts: [ { answer: '下一场 27/9 · 转 WhatsApp', zh: '可以！下一场周末面包班 9 月 27 日，我等下 WhatsApp 你 🙂', text: 'Hai Nurul, boleh! Kelas Bakery Weekend seterusnya 27 Sept. Saya WhatsApp awak sekejap lagi ya 🙂' } ] },
+    { id: 'kelvin', name: 'Kelvin Tan', line: 'cindy', channel: 'wa', lang: 'zh', course: 'FCC 4 日咖啡速成', stage: 'hot', warn: '⚠ WhatsApp 窗口已关',
+      botActive: false, windowClosed: 'wa', phone: '017-654 3210',
+      messages: [ { dir: 'in', at: ago(60 * 50), text: '下个月的 4 日班几号开？我要先请假' } ],
+      drafts: [ { answer: '10 月班 13 号开，留位到明天', text: 'Kelvin 你好，10 月班 13 号开，连续 4 天。名额我先帮你留着，明天前回我就行 👍' } ] },
+  ];
+  const HANDOFFS = [
+    { id: 'nurul', name: 'Nurul', handle: '@nurul.bakes', account: 'Instagram · JWC Bakery', course: 'BWC Bakery Weekend', said: 'my number 012-345 6789, boleh call petang. Nak tanya pasal kelas roti weekend tu', number: '012-345 6789', at: ago(18), done: false },
+    { id: 'farah', name: 'Farah', handle: '@farah.k', account: 'Facebook · JWC Academy 专页', course: 'FCC 4 日咖啡速成', said: '0176 543 210 这个是我的 WhatsApp，你 WhatsApp 我', number: '017-654 3210', at: ago(65), done: false },
+  ];
+  const TEMPLATES = [
+    { id: 't1', folder: 'WNSM KL CN', name: 'WNSM KL CN- PRICE', pinned: true, uses: 132, images: 1, text: '调酒半工读 WNSM 学费 RM ___ ，可分期 / PTPK。9 月班 16/9 开课，一周 1 天。图是课程表 👆' },
+    { id: 't2', folder: 'WNSM KL CN', name: 'WNSM KL CN- SCHEDULE 2026', uses: 87, images: 2, text: '2026 年 WNSM 开课时间表在图里 👆 每期 9 个月，一周 1 天上课。' },
+    { id: 't3', folder: 'WNSM KL CN', name: 'WNSM KL CN- INTERN BAR LIST', uses: 41, images: 0, text: '半工读合作酒吧名单：KL 6 家、JB 2 家，按你住的地方安排。' },
+    { id: 't4', folder: 'FMC WEEKEND KL CN', name: 'FMC WEEKEND KL CN- PRICE', uses: 64, images: 1, text: '调酒周末班 FMC 学费 RM ___，2 个月 8 堂，每周 3 小时。' },
+    { id: 't5', folder: 'WINE KL CN', name: 'WINE KL CN- FOONG 613', uses: 26, images: 1, text: '红酒初级课 · Foong 老师 · 5 款新世界红酒 · 2.5 小时。' },
+    { id: 't6', folder: '我的模版', name: 'KL 地址 + 停车', uses: 58, images: 0, text: '校区在 Bukit Jalil，停车免费 3 小时。定位：（示例）' },
+    { id: 't7', folder: '我的模版', name: 'PTPK 三样文件', uses: 39, images: 0, text: 'PTPK 需要：身份证、最高学历证书、两张照片。我们帮你办。' },
+    { id: 't8', folder: '我的模版', name: '周六试听', uses: 22, images: 0, text: '欢迎来看一堂实操（免费），周六 2 点有一场，要帮你留位吗？' },
+  ];
+  const RECENT = ['t1', 't6', 't7', 't8'];
 
-  let toastTimer;
-  function toast(text) {
-    el.toastText.textContent = text;
-    el.toast.classList.add('is-on');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.toast.classList.remove('is-on'), 1800);
-  }
+  /* ── 状态 ── */
+  const state = { duty: true, filter: 'all', current: null, queue: null, draftOffset: {}, tplFolder: '', sentline: {}, lastNotif: 'sharon' };
+  const conv = id => CONVS.find(c => c.id === id);
+  const waitMin = at => Math.max(0, Math.round((Date.now() - at) / 60000));
+  const level = m => m >= 10 ? 'hot' : m >= 5 ? 'warm' : 'cool';
+  const isOpenSOS = c => c.sos && !c.sos.repliedAt;
+  const mine = c => c.sos && c.sos.claimedBy === ME;
+  const avatar = (c, sm) => `<span class="ava${sm ? ' ava--sm' : ''}"><span>${esc(c.name[0])}</span><i>${LINES[c.line].emoji}</i></span>`;
+  const stageTag = k => `<span class="tag tag--gray stg"><i style="background:${STAGE[k][0]}"></i>${STAGE[k][1]}</span>`;
 
-  /* ── 渲染：队列页 ─────────────────────────────────────────── */
-  function renderStats() {
-    const open = openConvs();
-    const worst = open.length ? open[0].waitMin : 0;
-    el.statOpen.textContent = open.length;
-    el.statDone.textContent = state.doneToday;
-    el.statWorst.textContent = worst;
-    el.pulse.lastElementChild.classList.toggle('is-hot', worst >= 60);
-    el.queueN.textContent = `· ${open.length} 条`;
-    el.startQueue.disabled = open.length === 0;
-    $$('[data-count]').forEach(b => {
-      const f = b.dataset.count;
-      b.textContent = f === 'all' ? state.convs.length : state.convs.filter(c => c.status === f).length;
-    });
-  }
+  let toastT; const toast = t => { $('#toastText').textContent = t; $('#toast').classList.add('is-on'); clearTimeout(toastT); toastT = setTimeout(() => $('#toast').classList.remove('is-on'), 1800); };
+  const show = id => { ['login', 'queue'].forEach(s => { $('#' + s).hidden = s !== id; }); };
 
-  function renderList() {
-    const f = state.filter;
-    let rows = f === 'all' ? state.convs.slice() : state.convs.filter(c => c.status === f);
-    // 待回复按等待时长降序（最久没回的在最上面）；其它按原顺序
-    if (f === 'open' || f === 'all') rows.sort((a, b) => (b.status === 'open') - (a.status === 'open') || b.waitMin - a.waitMin);
-    if (!rows.length) {
-      const copy = { open: ['待回清零', '没有客户在等你。'], follow: ['没有跟进中的会话', '回过的会话会在这里等客户回音。'], done: ['还没有完成的会话', '标记完成的会话会收在这里。'], all: ['没有会话', '接入渠道后这里会出现客户消息。'] }[f];
-      el.qlist.innerHTML = `<li class="empty"><strong>${copy[0]}</strong><p>${copy[1]}</p></li>`;
-      return;
-    }
-    el.qlist.innerHTML = rows.map(c => {
-      const ch = CHANNELS[c.channel]; const w = waitLabel(c); const course = COURSES[c.course];
-      return `<li class="qrow ${c.status === 'open' ? 'is-unread' : ''}" data-id="${c.id}">
-        <span class="ava"><span class="ava-i" aria-hidden="true">${esc(initial(c.name))}</span><span class="ch ${ch.cls}" title="${ch.label}">${ch.mark}</span></span>
-        <button class="qmain" type="button" data-open="${c.id}">
-          <div class="qtop"><span class="qname">${esc(c.name)}</span><span class="wait ${w.cls}">${esc(w.text)}</span></div>
-          <p class="qsnip">${esc(lastIn(c))}</p>
-          <div class="qmeta"><span class="tag tag--blue">${esc(course.name)}</span><span class="tag tag--gray">${esc(c.source)}</span></div>
-        </button>
-        ${c.status === 'open' ? `<button class="zap" type="button" data-zap="${c.id}" aria-label="快速回复 ${esc(c.name)}">${icon('i-bolt')}</button>` : '<span></span>'}
-      </li>`;
-    }).join('');
-  }
+  /* ── 登录 ── */
+  const loggedIn = () => { try { return localStorage.getItem('mh_user') || sessionStorage.getItem('mh_user'); } catch { return null; } };
+  $('#remember').addEventListener('click', e => { const b = e.currentTarget; b.setAttribute('aria-checked', b.getAttribute('aria-checked') !== 'true'); });
+  $('#loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('#loginName').value.trim() || 'boon';
+    try { ($('#remember').getAttribute('aria-checked') === 'true' ? localStorage : sessionStorage).setItem('mh_user', name); } catch {}
+    show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 700);
+  });
 
-  /* ── 渲染：会话页 ─────────────────────────────────────────── */
-  function renderHead(c) {
-    const ch = CHANNELS[c.channel];
-    el.chatAva.innerHTML = `<span class="ava-i" aria-hidden="true">${esc(initial(c.name))}</span><span class="ch ${ch.cls}">${ch.mark}</span>`;
-    el.chatName.textContent = c.name;
-    el.chatSub.textContent = `${ch.label} · ${LANG_NAME[c.lang]} · ${c.stage}`;
-    const course = COURSES[c.course];
-    el.ctxLine.textContent = `${c.source.split(' · ')[0]} · ${course.name} · ${c.budget}`;
-    el.ctxGrid.innerHTML = `
-      <div class="wide"><dt>来源</dt><dd>${esc(c.source)}</dd></div>
-      <div><dt>咨询课程</dt><dd>${esc(course.name)}</dd></div>
-      <div><dt>学费</dt><dd class="num">${esc(course.price)}${course.ptpk ? ' · PTPK 可' : ''}</dd></div>
-      <div><dt>预算 / 人数</dt><dd>${esc(c.budget)}</dd></div>
-      <div><dt>首次咨询</dt><dd>${esc(c.firstAt)}</dd></div>
-      <div><dt>语言</dt><dd>${LANG_NAME[c.lang]}</dd></div>
-      <div><dt>阶段</dt><dd>${esc(c.stage)}</dd></div>`;
-    el.ctx.open = false;
+  /* ── 通知 ── */
+  let notifT;
+  function showNotif(id) {
+    const c = conv(id); if (!c || !isOpenSOS(c)) return;
+    $('#nfName').textContent = c.name; $('#nfWait').textContent = `${waitMin(c.sos.askedAt)} 分`;
+    $('#nfTime').textContent = hm(Date.now()); $('#nfBody').textContent = `${LINES[c.line].emoji} ${LINES[c.line].label} · ${c.sos.question}`;
+    $('#notif').dataset.id = id; $('#notif').classList.add('is-on');
+    clearTimeout(notifT); notifT = setTimeout(() => $('#notif').classList.remove('is-on'), 6000);
   }
+  $('#notif').addEventListener('click', () => { $('#notif').classList.remove('is-on'); openChat($('#notif').dataset.id, 'notif'); });
 
-  function waveSvg() {
-    let bars = '';
-    for (let i = 0; i < 34; i++) {
-      const h = 4 + Math.round(Math.abs(Math.sin(i * 1.7) * 10 + Math.cos(i * .9) * 5));
-      bars += `<rect x="${i * 5.2}" y="${11 - h/2}" width="2.6" height="${h}" rx="1.3" fill="currentColor"/>`;
-    }
-    return `<svg viewBox="0 0 178 22" style="color:var(--uk-time)">${bars}</svg>`;
+  /* ── 待回 ── */
+  function renderQueue() {
+    const open = CONVS.filter(isOpenSOS);
+    const counts = { all: open.length }; Object.keys(LINES).forEach(k => counts[k] = open.filter(c => c.line === k).length);
+    $('#chips').innerHTML = [['all', '全部'], ...Object.entries(LINES).map(([k, v]) => [k, `${v.emoji} ${v.persona}`])]
+      .map(([k, l]) => `<button class="chip" role="tab" data-f="${k}" aria-selected="${state.filter === k}">${l} <b class="num">${counts[k]}</b></button>`).join('');
+    const rows = open.filter(c => state.filter === 'all' || c.line === state.filter).sort((a, b) => (a.sos.claimedBy === ME) - (b.sos.claimedBy === ME) || a.sos.askedAt - b.sos.askedAt);
+    const replied = CONVS.filter(c => c.sos && c.sos.repliedAt && (state.filter === 'all' || c.line === state.filter));
+    const row = c => {
+      const m = waitMin(c.sos.askedAt); const other = c.sos.claimedBy && c.sos.claimedBy !== ME;
+      const pill = c.sos.repliedAt ? `<span class="wait wait--cool">已回 ${hm(c.sos.repliedAt)}</span>` : `<span class="wait wait--${level(m)}">等 ${m} 分</span>`;
+      const right = c.sos.repliedAt ? `<span class="who ${c.sos.claimedBy === ME ? 'who--me' : 'who--other'}">${c.sos.claimedBy === ME ? '你' : esc(c.sos.claimedBy)}回的</span>` : mine(c) ? `<span class="who who--me">你在回</span>` : other ? `<span class="who who--other">${esc(c.sos.claimedBy)} 在回</span>` : `<button class="zap" type="button" data-zap="${c.id}" aria-label="接手回复">${ic('i-bolt')}</button>`;
+      return `<li class="qrow ${other ? 'is-other' : (!c.sos.claimedBy ? 'is-open' : '')}">${avatar(c)}<button class="qmain" type="button" data-open="${c.id}"><div class="qtop"><span class="qname">${esc(c.name)}</span>${pill}</div><p class="qsnip">${esc(c.sos.question)}</p><div class="qmeta"><span class="tag tag--blue">${esc(c.course)}</span>${stageTag(c.stage)}</div></button>${right}</li>`;
+    };
+    const receipts = CONVS.filter(c => c.receipt && !c.receipt.done).length;
+    const handoffs = HANDOFFS.filter(h => !h.done).length;
+    $('#qlist').innerHTML = `<li class="section">🆘 等真人 <b class="num">${rows.length}</b></li>`
+      + (rows.length ? rows.map(row).join('') : '<li class="empty">没有客户在等</li>')
+      + (replied.length ? `<li class="section">已回 · 等客户 <b class="num">${replied.length}</b></li>` + replied.map(row).join('') : '')
+      + `<li><button class="linkrow" type="button" data-go="receipts">${ic('i-folder')}<span class="grow">待确认收款</span><b>${receipts}</b>${ic('i-chevron', 'ic ic--sm chev')}</button></li>`
+      + `<li><button class="linkrow" type="button" data-go="handoff">${ic('i-phone')}<span class="grow">IG/FB 给了号码</span><b>${handoffs}</b>${ic('i-chevron', 'ic ic--sm chev')}</button></li>`;
+    const unclaimed = open.filter(c => !c.sos.claimedBy).length;
+    $('#queueN').textContent = `· ${unclaimed} 条`; $('#startQueue').disabled = !unclaimed;
+    $('#duty').classList.toggle('is-off', !state.duty); $('#duty').querySelector('span').textContent = state.duty ? '值班中' : '已下班';
+    $('#dutyline').innerHTML = state.duty ? '值班：<b>你、佳佳</b>' : '值班：<b>佳佳</b> · 你已下班，不收通知';
+    $('#dutyLabel').textContent = state.duty ? '下班（不收通知）' : '上班（收通知）';
   }
+  $('#chips').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (b) { state.filter = b.dataset.f; renderQueue(); } });
+  $('#qlist').addEventListener('click', e => {
+    const z = e.target.closest('[data-zap]'); if (z) return openChat(z.dataset.zap, 'zap');
+    const o = e.target.closest('[data-open]'); if (o) return openChat(o.dataset.open, 'queue');
+    const g = e.target.closest('[data-go]');
+    if (g && g.dataset.go === 'receipts') { const c = CONVS.find(x => x.receipt && !x.receipt.done); return c ? openChat(c.id, 'queue') : toast('没有待确认的收款'); }
+    if (g && g.dataset.go === 'handoff') return openHandoff();
+  });
+  $('#duty').addEventListener('click', () => { state.duty = !state.duty; renderQueue(); toast(state.duty ? '值班中 · 会收到 SOS 通知' : '已下班 · 不再收通知'); });
+  $('#startQueue').addEventListener('click', () => {
+    const ids = CONVS.filter(c => isOpenSOS(c) && !c.sos.claimedBy).sort((a, b) => a.sos.askedAt - b.sos.askedAt).map(c => c.id);
+    if (!ids.length) return; state.queue = { ids, i: 0 }; openChat(ids[0], 'zap');
+  });
 
-  function bubble(m) {
-    const meta = `<span class="meta num">${esc(m.t)}${m.dir === 'out' ? icon('i-check2', 'ic tick') : ''}</span>`;
-    const by = m.dir === 'out' && m.by === 'Bot' ? '<span class="by">Bot 自动回复</span>' : '';
-    if (m.type === 'card') {
-      const k = COURSES[m.course];
-      return `<div class="msg ${m.dir}"><div class="bubble card">${by}
-        <div class="card-in"><svg aria-hidden="true"><use href="#pic-course"/></svg>
-          <div class="card-b"><h4>${esc(k.name)}</h4><p class="price num">${esc(k.price)}</p>
-          <p class="fine">${esc(k.days)} · ${esc(k.time)}${k.ptpk ? ' · PTPK 可申请' : ''}</p></div></div>
-        <span class="cta-link" role="link" tabindex="0">查看课程详情</span>${meta}</div></div>`;
-    }
-    if (m.type === 'voice') {
-      return `<div class="msg ${m.dir}"><div class="bubble voice"><button class="play" type="button" aria-label="播放语音">${icon('i-play')}</button><span class="wave">${waveSvg()}</span><span class="dur num">0:${String(m.sec).padStart(2,'0')}</span>${meta}</div></div>`;
-    }
-    return `<div class="msg ${m.dir}"><div class="bubble">${by}<p>${esc(m.text)}</p>${meta}</div></div>`;
-  }
+  /* ── 设置 ── */
+  const setGlobal = open => { $('#settingsSheet').classList.toggle('is-open', open); $('#scrimGlobal').classList.toggle('is-open', open); };
+  $('#settings').addEventListener('click', () => setGlobal(true));
+  $('#scrimGlobal').addEventListener('click', () => setGlobal(false));
+  $('#settingsSheet').addEventListener('click', e => {
+    const b = e.target.closest('[data-set]'); if (!b) return; setGlobal(false);
+    if (b.dataset.set === 'duty') $('#duty').click();
+    if (b.dataset.set === 'replay') { const c = CONVS.find(x => isOpenSOS(x) && !x.sos.claimedBy); c ? showNotif(c.id) : toast('没有待认领的 SOS'); }
+    if (b.dataset.set === 'logout') { try { localStorage.removeItem('mh_user'); sessionStorage.removeItem('mh_user'); } catch {} show('login'); }
+  });
 
-  function renderStream(c) {
-    el.stream.innerHTML = `<span class="daysep">今天</span>` + c.messages.map(bubble).join('');
-    el.stream.scrollTop = el.stream.scrollHeight;
-  }
-
-  /* ── 渲染：回复台 ─────────────────────────────────────────── */
-  function renderDesk() {
-    const c = conv(state.current); if (!c) return;
-    $$('.desktab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === state.deskTab)));
-    $$('.langsw button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === state.lang)));
-    const L = state.lang;
-    if (state.deskTab === 'drafts') {
-      const drafts = c.drafts.length ? c.drafts : [{ why: '通用', zh: fill(TEMPLATES[0].items[0].zh, c), en: fill(TEMPLATES[0].items[0].en, c), bm: fill(TEMPLATES[0].items[0].bm, c) }];
-      el.deskBody.innerHTML = `
-        <p class="hint">${icon('i-info', 'ic ic--sm')}<span>草稿根据客户最后一句和课程资料生成。点一条填进输入框，改完再发 —— AI 不会替你发出去。</span></p>
-        ${drafts.map((d, i) => `<button class="draft" type="button" data-draft="${i}">
-          <div class="dhead"><span class="why">${esc(d.why)}</span><span class="len num">${d[L].length} 字符</span></div>
-          <p>${esc(d[L])}</p></button>`).join('')}`;
-    } else if (state.deskTab === 'tmpls') {
-      el.deskBody.innerHTML = TEMPLATES.map((g, gi) => `<div class="grp"><h4>${esc(g.group)}</h4><div class="tmpls">
-        ${g.items.map((t, ti) => `<button class="tmpl" type="button" data-tmpl="${gi}.${ti}" title="${esc(fill(t[L], c))}">${esc(t.k)}</button>`).join('')}
-      </div></div>`).join('');
-    } else {
-      const ch = CHANNELS[c.channel];
-      el.deskBody.innerHTML = `
-        ${ch.links ? '' : `<p class="hint">${icon('i-info', 'ic ic--sm')}<span>${esc(ch.label)} 私信发不了链接和文件。先把客户导到 WhatsApp，再发这些。</span></p>`}
-        <div class="assets">${ASSETS.map(a => `<button class="asset" type="button" data-asset="${a.k}" ${a.needsLinks && !ch.links ? 'disabled style="opacity:.45"' : ''}>${icon(a.icon)}<span>${esc(a.label)}</span></button>`).join('')}</div>`;
-    }
-  }
-
-  function setDesk(open) {
-    el.desk.classList.toggle('is-open', open);
-    el.scrim.classList.toggle('is-open', open);
-    el.openDesk.setAttribute('aria-expanded', String(open));
-    if (open) renderDesk();
-  }
-  function setSheet(sheet, open) { sheet.classList.toggle('is-open', open); el.scrim.classList.toggle('is-open', open); }
-  function closeOverlays() { setDesk(false); setSheet(el.snoozeSheet, false); setSheet(el.moreSheet, false); el.scrim.classList.remove('is-open'); }
-
-  /* ── 导航 ─────────────────────────────────────────────────── */
-  function openChat(id, { desk = false } = {}) {
+  /* ── 会话 ── */
+  function openChat(id, via) {
     const c = conv(id); if (!c) return;
-    state.current = id;
-    state.lang = c.lang;                     // 跟客户的语言走
-    renderHead(c); renderStream(c);
-    el.input.value = ''; autosize(); el.send.disabled = true;
-    el.chat.classList.add('is-open');
-    renderQbar();
-    closeOverlays();
-    if (desk) setTimeout(() => setDesk(true), 260);
-    try { if (window === window.top && !history.state?.chat) history.pushState({ chat: id }, ''); } catch (_) {}
+    if (c.sos && !c.sos.repliedAt && !c.sos.claimedBy && (via === 'notif' || via === 'zap')) { c.sos.claimedBy = ME; c.sos.claimedAt = Date.now(); c.botActive = false; }
+    state.current = id; state.sentline[id] = state.sentline[id] || null;
+    $('#notif').classList.remove('is-on'); clearTimeout(notifT);
+    $('#input').value = ''; autosize();
+    renderChat(); closeOverlays();
+    $('#chat').classList.add('is-open');
+    if (via === 'notif') setTimeout(() => $('#input').focus(), 300);
   }
-  function closeChat() {
-    el.chat.classList.remove('is-open');
-    closeOverlays();
-    state.current = null;
-    renderStats(); renderList();
+  function closeChat() { $('#chat').classList.remove('is-open'); closeOverlays(); state.current = null; renderQueue(); }
+  function bubble(m) {
+    const t = hm(m.at);
+    if (m.image) return `<div class="msg in"><div class="bubble img"><div class="pic">${ic('i-image', 'ic ic--lg')}<span>银行转账截图</span><b class="num">${esc(m.amount)} · ${t}</b></div><div class="cap">${esc(m.text)}</div><span class="meta num">${t}</span></div></div>`;
+    if (m.dir === 'in') return `<div class="msg in"><div class="bubble${m.tr ? ' has-tr' : ''}"><p>${esc(m.text)}</p>${m.tr ? `<p class="tr"><b>译</b> ${esc(m.tr)}</p>` : ''}<span class="meta num">${t}</span></div></div>`;
+    const meta = m.state === 'failed' ? `<span class="meta fail">❌ 未送达</span>` : m.state === 'pending' ? `<span class="meta num">发送中 ${ic('i-clock', 'ic tick')}</span>` : `<span class="meta num">${t}${ic('i-check2', 'ic tick')}</span>`;
+    return `<div class="msg out"><div class="bubble"><span class="by">${esc(m.by)}</span><p>${esc(m.text)}</p>${meta}</div></div>`;
   }
-
-  /* ── 清队列模式 ───────────────────────────────────────────── */
-  function startQueue() {
-    const ids = openConvs().map(c => c.id);
-    if (!ids.length) return;
-    state.queue = { total: ids.length, remaining: ids.slice(), done: 0, skipStreak: 0 };
-    openChat(ids[0], { desk: true });
+  function failCard(c) {
+    if (c.windowClosed === 'ig') return `<div class="failcard"><h4>❌ IG 窗口已关，发不出去</h4><p>她留了 WhatsApp 号码，改用：</p><div class="acts"><button class="big" type="button" data-fail="wa">${ic('i-wa', 'ic ic--sm')}&nbsp;WhatsApp 她 · ${esc(c.waNumber)}</button><div class="two"><button class="soft" type="button" data-fail="call">${ic('i-phone', 'ic ic--sm')}打电话</button><button class="soft" type="button" data-fail="wait">等她再发来</button></div></div></div>`;
+    return `<div class="failcard"><h4>❌ WhatsApp 窗口已关，发不出去</h4><p>超过 24 小时只能发模板，他一回就能正常聊。</p><div class="acts"><button class="big" type="button" data-fail="tpl">发唤醒模板「课程更新」<small>这段话存成草稿，他回来一键发</small></button><div class="two"><button class="soft" type="button" data-fail="call">${ic('i-phone', 'ic ic--sm')}打电话 ${esc(c.phone)}</button><button class="soft" type="button" data-fail="wait">等他再发来</button></div></div></div>`;
   }
-  function renderQbar() {
-    const q = state.queue;
-    el.qbar.hidden = !q;
-    if (!q) return;
-    el.qbarText.textContent = `${q.done + 1} / ${q.total}`;
-    el.qbarFill.style.width = `${Math.round(q.done / q.total * 100)}%`;
-  }
-  // 回完/跟进/完成 → 下一条；跳过 → 放到队尾，连续跳过一整轮就结束
-  function queueNext({ skipped = false } = {}) {
-    const q = state.queue; if (!q) return;
-    if (skipped) { q.remaining.push(q.remaining.shift()); q.skipStreak++; }
-    else { q.remaining.shift(); q.done++; q.skipStreak = 0; }
-    if (!q.remaining.length || q.skipStreak >= q.remaining.length) {
-      const { done, total, remaining } = q;
-      state.queue = null;
-      closeChat();
-      toast(done === total ? `队列清空 · 回了 ${done} 条` : `回了 ${done} 条 · 跳过 ${remaining.length} 条`);
-      return;
-    }
-    openChat(q.remaining[0], { desk: true });
-  }
-  function exitQueue() { state.queue = null; closeChat(); }
-
-  /* ── 输入与发送 ───────────────────────────────────────────── */
-  function autosize() {
-    el.input.style.height = 'auto';
-    el.input.style.height = Math.min(el.input.scrollHeight, 132) + 'px';
-  }
-  function insertText(text) {
-    el.input.value = text;
-    autosize(); el.send.disabled = !text.trim();
-    setDesk(false);
-    el.input.focus();
-    el.input.setSelectionRange(text.length, text.length);
-  }
-  async function sendMessage(msg) {
+  function renderChat() {
     const c = conv(state.current); if (!c) return;
-    const wasOpen = c.status === 'open';
-    await adapter.send(c.id, msg);
-    if (wasOpen) { await adapter.setStatus(c.id, 'follow', { remind: null, waitMin: 0 }); state.doneToday++; }
-    renderStream(c);
-    el.input.value = ''; autosize(); el.send.disabled = true;
-    if (state.queue) {
-      toast('已发送 · 下一条');
-      setTimeout(() => queueNext(), 900);
-    } else {
-      toast(wasOpen ? '已发送 · 移到「跟进中」' : '已发送');
+    const L = LINES[c.line]; const other = c.sos && c.sos.claimedBy && c.sos.claimedBy !== ME && !c.sos.repliedAt;
+    $('#chatAva').innerHTML = `<span>${esc(c.name[0])}</span><i>${L.emoji}</i>`;
+    $('#chatName').textContent = c.name; $('#chatLine').textContent = `${L.emoji} ${L.label}${c.channel === 'ig' ? ' · IG' : ''}`;
+    const stt = $('#chatStatus');
+    if (other) { stt.textContent = `${c.sos.claimedBy} 在回`; stt.className = 'chipst tag--gray'; }
+    else if (c.botActive) { stt.textContent = 'Bot 在回'; stt.className = 'chipst tag--yellow'; }
+    else { stt.textContent = 'Bot 已停'; stt.className = 'chipst tag--green'; }
+    $('#ctx').innerHTML = `<b>${esc(c.course)}</b><i>·</i><b>${c.lang === 'bm' ? 'BM' : c.lang === 'en' ? 'EN' : '中文'}</b><i>·</i><b>${STAGE[c.stage][1]}</b>${c.warn ? `<i>·</i><span class="warn">${esc(c.warn)}</span>` : ''}`;
+    const failed = c.messages.some(m => m.state === 'failed');
+    $('#streamInner').innerHTML = `<span class="daysep">${c.windowClosed ? '前天' : '今天'}</span>` + c.messages.map(bubble).join('') + (failed ? failCard(c) : '');
+    const st = $('#stream'); st.scrollTop = st.scrollHeight;
+    // 输入框上方
+    let above = '';
+    if (c.receipt && !c.receipt.done) {
+      above += `<div class="taskwrap"><div class="task task--warm"><div class="th">💳 客户付了？<span class="wait wait--warm num">等了 ${waitMin(c.receipt.askedAt)} 分</span></div><div class="grid"><div><small>课程</small><b>${esc(c.course.split(' ')[0])}</b></div><div><small>应付押金</small><b class="num">${esc(c.receipt.due)}</b></div><div><small>图里金额</small><b class="num">${esc(c.receipt.amount)}</b></div></div></div></div>`;
+      above += `<div class="actions"><button class="big" type="button" data-rc="ok">✅ 确认收款<small>${L.persona} 自动发报名表</small></button><div class="two"><button class="soft danger" type="button" data-rc="no">❌ 不是付款</button><button class="soft" type="button" data-rc="reply">先回一句</button></div></div>`;
+    } else if (isOpenSOS(c)) {
+      const m = waitMin(c.sos.askedAt);
+      above += `<div class="taskwrap"><div class="task task--${level(m)}"><div class="th">客户在问<span class="wait wait--${level(m)} num">等了 ${m} 分</span></div><div class="tq">${esc(c.sos.question)}</div></div></div>`;
+      if (!c.botActive && !other && c.drafts.length) {
+        const off = state.draftOffset[c.id] || 0; const ds = [0, 1].map(i => c.drafts[(off + i) % c.drafts.length]).filter((d, i, a) => a.indexOf(d) === i);
+        above += `<div class="drafts"><div class="dh">${ic('i-asterisk', 'ic ic--sm')}草稿<button type="button" id="moreDrafts">换一批</button></div><div class="drow">${ds.map((d, i) => `<button class="draft" type="button" data-draft="${c.drafts.indexOf(d)}"><b>${esc(d.answer)}</b><p>${esc(d.zh || d.text)}</p>${d.zh ? `<small>BM：${esc(d.text)}</small>` : ''}</button>`).join('')}</div></div>`;
+      }
     }
+    const txt = $('#input').value;
+    if (c.lang !== 'zh' && txt.trim() && hasCJK(txt)) {
+      const d = c.drafts.find(x => x.zh === txt.trim());
+      above += `<div class="trstrip"><b>发出时翻成 ${c.lang.toUpperCase()} ✓</b><span>${esc(d ? d.text : '接入后自动翻译（示例先按原文发）')}</span><button type="button" id="sendZh">发中文</button></div>`;
+    }
+    const sl = state.sentline[c.id];
+    if (sl) above += `<div class="sentline">${ic('i-check2')}<span><b>已发 ✓✓</b><i> · ${c.channel === 'ig' ? '已转人手，Bot 不会自动回来' : '12 小时后 Bot 接回'}</i></span><button type="button" id="handback">🟢 ${c.channel === 'ig' ? '让 Bot 接管' : '交还'}</button></div>`;
+    if (c.botActive && !c.receipt) above += `<button class="gate" type="button" id="gate"><span>${other ? `${esc(c.sos.claimedBy)} 在回` : 'Bot 还在回，先停它'}</span><em>${other ? '我接手' : '🔴 停 bot 并回复'} ${ic('i-chevron', 'ic ic--sm')}</em></button>`;
+    $('#above').innerHTML = above;
+    const comp = $('#composer'); comp.classList.toggle('is-off', !!(c.botActive && !c.receipt));
+    $('#input').placeholder = c.windowClosed === 'ig' && failed ? 'IG 现在发不出去' : c.windowClosed === 'wa' && failed ? '现在只能发模板' : `以 ${L.persona} 的身份回复…`;
+    $('#send').disabled = !$('#input').value.trim();
+    let below = '';
+    if (state.queue && sl) { const nx = nextInQueue(); below = nx ? `<div class="nextbar"><div><i>下一条</i> ${esc(nx.name)} · ${LINES[nx.line].emoji} ${LINES[nx.line].label} · <b class="num">等 ${waitMin(nx.sos.askedAt)} 分</b></div><button type="button" id="next">下一条 ${ic('i-chevron', 'ic ic--sm')}</button></div>` : `<div class="nextbar"><div><i>队列清空</i> 没有人在等了</div><button type="button" id="next">回列表</button></div>`; }
+    $('#belowComposer').innerHTML = below;
   }
+  function nextInQueue() { return CONVS.filter(c => isOpenSOS(c) && !c.sos.claimedBy).sort((a, b) => a.sos.askedAt - b.sos.askedAt)[0] || null; }
 
-  /* ── 事件 ─────────────────────────────────────────────────── */
-  $$('.chip').forEach(ch => ch.addEventListener('click', () => {
-    state.filter = ch.dataset.filter;
-    $$('.chip').forEach(x => x.setAttribute('aria-selected', String(x === ch)));
-    renderList();
-  }));
-  el.qlist.addEventListener('click', e => {
-    const open = e.target.closest('[data-open]'); if (open) return openChat(open.dataset.open);
-    const zap = e.target.closest('[data-zap]');   if (zap)  return openChat(zap.dataset.zap, { desk: true });
-  });
-  el.startQueue.addEventListener('click', startQueue);
-  el.back.addEventListener('click', () => state.queue ? exitQueue() : closeChat());
-  el.qbarSkip.addEventListener('click', () => queueNext({ skipped: true }));
-  el.qbarExit.addEventListener('click', exitQueue);
-  window.addEventListener('popstate', () => { if (el.chat.classList.contains('is-open')) closeChat(); });
-
-  el.openDesk.addEventListener('click', () => setDesk(!el.desk.classList.contains('is-open')));
-  el.scrim.addEventListener('click', closeOverlays);
-  $$('.desktab').forEach(t => t.addEventListener('click', () => { state.deskTab = t.dataset.tab; renderDesk(); }));
-  $$('.langsw button').forEach(b => b.addEventListener('click', () => { state.lang = b.dataset.lang; renderDesk(); }));
-  el.deskBody.addEventListener('click', e => {
+  function autosize() { const i = $('#input'); i.style.height = 'auto'; i.style.height = Math.min(i.scrollHeight, 132) + 'px'; }
+  function insert(text) { $('#input').value = text; autosize(); $('#send').disabled = !text.trim(); renderChat(); $('#input').focus(); }
+  function send(text, opts = {}) {
+    const c = conv(state.current); if (!c || !text.trim()) return;
+    const by = ME_NAME; const now = Date.now();
+    if (c.windowClosed) { c.messages.push({ dir: 'out', at: now, by, text, state: 'failed' }); $('#input').value = ''; autosize(); renderChat(); return; }
+    let out = text;
+    if (c.lang !== 'zh' && hasCJK(text) && !opts.zh) { const d = c.drafts.find(x => x.zh === text.trim()); if (d) out = d.text; }
+    const m = { dir: 'out', at: now, by, text: out, state: 'pending' };
+    c.messages.push(m); c.botActive = false;
+    if (c.sos && !c.sos.repliedAt) { c.sos.repliedAt = now; c.sos.claimedBy = ME; }
+    state.sentline[c.id] = now;
+    $('#input').value = ''; autosize(); renderChat();
+    setTimeout(() => { m.state = 'read'; if (state.current === c.id) renderChat(); }, 1200);
+    if (opts.image) c.messages.push({ dir: 'out', at: now, by, text: '📷 课程表.png', state: 'read' });
+  }
+  $('#input').addEventListener('input', () => { autosize(); $('#send').disabled = !$('#input').value.trim(); const c = conv(state.current); if (c && c.lang !== 'zh') renderChat(); });
+  $('#composer').addEventListener('submit', e => { e.preventDefault(); send($('#input').value); });
+  $('#voice').addEventListener('click', () => toast('语音转文字：接入后按住说话'));
+  $('#back').addEventListener('click', () => { state.queue = null; closeChat(); });
+  $('#above').addEventListener('click', e => {
     const c = conv(state.current); if (!c) return;
-    const d = e.target.closest('[data-draft]');
-    if (d) { const drafts = c.drafts.length ? c.drafts : null; const text = drafts ? drafts[+d.dataset.draft][state.lang] : fill(TEMPLATES[0].items[0][state.lang], c); return insertText(text); }
-    const t = e.target.closest('[data-tmpl]');
-    if (t) { const [gi, ti] = t.dataset.tmpl.split('.').map(Number); const text = fill(TEMPLATES[gi].items[ti][state.lang], c); const cur = el.input.value.trim(); return insertText(cur ? cur + '\n' + text : text); }
-    const a = e.target.closest('[data-asset]');
-    if (a && !a.disabled) {
-      const k = a.dataset.asset;
-      if (k === 'card') return sendMessage({ type: 'card', course: c.course });
-      const text = { pin: '📍 JWC Academy · Bukit Jalil 校区（定位已发送）', link: '报名链接：jwc.academy/enrol（示例）', pdf: '📄 课程表.pdf' }[k];
-      return sendMessage({ text });
+    if (e.target.closest('#gate')) { c.botActive = false; c.sos && (c.sos.claimedBy = ME, c.sos.claimedAt = Date.now()); renderChat(); toast('Bot 已停，你来回'); setTimeout(() => $('#input').focus(), 100); return; }
+    const d = e.target.closest('[data-draft]'); if (d) { const dr = c.drafts[+d.dataset.draft]; return insert(dr.zh || dr.text); }
+    if (e.target.closest('#moreDrafts')) { state.draftOffset[c.id] = ((state.draftOffset[c.id] || 0) + 2) % Math.max(1, c.drafts.length); return renderChat(); }
+    if (e.target.closest('#sendZh')) return send($('#input').value, { zh: true });
+    if (e.target.closest('#handback')) { c.botActive = true; state.sentline[c.id] = null; renderChat(); return toast(`已交还 ${LINES[c.line].persona}`); }
+    const rc = e.target.closest('[data-rc]');
+    if (rc) {
+      if (rc.dataset.rc === 'ok') { c.receipt.done = true; c.warn = ''; c.messages.push({ dir: 'out', at: Date.now(), by: `${LINES[c.line].persona} · Bot`, text: '✅ 收到款项了！报名表和课前须知在这里 👉（示例链接）', state: 'read' }); renderChat(); return toast('已确认收款 · 报名表已发'); }
+      if (rc.dataset.rc === 'no') { c.receipt.done = true; c.warn = ''; renderChat(); return toast('已标记：不是付款'); }
+      if (rc.dataset.rc === 'reply') return $('#input').focus();
     }
   });
-
-  el.input.addEventListener('input', () => { autosize(); el.send.disabled = !el.input.value.trim(); });
-  el.input.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); el.composer.requestSubmit(); } });
-  el.composer.addEventListener('submit', e => { e.preventDefault(); const text = el.input.value.trim(); if (text) sendMessage({ text }); });
-
-  // 语音转文字：有 Web Speech API 就真用，没有就说明白
-  el.voice.addEventListener('click', () => {
-    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return toast('这个浏览器没有语音识别，接入 Whisper 后可用');
-    try {
-      const c = conv(state.current);
-      const r = new SR(); r.lang = { zh: 'zh-CN', en: 'en-MY', bm: 'ms-MY' }[c ? c.lang : 'zh']; r.interimResults = false;
-      el.voice.classList.add('is-on'); toast('说话… 说完自动停');
-      r.onresult = ev => { const t = ev.results[0][0].transcript; const cur = el.input.value.trim(); insertText(cur ? cur + ' ' + t : t); };
-      r.onerror = () => toast('麦克风不可用（原型环境可能被禁）');
-      r.onend = () => el.voice.classList.remove('is-on');
-      r.start();
-    } catch (_) { el.voice.classList.remove('is-on'); toast('麦克风不可用（原型环境可能被禁）'); }
+  $('#streamInner').addEventListener('click', e => {
+    const c = conv(state.current); const b = e.target.closest('[data-fail]'); if (!c || !b) return;
+    const k = b.dataset.fail;
+    if (k === 'wa') return toast(`已打开 WhatsApp · ${c.waNumber}`);
+    if (k === 'call') return toast('拨号：接入后直接打');
+    if (k === 'tpl') { c.messages.push({ dir: 'out', at: Date.now(), by: `${LINES[c.line].persona} · 模板`, text: '唤醒模板「课程更新」已发 · 他一回复，草稿一键发出', state: 'read' }); renderChat(); return toast('模板已发'); }
+    if (k === 'wait') return toast('好，等客户再发来');
+  });
+  $('#belowComposer').addEventListener('click', e => {
+    if (!e.target.closest('#next')) return;
+    const nx = nextInQueue();
+    if (nx) openChat(nx.id, 'zap'); else { state.queue = null; closeChat(); toast('队列清空'); }
   });
 
-  el.actSnooze.addEventListener('click', () => setSheet(el.snoozeSheet, true));
-  el.snoozeSheet.addEventListener('click', async e => {
-    const b = e.target.closest('[data-snooze]'); if (!b) return;
-    setSheet(el.snoozeSheet, false);
-    const v = b.dataset.snooze; if (v === 'cancel') return;
-    const c = conv(state.current);
-    const remind = v === 'tomorrow' ? '明早 9:00' : (() => { const d = new Date(Date.now() + Number(v) * 60000); return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; })();
-    await adapter.setStatus(c.id, 'follow', { remind, waitMin: 0 });
-    toast(`${remind} 提醒你回 ${c.name}`);
-    state.queue ? queueNext() : closeChat();
-  });
-  el.actDone.addEventListener('click', async () => {
-    const c = conv(state.current);
-    await adapter.setStatus(c.id, 'done', { stage: '已成交', remind: null, waitMin: 0 });
-    toast(`${c.name} 已完成`);
-    state.queue ? queueNext() : closeChat();
-  });
-  el.actTag.addEventListener('click', async () => {
-    const c = conv(state.current);
-    const next = c.stage === '高意向' ? '新线索' : '高意向';
-    await adapter.setStatus(c.id, c.status, { stage: next });
-    renderHead(c); toast(next === '高意向' ? '已标「高意向」' : '已取消「高意向」');
-  });
-  el.more.addEventListener('click', () => { el.moreTitle.textContent = conv(state.current)?.name || '更多操作'; setSheet(el.moreSheet, true); });
-  el.moreSheet.addEventListener('click', async e => {
-    const b = e.target.closest('[data-more]'); if (!b) return;
-    setSheet(el.moreSheet, false);
-    const c = conv(state.current); const v = b.dataset.more;
-    if (v === 'call')   return toast(`拨号：${CHANNELS[c.channel].label} 号码接入后可用`);
-    if (v === 'assign') return toast('转给同事：多人版再做');
-    if (v === 'mute')   { await adapter.setStatus(c.id, 'done', { stage: '无效线索', waitMin: 0 }); toast('已标为无效线索'); return state.queue ? queueNext() : closeChat(); }
+  /* ── 更多 ── */
+  const setSheet = (el, open) => { el.classList.toggle('is-open', open); $('#scrim').classList.toggle('is-open', open); };
+  $('#more').addEventListener('click', () => { $('#moreTitle').textContent = conv(state.current)?.name || '更多'; setSheet($('#moreSheet'), true); });
+  $('#moreSheet').addEventListener('click', e => {
+    const b = e.target.closest('[data-more]'); if (!b) return; setSheet($('#moreSheet'), false);
+    const c = conv(state.current); if (!c) return;
+    if (b.dataset.more === 'handback') { c.botActive = true; state.sentline[c.id] = null; renderChat(); toast(`已交还 ${LINES[c.line].persona}`); }
+    if (b.dataset.more === 'snooze') { if (c.sos) { c.sos.repliedAt = c.sos.repliedAt || Date.now(); } toast('明早 9:00 提醒你'); closeChat(); }
+    if (b.dataset.more === 'assign') { if (c.sos) { c.sos.claimedBy = COLLEAGUE; c.sos.claimedAt = Date.now(); } toast('已转给佳佳'); closeChat(); }
   });
 
-  // 每分钟：没回的会话等待 +1，列表和顶部数字跟着动
-  setInterval(() => {
-    state.convs.forEach(c => { if (c.status === 'open') c.waitMin++; });
-    if (!el.chat.classList.contains('is-open')) { renderStats(); renderList(); }
-  }, 60000);
+  /* ── 话术 ── */
+  let pvTpl = null;
+  function closeOverlays() { $('#desk').classList.remove('is-open'); $('#preview').classList.remove('is-open'); $('#moreSheet').classList.remove('is-open'); $('#scrim').classList.remove('is-open'); }
+  function renderTpls() {
+    const q = $('#tplSearch').value.trim().toLowerCase();
+    let list = TEMPLATES.filter(t => !state.tplFolder || t.folder === state.tplFolder);
+    if (q) list = list.filter(t => (t.name + ' ' + t.text + ' ' + t.folder).toLowerCase().includes(q) || (q === '价格' && /PRICE/.test(t.name)));
+    list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.uses - a.uses);
+    $('#tplCount').textContent = q ? `${list.length} 条` : '';
+    $('#tplRecent').innerHTML = RECENT.map(id => TEMPLATES.find(t => t.id === id)).map((t, i) => `<button class="rchip" type="button" data-tpl="${t.id}">${i === 0 ? '最近：' : ''}${esc(t.name.replace(/^[A-Z ]+CN- /, '').replace('PRICE', '价格'))}</button>`).join('');
+    $('#tplList').innerHTML = list.map(t => `<button class="trow" type="button" data-tpl="${t.id}"><div><b>${esc(t.name)}</b><small>${t.pinned ? '📌 置顶 · ' : ''}${t.images ? `${t.images} 图` : '文字'} · 用过 ${t.uses} 次</small></div>${ic('i-chevron', 'ic ic--sm')}</button>`).join('') || '<div class="empty">没搜到</div>';
+    const folders = [...new Set(TEMPLATES.map(t => t.folder))];
+    $('#tplFolders').innerHTML = folders.map(f => `<button class="rchip" type="button" data-folder="${esc(f)}" aria-selected="${state.tplFolder === f}">${esc(f)}</button>`).join('');
+  }
+  $('#openDesk').addEventListener('click', () => { renderTpls(); setSheet($('#desk'), true); setTimeout(() => $('#tplSearch').focus(), 250); });
+  $('#scrim').addEventListener('click', closeOverlays);
+  $('#tplSearch').addEventListener('input', renderTpls);
+  $('#desk').addEventListener('click', e => {
+    const f = e.target.closest('[data-folder]'); if (f) { state.tplFolder = state.tplFolder === f.dataset.folder ? '' : f.dataset.folder; return renderTpls(); }
+    const t = e.target.closest('[data-tpl]'); if (!t) return;
+    pvTpl = TEMPLATES.find(x => x.id === t.dataset.tpl); pvTpl.uses++;
+    $('#pvName').textContent = (pvTpl.pinned ? '📌 ' : '') + pvTpl.name; $('#pvText').textContent = pvTpl.text; $('#pvThumb').hidden = !pvTpl.images;
+    $('#pvSend').textContent = pvTpl.images ? `发送 · ${pvTpl.images} 图 + 文字` : '发送';
+    $('#desk').classList.remove('is-open'); $('#preview').classList.add('is-open');
+  });
+  $('#pvSend').addEventListener('click', () => { const t = pvTpl; closeOverlays(); send(t.text, { image: !!t.images }); });
+  $('#pvFill').addEventListener('click', () => { const t = pvTpl; closeOverlays(); insert(t.text); });
 
-  /* ── 启动 ─────────────────────────────────────────────────── */
-  (async () => {
-    state.convs = await adapter.list();
-    adapter.onMessage(ev => { if (ev.type === 'read' && state.current === ev.id) renderStream(conv(ev.id)); });
-    renderStats(); renderList();
-  })();
+  /* ── IG/FB 号码 ── */
+  function openHandoff() { renderHandoff(); $('#handoff').classList.add('is-open'); }
+  function renderHandoff() {
+    $('#handoffList').innerHTML = HANDOFFS.map(h => `<div class="hrow${h.done ? ' is-done' : ''}"><div class="top"><span class="ava"><span>${esc(h.name[0])}</span><i>☕</i></span><div style="min-width:0"><div class="qtop"><span class="qname">${esc(h.name)} <span style="font-weight:500;color:var(--uk-muted)">${esc(h.handle)}</span></span><span class="num" style="font-size:11.5px;color:var(--uk-time)">${waitMin(h.at)} 分钟前</span></div><div style="font-size:12.5px;color:var(--uk-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(h.account)} · ${esc(h.course)}</div></div></div><p class="said">${esc(h.said)}</p><div class="acts"><button class="big" type="button" data-h="wa" data-id="${h.id}" style="min-height:44px;flex-direction:row;gap:7px">${ic('i-wa', 'ic ic--sm')}打开 WhatsApp <span class="num" style="font-weight:600;opacity:.85">${esc(h.number)}</span></button><button class="soft" type="button" data-h="done" data-id="${h.id}" style="padding:0 14px">${h.done ? '已联系 ✓' : '已联系'}</button></div></div>`).join('');
+  }
+  $('#handoffList').addEventListener('click', e => { const b = e.target.closest('[data-h]'); if (!b) return; const h = HANDOFFS.find(x => x.id === b.dataset.id); if (b.dataset.h === 'wa') return toast(`已打开 WhatsApp · ${h.number}`); h.done = !h.done; renderHandoff(); renderQueue(); });
+  $('#backHandoff').addEventListener('click', () => $('#handoff').classList.remove('is-open'));
 
-  window.MiaoHui = { state, adapter, COURSES, TEMPLATES };
+  /* ── 启动 ── */
+  setInterval(() => { if (!$('#queue').hidden && !$('#chat').classList.contains('is-open')) renderQueue(); }, 30000);
+  if (loggedIn()) { show('queue'); renderQueue(); setTimeout(() => showNotif('sharon'), 900); } else { show('login'); }
+  window.MiaoHui = { state, CONVS, TEMPLATES };
 })();

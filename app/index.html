@@ -7,172 +7,128 @@
 <meta name="theme-color" content="#14181d" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="秒回">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="description" content="秒回 —— 手机上的客户消息回复台：按等待时长排队，AI 起草，你改一句就发。">
-<title>秒回 · 客户消息回复台</title>
+<meta name="description" content="秒回 v4 可用原型：SOS 通知直达、回客户、清队列、话术、收款确认。示例数据。">
+<title>秒回 · 手机回复台</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="app.css?v=1">
+<link rel="stylesheet" href="app.css?v=4">
 </head>
 <body>
 <!-- APP:BODY:START -->
-
 <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs>
-<!-- 取自 assets/ui-icons.svg（ui-kit sprite），viewBox 统一 0 0 24 24，样式由 CSS 控制 -->
 <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.4-4.4"/></symbol>
 <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5.4" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="18.6" r="1.5" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 5.6 6.4 6.4-6.4 6.4"/></symbol>
-<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5.4v13.2M5.4 12h13.2"/></symbol>
 <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9.2" y="3.2" width="5.6" height="10.4" rx="2.8"/><path d="M5.8 11.4a6.2 6.2 0 0 0 12.4 0M12 17.6v3.2"/></symbol>
 <symbol id="i-check2" viewBox="0 0 24 24"><path d="m1.6 12.6 3.9 4 6.7-8"/><path d="m8.4 12.9 3.3 3.4 8.7-9.9"/></symbol>
-<symbol id="i-quick" viewBox="0 0 24 24"><path d="M20.4 11.6c0 4.2-3.8 7.6-8.4 7.6-1 0-2-.1-2.9-.4L4.1 20.4l1.4-3.9c-1.2-1.3-1.9-3-1.9-4.9 0-4.2 3.8-7.6 8.4-7.6s8.4 3.4 8.4 7.6Z"/><circle cx="8.6" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="12" cy="11.6" r=".95" fill="currentColor" stroke="none"/><circle cx="15.4" cy="11.6" r=".95" fill="currentColor" stroke="none"/></symbol>
 <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 11.2v4.6"/><circle cx="12" cy="8.2" r=".95" fill="currentColor" stroke="none"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M8.4 5.6 18.6 12 8.4 18.4Z"/></symbol>
-<symbol id="i-verified" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="m12 1.8 2.6 2 3.2-.3 1 3.1 2.7 1.8-1.1 3.1 1.1 3.1-2.7 1.8-1 3.1-3.2-.3-2.6 2-2.6-2-3.2.3-1-3.1L3.1 14.6l1.1-3.1L3.1 8.4l2.7-1.8 1-3.1 3.2.3Z"/><path fill="none" stroke="#fff" stroke-width="2.1" d="m8.4 12.1 2.5 2.5 4.9-5.2"/></symbol>
 <symbol id="i-asterisk" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.4c.9 0 1.6.7 1.6 1.6v4.5l3.2-3.2a1.6 1.6 0 1 1 2.3 2.3l-3.2 3.2H20a1.6 1.6 0 1 1 0 3.2h-4.1l3.2 3.2a1.6 1.6 0 1 1-2.3 2.3l-3.2-3.2V20a1.6 1.6 0 1 1-3.2 0v-4.1l-3.2 3.2a1.6 1.6 0 0 1-2.3-2.3l3.2-3.2H4a1.6 1.6 0 1 1 0-3.2h4.1L4.9 7.6a1.6 1.6 0 0 1 2.3-2.3l3.2 3.2V4c0-.9.7-1.6 1.6-1.6Z"/></symbol>
-<symbol id="i-clip" viewBox="0 0 24 24"><path d="M18.6 11.4 12 18a4.1 4.1 0 0 1-5.8-5.8l7-7a2.7 2.7 0 0 1 3.9 3.9l-7 7a1.4 1.4 0 0 1-2-2l6.4-6.4"/></symbol>
-<symbol id="i-tag" viewBox="0 0 24 24"><path d="M7.9 10.4V8.2a4.1 4.1 0 0 1 8.2 0v2.2"/><rect x="4.6" y="10.4" width="14.8" height="9.6" rx="3.2"/></symbol>
-<!-- 手机端新增，同一支笔：fill:none / stroke-width:1.7 / 圆头 -->
 <symbol id="i-send" viewBox="0 0 24 24"><path d="M20.6 3.4 3.6 10.2l6.5 2.6M20.6 3.4l-3 17-4.1-5.9M20.6 3.4 10.1 12.8v5.5l3.4-3.4"/></symbol>
 <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2.1"/></symbol>
 <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13.4 2.6 5.2 13.4h5.1l-.9 8 8.4-11h-5.2Z"/></symbol>
-<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.2s6.4-6 6.4-10.8a6.4 6.4 0 0 0-12.8 0C5.6 15.2 12 21.2 12 21.2Z"/><circle cx="12" cy="10.2" r="2.4"/></symbol>
-<symbol id="i-doc" viewBox="0 0 24 24"><path d="M13.8 3.4H7.4a2 2 0 0 0-2 2v13.2a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2V8.2Z"/><path d="M13.6 3.6v4.4h4.6M8.8 13h6.4M8.8 16.4h4.2"/></symbol>
-<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.6a3.4 3.4 0 0 0 4.8 0l3.4-3.4a3.4 3.4 0 0 0-4.8-4.8l-1.2 1.2"/><path d="M14 10.4a3.4 3.4 0 0 0-4.8 0l-3.4 3.4a3.4 3.4 0 0 0 4.8 4.8l1.2-1.2"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3.6" y="5.2" width="16.8" height="13.6" rx="2.2"/><circle cx="8.6" cy="9.6" r="1.6"/><path d="m20.4 15.2-4.6-4.4-7.2 7.4"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.6 7.2a2 2 0 0 1 2-2h4.2l2 2.2h6.6a2 2 0 0 1 2 2v8.2a2 2 0 0 1-2 2H5.6a2 2 0 0 1-2-2Z"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.3 3.8h2.1l1.7 4.1-2 1.4a11.4 11.4 0 0 0 5.2 5.2l1.4-2 4.1 1.7v2.1a2.4 2.4 0 0 1-2.6 2.4A14.3 14.3 0 0 1 3.9 6.4a2.4 2.4 0 0 1 2.4-2.6Z"/></symbol>
 <symbol id="i-gear" viewBox="0 0 24 24"><path d="M19.5 15.2a1.7 1.7 0 0 0 .34 1.87l.06.06a2.05 2.05 0 1 1-2.9 2.9l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1.03 1.55v.17a2.05 2.05 0 0 1-4.1 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2.05 2.05 0 1 1-2.9-2.9l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1.03H2.6a2.05 2.05 0 0 1 0-4.1h.09A1.7 1.7 0 0 0 4.24 8.8a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2.05 2.05 0 1 1 2.9-2.9l.06.06a1.7 1.7 0 0 0 1.87.34h.08A1.7 1.7 0 0 0 9.78 2.8v-.17a2.05 2.05 0 0 1 4.1 0v.09a1.7 1.7 0 0 0 1.03 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2.05 2.05 0 1 1 2.9 2.9l-.06.06a1.7 1.7 0 0 0-.34 1.87v.08a1.7 1.7 0 0 0 1.55 1.03h.17a2.05 2.05 0 0 1 0 4.1h-.09a1.7 1.7 0 0 0-1.55 1.03Z"/><circle cx="12" cy="12" r="3"/></symbol>
-<!-- 课程卡缩略图 -->
-<symbol id="pic-course" viewBox="0 0 132 104"><rect width="132" height="104" fill="#efe7dd"/><rect y="72" width="132" height="32" fill="#c79a63"/><rect y="72" width="132" height="5" fill="#b3874f"/><rect x="20" y="30" width="24" height="42" rx="4" fill="#fbf8f4"/><rect x="26" y="22" width="12" height="9" rx="2" fill="#e6ded3"/><rect x="24" y="46" width="16" height="12" rx="2" fill="#e9e2d8"/><rect x="50" y="20" width="30" height="52" rx="5" fill="#fdfbf8"/><rect x="60" y="10" width="10" height="11" rx="2" fill="#dcd3c7"/><rect x="55" y="40" width="20" height="16" rx="2" fill="#ece5da"/><rect x="86" y="38" width="20" height="34" rx="4" fill="#f7f1e6"/><rect x="90" y="30" width="12" height="9" rx="2" fill="#dfd6c8"/><rect x="88" y="50" width="16" height="10" rx="2" fill="#e7dfd0"/><path d="M108 72c0-10 5-16 11-16s11 6 11 16Z" fill="#8fae7a"/></symbol>
+<symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 2.6a9.3 9.3 0 0 0-8 14.1L2.7 21.4l4.9-1.3A9.3 9.3 0 1 0 12 2.6Zm5.2 13c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1a13 13 0 0 1-5.7-4.9c-.4-.6-.9-1.5-.9-2.4 0-.9.5-1.4.7-1.6.2-.2.4-.3.6-.3h.5c.2 0 .4-.1.6.4l.8 1.9c.1.2.1.3 0 .5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2 1.3 2.3 1.4.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l1.8.9c.3.1.4.2.5.3.1.2.1.5-.1 1.1Z"/></symbol>
 </defs></svg>
 
 <div class="phone">
 
-  <!-- ══ 待回队列 ══════════════════════════════════════════ -->
-  <section class="screen screen--queue" aria-label="待回队列">
-    <header class="topbar">
-      <h1>待回</h1>
-      <span class="grow"></span>
-      <button class="iconbtn" type="button" aria-label="搜索会话"><svg class="ic"><use href="#i-search"/></svg></button>
-      <button class="iconbtn" type="button" aria-label="设置"><svg class="ic"><use href="#i-gear"/></svg></button>
-    </header>
-
-    <dl class="pulse" id="pulse">
-      <div><dt>待回</dt><dd class="num"><span id="stat-open">5</span></dd></div>
-      <div><dt>今日已回</dt><dd class="num"><span id="stat-done">14</span></dd></div>
-      <div class="is-hot"><dt>最久等待</dt><dd class="num"><span id="stat-worst">96</span> <small>分</small></dd></div>
-    </dl>
-
-    <div class="chips" role="tablist" aria-label="队列筛选">
-      <button class="chip" type="button" role="tab" data-filter="open"   aria-selected="true">待回复 <b class="num" data-count="open">5</b></button>
-      <button class="chip" type="button" role="tab" data-filter="follow" aria-selected="false">跟进中 <b class="num" data-count="follow">1</b></button>
-      <button class="chip" type="button" role="tab" data-filter="done"   aria-selected="false">已完成 <b class="num" data-count="done">1</b></button>
-      <button class="chip" type="button" role="tab" data-filter="all"    aria-selected="false">全部 <b class="num" data-count="all">7</b></button>
-    </div>
-
-    <ul class="qlist" id="qlist"></ul>
-
-    <div class="dock">
-      <button class="primary" id="startQueue" type="button">
-        <svg class="ic ic--sm"><use href="#i-bolt"/></svg>
-        <span>开始清队列</span><span class="n" id="queueN">· 5 条</span>
-      </button>
-    </div>
+  <!-- 登录（第一次装才看到） -->
+  <section class="screen" id="login" hidden>
+    <form class="login" id="loginForm" autocomplete="off">
+      <div><div class="brand">JWC ACADEMY</div><h1>回复台</h1></div>
+      <label class="field"><span>名字</span><input id="loginName" value="boon" autocapitalize="off"></label>
+      <label class="field"><span>密码</span><input id="loginPwd" type="password" value="········"></label>
+      <div class="remember"><button type="button" class="switch" id="remember" role="switch" aria-checked="true" aria-label="记住这台手机 30 天"></button><span>记住这台手机 30 天</span></div>
+      <button class="primary primary--ink" type="submit">登录</button>
+    </form>
   </section>
 
-  <!-- ══ 会话 + 回复台 ═════════════════════════════════════ -->
-  <section class="screen screen--chat" id="chat" aria-label="会话">
-    <div class="qbar" id="qbar" hidden>
-      <span class="num" id="qbarText">1 / 5</span>
-      <span class="track"><span class="fill" id="qbarFill" style="width:0%"></span></span>
-      <button type="button" id="qbarSkip">跳过</button>
-      <button type="button" id="qbarExit">退出</button>
-    </div>
-
-    <header class="chathead">
-      <button class="back" type="button" id="back" aria-label="返回队列"><svg class="ic ic--lg"><use href="#i-chevron"/></svg></button>
-      <span class="ava" id="chatAva"></span>
-      <div class="chatwho">
-        <h2 id="chatName">—</h2>
-        <p id="chatSub">—</p>
-      </div>
-      <button class="iconbtn" type="button" id="more" aria-label="更多操作"><svg class="ic"><use href="#i-more"/></svg></button>
+  <!-- 待回 -->
+  <section class="screen" id="queue" hidden>
+    <header class="topbar">
+      <h1>待回</h1><span class="grow"></span>
+      <button class="duty" id="duty" type="button" aria-pressed="true"><i></i><span>值班中</span></button>
+      <button class="iconbtn" id="settings" type="button" aria-label="设置"><svg class="ic"><use href="#i-gear"/></svg></button>
     </header>
+    <div class="dutyline" id="dutyline">值班：<b>你、佳佳</b></div>
+    <div class="chips" id="chips" role="tablist"></div>
+    <ul class="qlist" id="qlist"></ul>
+    <div class="dock"><button class="primary" id="startQueue" type="button"><svg class="ic ic--sm"><use href="#i-bolt"/></svg><span>开始清队列</span><span class="n" id="queueN"></span></button></div>
+  </section>
 
-    <details class="ctx" id="ctx">
-      <summary>
-        <svg class="ic ic--sm"><use href="#i-info"/></svg>
-        <span class="grow" id="ctxLine">客户资料</span>
-        <svg class="ic ic--sm chev"><use href="#i-chevron"/></svg>
-      </summary>
-      <dl class="ctxgrid" id="ctxGrid"></dl>
-    </details>
-
-    <div class="stream" id="stream"></div>
-
-    <div class="acts">
-      <button class="act" type="button" id="actSnooze"><svg class="ic"><use href="#i-clock"/></svg>稍后跟进</button>
-      <button class="act" type="button" id="actDone"><svg class="ic"><use href="#i-check2"/></svg>标记完成</button>
-      <button class="act" type="button" id="actTag"><svg class="ic"><use href="#i-tag"/></svg>加标签</button>
-    </div>
-
+  <!-- 会话 -->
+  <section class="screen screen--push" id="chat" aria-label="会话">
+    <header class="chathead">
+      <button class="back" type="button" id="back" aria-label="返回"><svg class="ic ic--lg"><use href="#i-chevron"/></svg></button>
+      <span class="ava ava--sm" id="chatAva"></span>
+      <div class="chatwho"><h2 id="chatName">—</h2><p id="chatLine">—</p></div>
+      <span class="chipst" id="chatStatus"></span>
+      <button class="iconbtn" type="button" id="more" aria-label="更多"><svg class="ic"><use href="#i-more"/></svg></button>
+    </header>
+    <div class="ctx" id="ctx"></div>
+    <div class="stream" id="stream"><div class="stream-inner" id="streamInner"></div></div>
+    <div id="above"></div>
     <form class="composer" id="composer" autocomplete="off">
-      <button class="iconbtn" type="button" id="openDesk" aria-label="打开回复台" aria-expanded="false">
-        <svg class="ic"><use href="#i-asterisk"/></svg>
-      </button>
-      <span class="inputwrap">
-        <label class="sr" for="input">回复内容</label>
-        <textarea id="input" rows="1" placeholder="写回复，或点 ✳ 用草稿"></textarea>
-      </span>
-      <button class="iconbtn" type="button" id="voice" aria-label="语音转文字"><svg class="ic"><use href="#i-mic"/></svg></button>
+      <button class="iconbtn" type="button" id="openDesk" aria-label="快捷话术"><svg class="ic"><use href="#i-asterisk"/></svg></button>
+      <span class="inputwrap"><label class="sr" for="input">回复</label><textarea id="input" rows="1" placeholder="回复…"></textarea></span>
+      <button class="iconbtn" type="button" id="voice" aria-label="语音"><svg class="ic"><use href="#i-mic"/></svg></button>
       <button class="send" type="submit" id="send" aria-label="发送" disabled><svg class="ic"><use href="#i-send"/></svg></button>
     </form>
+    <div id="belowComposer"></div>
 
     <div class="scrim" id="scrim"></div>
-
-    <!-- 回复台 -->
-    <div class="desk" id="desk" role="dialog" aria-label="回复台" aria-modal="false">
+    <div class="desk" id="desk" role="dialog" aria-label="话术">
       <span class="grab"></span>
-      <div class="deskhead">
-        <h3>回复台</h3>
-        <span class="grow"></span>
-        <div class="langsw" role="group" aria-label="回复语言">
-          <button type="button" data-lang="zh" aria-pressed="true">中</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
-          <button type="button" data-lang="bm" aria-pressed="false">BM</button>
-        </div>
+      <div class="deskbody">
+        <div class="search"><svg class="ic"><use href="#i-search"/></svg><input id="tplSearch" placeholder="搜话术（名字或内容）"><small id="tplCount"></small></div>
+        <div class="rchips" id="tplRecent"></div>
+        <div id="tplList"></div>
+        <div class="rchips" id="tplFolders"></div>
       </div>
-      <div class="desktabs" role="tablist" aria-label="回复台分区">
-        <button class="desktab" type="button" role="tab" data-tab="drafts" aria-selected="true">AI 草稿</button>
-        <button class="desktab" type="button" role="tab" data-tab="tmpls"  aria-selected="false">快捷话术</button>
-        <button class="desktab" type="button" role="tab" data-tab="assets" aria-selected="false">素材</button>
-      </div>
-      <div class="deskbody" id="deskBody"></div>
     </div>
-
-    <!-- 稍后跟进 -->
-    <div class="sheet" id="snoozeSheet" role="dialog" aria-label="稍后跟进">
-      <h3>什么时候提醒我回他？</h3>
-      <button type="button" data-snooze="30"><svg class="ic"><use href="#i-clock"/></svg>30 分钟后</button>
-      <button type="button" data-snooze="120"><svg class="ic"><use href="#i-clock"/></svg>2 小时后</button>
-      <button type="button" data-snooze="tomorrow"><svg class="ic"><use href="#i-clock"/></svg>明早 9:00</button>
-      <button type="button" data-snooze="cancel">取消</button>
+    <div class="preview" id="preview" role="dialog" aria-label="发出去是这样">
+      <h4 id="pvName"></h4>
+      <div class="pv"><div class="thumb" id="pvThumb"><svg class="ic ic--lg"><use href="#i-image"/></svg></div><p id="pvText"></p></div>
+      <div class="two"><button class="big" type="button" id="pvSend">发送</button><button class="soft" type="button" id="pvFill">只填文字，我再改</button></div>
     </div>
-
-    <!-- 更多 -->
-    <div class="sheet" id="moreSheet" role="dialog" aria-label="更多操作">
-      <h3 id="moreTitle">更多操作</h3>
-      <button type="button" data-more="call"><svg class="ic"><use href="#i-quick"/></svg>转打电话</button>
-      <button type="button" data-more="assign"><svg class="ic"><use href="#i-tag"/></svg>转给同事</button>
-      <button type="button" data-more="mute"><svg class="ic"><use href="#i-info"/></svg>标记为无效线索</button>
+    <div class="sheet" id="moreSheet" role="dialog" aria-label="更多">
+      <h3 id="moreTitle">更多</h3>
+      <button type="button" data-more="handback"><svg class="ic"><use href="#i-check2"/></svg>让 Bot 接管</button>
+      <button type="button" data-more="snooze"><svg class="ic"><use href="#i-clock"/></svg>稍后跟进 · 明早 9:00 提醒我</button>
+      <button type="button" data-more="assign"><svg class="ic"><use href="#i-phone"/></svg>转给佳佳</button>
       <button type="button" data-more="cancel">取消</button>
     </div>
   </section>
 
-  <div class="toast" id="toast" role="status" aria-live="polite">
-    <svg class="ic"><use href="#i-check2"/></svg><span id="toastText">已发送</span>
-  </div>
-</div>
+  <!-- IG/FB 给了号码 -->
+  <section class="screen screen--push" id="handoff" aria-label="IG/FB 给了号码">
+    <header class="chathead">
+      <button class="back" type="button" id="backHandoff" aria-label="返回"><svg class="ic ic--lg"><use href="#i-chevron"/></svg></button>
+      <div class="chatwho"><h2>IG/FB 给了号码</h2><p>等你打 WhatsApp</p></div>
+    </header>
+    <div class="qlist" id="handoffList" style="border-top:0"></div>
+  </section>
 
+  <!-- 设置 -->
+  <div class="sheet" id="settingsSheet" role="dialog" aria-label="设置">
+    <h3>设置</h3>
+    <button type="button" data-set="duty"><svg class="ic"><use href="#i-clock"/></svg><span id="dutyLabel">下班（不收通知）</span></button>
+    <button type="button" data-set="replay"><svg class="ic"><use href="#i-bolt"/></svg>重放一条通知</button>
+    <button type="button" data-set="logout" class="danger">退出登录</button>
+    <button type="button" data-set="cancel">取消</button>
+  </div>
+  <div class="scrim" id="scrimGlobal" style="z-index:4"></div>
+
+  <button class="notif" id="notif" type="button">
+    <span class="nic"><svg class="ic"><use href="#i-bolt"/></svg></span>
+    <div><div class="nt">🆘 <span id="nfName">Sharon</span> 等了 <b class="num" id="nfWait">14 分</b><time id="nfTime"></time></div><div class="nb" id="nfBody"></div><div class="nf">值班：你、佳佳 · 先点先得</div></div>
+  </button>
+  <div class="toast" id="toast" role="status" aria-live="polite"><svg class="ic"><use href="#i-check2"/></svg><span id="toastText"></span></div>
+</div>
 <!-- APP:BODY:END -->
-<script src="app.js?v=1"></script>
+<script src="app.js?v=4"></script>
 </body>
 </html>
